@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -56,7 +55,7 @@ const Index = () => {
               </div>
               
               <h2 className="font-playfair text-5xl md:text-7xl lg:text-8xl font-light leading-tight text-gray-900 mb-8">
-                Beyond Fashion,
+                Tunnel Vision,
                 <span className="block bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 bg-clip-text text-transparent">
                   Beyond Limits
                 </span>
