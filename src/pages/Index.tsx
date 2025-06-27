@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -6,8 +7,9 @@ import ProductCard from '@/components/ProductCard';
 import ElegantBackgroundEffect from '@/components/ElegantBackgroundEffect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
-import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag } from 'lucide-react';
+import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag, Star, Filter, Search, Heart, TrendingUp, Package, CreditCard } from 'lucide-react';
 
 const Index = () => {
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
@@ -24,18 +26,31 @@ const Index = () => {
         {/* White line element removed */}
       </section>
 
-      {/* Brand Philosophy Section with Elegant Background */}
-      <section className="section-padding bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20"></div>
+      {/* Brand Philosophy Section with Professional Shopping Experience */}
+      <section className="section-padding bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-slate-100/30"></div>
+        
+        {/* Professional Grid Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="w-full h-full" style={{
+            backgroundImage: `
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
         
         {/* Elegant Background Effect */}
         <ElegantBackgroundEffect />
         
         <div className="container mx-auto container-padding relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-12">
-            <div className="space-y-6">
-              <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium px-6 py-2">
-                Our Philosophy
+          {/* Main Content */}
+          <div className="max-w-6xl mx-auto space-y-16">
+            {/* Header Section */}
+            <div className="text-center space-y-8">
+              <Badge className="mb-6 bg-gradient-to-r from-primary to-blue-600 text-white border-0 font-medium px-8 py-3 text-sm">
+                Premium Shopping Experience
               </Badge>
               
               <h2 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-light leading-tight">
@@ -43,57 +58,212 @@ const Index = () => {
                 <span className="block text-gradient-corporate">Beyond Limits</span>
               </h2>
               
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light">
                 Designed for those who refuse to be distracted. 
                 <span className="block mt-4">
                   In a world full of noise, we create clarity. In a culture of compromise, we demand excellence.
                 </span>
-                <span className="block mt-4">
-                  Our pieces aren't just clothing—they're armor against mediocrity, statements of unwavering focus.
-                </span>
               </p>
-              
-              {/* Shop Button */}
-              <div className="mt-12">
-                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-12 py-6 text-lg rounded-full">
-                  <Link to="/shop">
-                    <ShoppingBag className="mr-3 h-6 w-6" />
-                    Enter the Shop
-                    <ChevronRight className="ml-3 h-6 w-6" />
-                  </Link>
-                </Button>
-              </div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="space-y-4 text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
-                  <Award className="h-10 w-10 text-primary" />
-                </div>
-                <h3 className="font-playfair text-2xl font-medium">Uncompromising</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Zero tolerance for shortcuts. Every detail executed with laser focus and precision.
-                </p>
-              </div>
+
+            {/* Shopping Widgets Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Quick Search Widget */}
+              <Card className="group hover-lift bg-white/80 backdrop-blur-sm border-slate-200/60 corporate-shadow">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Search className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-lg font-medium mb-2">Smart Search</h3>
+                    <p className="text-sm text-muted-foreground">Find exactly what you need</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full">
+                    Search Now
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Filter Widget */}
+              <Card className="group hover-lift bg-white/80 backdrop-blur-sm border-slate-200/60 corporate-shadow">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Filter className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-lg font-medium mb-2">Smart Filters</h3>
+                    <p className="text-sm text-muted-foreground">Refine your perfect match</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full">
+                    Filter Products
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Wishlist Widget */}
+              <Card className="group hover-lift bg-white/80 backdrop-blur-sm border-slate-200/60 corporate-shadow">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Heart className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-lg font-medium mb-2">Wishlist</h3>
+                    <p className="text-sm text-muted-foreground">Save your favorites</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full">
+                    View Wishlist
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Trending Widget */}
+              <Card className="group hover-lift bg-white/80 backdrop-blur-sm border-slate-200/60 corporate-shadow">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-lg font-medium mb-2">Trending</h3>
+                    <p className="text-sm text-muted-foreground">What's popular now</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full">
+                    View Trends
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Enhanced Feature Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="group hover-lift bg-white/90 backdrop-blur-sm border-slate-200/60 corporate-shadow-lg">
+                <CardContent className="p-8 text-center space-y-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Award className="h-10 w-10 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-2xl font-medium mb-4">Uncompromising</h3>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      Zero tolerance for shortcuts. Every detail executed with laser focus and precision.
+                    </p>
+                    <div className="flex items-center justify-center space-x-1 text-amber-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
               
-              <div className="space-y-4 text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
-                  <Globe className="h-10 w-10 text-primary" />
-                </div>
-                <h3 className="font-playfair text-2xl font-medium">Undistracted</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  While others chase trends, we build legacy. Our vision cuts through the chaos.
-                </p>
-              </div>
+              <Card className="group hover-lift bg-white/90 backdrop-blur-sm border-slate-200/60 corporate-shadow-lg">
+                <CardContent className="p-8 text-center space-y-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Globe className="h-10 w-10 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-2xl font-medium mb-4">Undistracted</h3>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      While others chase trends, we build legacy. Our vision cuts through the chaos.
+                    </p>
+                    <Badge className="bg-primary/10 text-primary border border-primary/20">
+                      Global Reach
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
               
-              <div className="space-y-4 text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
-                  <Users className="h-10 w-10 text-primary" />
+              <Card className="group hover-lift bg-white/90 backdrop-blur-sm border-slate-200/60 corporate-shadow-lg">
+                <CardContent className="p-8 text-center space-y-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <Users className="h-10 w-10 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-2xl font-medium mb-4">Unstoppable</h3>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      For those who move with purpose. Who know their destination and won't be deterred.
+                    </p>
+                    <div className="text-sm text-muted-foreground">
+                      <span className="font-semibold text-primary">10K+</span> Satisfied Customers
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Shopping Action Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="group hover-lift bg-gradient-to-br from-primary to-primary/80 text-white border-0 corporate-shadow-lg">
+                <CardContent className="p-8 text-center space-y-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto">
+                    <ShoppingBag className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-2xl font-medium mb-4">Shop Collection</h3>
+                    <p className="text-white/90 mb-6">
+                      Discover our curated selection of premium pieces designed for excellence.
+                    </p>
+                    <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90 font-medium px-8">
+                      <Link to="/shop">
+                        Explore Now
+                        <ChevronRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover-lift bg-gradient-to-br from-slate-800 to-slate-700 text-white border-0 corporate-shadow-lg">
+                <CardContent className="p-8 text-center space-y-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto">
+                    <CreditCard className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-playfair text-2xl font-medium mb-4">VIP Access</h3>
+                    <p className="text-white/90 mb-6">
+                      Join our exclusive program for early access and premium benefits.
+                    </p>
+                    <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-800 font-medium px-8">
+                      <Link to="/about">
+                        Learn More
+                        <ChevronRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Shopping Benefits */}
+            <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 border border-slate-200/60 corporate-shadow">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Shield className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-playfair text-lg font-medium">Secure Shopping</h4>
+                    <p className="text-sm text-muted-foreground">SSL encrypted & protected</p>
+                  </div>
                 </div>
-                <h3 className="font-playfair text-2xl font-medium">Unstoppable</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  For those who move with purpose. Who know their destination and won't be deterred.
-                </p>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Truck className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-playfair text-lg font-medium">Fast Delivery</h4>
+                    <p className="text-sm text-muted-foreground">Free shipping over $100</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Headphones className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-playfair text-lg font-medium">24/7 Support</h4>
+                    <p className="text-sm text-muted-foreground">Always here to help</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
