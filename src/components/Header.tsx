@@ -38,9 +38,11 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="font-oswald text-2xl font-bold text-gradient">
-              NO DISTRAXIONZ
-            </div>
+            <img 
+              src="/lovable-uploads/30a4fcab-8cc9-4f74-8a58-f4c349a4cb3c.png" 
+              alt="NO DISTRAXIONZ" 
+              className="h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
