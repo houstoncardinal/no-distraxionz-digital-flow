@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
@@ -711,21 +710,21 @@ const HorizonHeroSection = () => {
           <span style={styles.menuIconSpan}></span>
           <span style={styles.menuIconSpan}></span>
         </div>
-        <div style={styles.verticalText}>SPACE</div>
+        <div style={styles.verticalText}>STYLE</div>
       </div>
 
       {/* Main content */}
       <div style={styles.heroContent}>
         <h1 ref={titleRef} style={styles.heroTitle}>
-          {splitTitle("HORIZON")}
+          {splitTitle("NO DISTRAXIONZ")}
         </h1>
         
         <div ref={subtitleRef} style={styles.heroSubtitle}>
           <p style={styles.subtitleLine}>
-            Where vision meets reality, 
+            Premium streetwear that commands attention,
           </p>
           <p style={styles.subtitleLine}>
-            we shape the future of tomorrow
+            crafted for those who refuse to blend in
           </p>
         </div>
       </div>
@@ -750,23 +749,23 @@ const HorizonHeroSection = () => {
       <div style={styles.scrollSections}>
        {[...Array(2)].map((_, i) => {
           const titles: Record<number, string> = {
-            0: 'HORIZON',
-            1: 'COSMOS',
-            2: 'INFINITY'
+            0: 'NO DISTRAXIONZ',
+            1: 'STREET CULTURE',
+            2: 'PURE FOCUS'
           };
           
           const subtitles: Record<number, { line1: string; line2: string }> = {
             0: {
-              line1: 'Where vision meets reality,',
-              line2: 'we shape the future of tomorrow'
+              line1: 'Premium streetwear that commands attention,',
+              line2: 'crafted for those who refuse to blend in'
             },
             1: {
-              line1: 'Beyond the boundaries of imagination,',
-              line2: 'lies the universe of possibilities'
+              line1: 'Born from the streets, elevated by design,',
+              line2: 'every piece tells a story of rebellion'
             },
             2: {
-              line1: 'In the space between thought and creation,',
-              line2: 'we find the essence of true innovation'
+              line1: 'Cut through the noise with clarity of purpose,',
+              line2: 'where style becomes your strongest statement'
             }
           };
           
