@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HorizonHeroSection from '@/components/HorizonHeroSection';
 import ProductCard from '@/components/ProductCard';
-import LavaCrackEffect from '@/components/LavaCrackEffect';
+import ElegantBackgroundEffect from '@/components/ElegantBackgroundEffect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { products } from '@/data/products';
@@ -26,12 +26,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Brand Philosophy Section with Lava Effect */}
+      {/* Brand Philosophy Section with Elegant Background */}
       <section className="section-padding bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20"></div>
         
-        {/* Lava Crack Effect */}
-        <LavaCrackEffect />
+        {/* Elegant Background Effect */}
+        <ElegantBackgroundEffect />
         
         <div className="container mx-auto container-padding relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-12">
