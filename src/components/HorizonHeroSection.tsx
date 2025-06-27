@@ -10,7 +10,6 @@ const HorizonHeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
-  const scrollProgressRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const smoothCameraPos = useRef({ x: 0, y: 30, z: 100 });
@@ -438,7 +437,7 @@ const HorizonHeroSection = () => {
     if (!isReady) return;
     
     // Set initial states to prevent flash
-    gsap.set([menuRef.current, logoRef.current, subtitleRef.current, scrollProgressRef.current], {
+    gsap.set([menuRef.current, logoRef.current, subtitleRef.current], {
       visibility: 'visible'
     });
 
@@ -454,7 +453,7 @@ const HorizonHeroSection = () => {
       });
     }
 
-    // Animate logo instead of title
+    // Animate logo
     if (logoRef.current) {
       tl.from(logoRef.current, {
         y: 100,
@@ -465,26 +464,18 @@ const HorizonHeroSection = () => {
       }, "-=0.5");
     }
 
-    // Animate subtitle lines
+    // Animate subtitle lines - check if element exists and has children
     if (subtitleRef.current) {
       const subtitleLines = subtitleRef.current.querySelectorAll('.subtitle-line');
-      tl.from(subtitleLines, {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out"
-      }, "-=0.8");
-    }
-
-    // Animate scroll indicator
-    if (scrollProgressRef.current) {
-      tl.from(scrollProgressRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: "power2.out"
-      }, "-=0.5");
+      if (subtitleLines.length > 0) {
+        tl.from(subtitleLines, {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power3.out"
+        }, "-=0.8");
+      }
     }
 
     return () => {
@@ -634,43 +625,6 @@ const HorizonHeroSection = () => {
     subtitleLine: {
       margin: '0.5rem 0'
     },
-    scrollProgress: {
-      position: 'fixed' as const,
-      bottom: '50px',
-      right: '30px',
-      zIndex: 100,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      gap: '15px',
-      color: 'white',
-      visibility: 'hidden' as const
-    },
-    scrollText: {
-      fontSize: '10px',
-      letterSpacing: '2px',
-      writingMode: 'vertical-rl' as const,
-      opacity: 0.7
-    },
-    progressTrack: {
-      width: '2px',
-      height: '80px',
-      background: 'rgba(255, 255, 255, 0.2)',
-      position: 'relative' as const
-    },
-    progressFill: {
-      position: 'absolute' as const,
-      bottom: 0,
-      left: 0,
-      width: '100%',
-      background: 'white',
-      transition: 'height 0.3s ease'
-    },
-    sectionCounter: {
-      fontSize: '12px',
-      fontWeight: 300,
-      opacity: 0.7
-    },
     scrollSections: {
       position: 'relative' as const,
       zIndex: 5,
@@ -712,28 +666,12 @@ const HorizonHeroSection = () => {
         />
         
         <div ref={subtitleRef} style={styles.heroSubtitle}>
-          <p style={styles.subtitleLine}>
+          <p className="subtitle-line" style={styles.subtitleLine}>
             Premium streetwear that commands attention,
           </p>
-          <p style={styles.subtitleLine}>
+          <p className="subtitle-line" style={styles.subtitleLine}>
             crafted for those who refuse to blend in
           </p>
-        </div>
-      </div>
-
-      {/* Scroll progress indicator */}
-      <div ref={scrollProgressRef} style={styles.scrollProgress}>
-        <div style={styles.scrollText}>SCROLL</div>
-        <div style={styles.progressTrack}>
-          <div 
-            style={{
-              ...styles.progressFill,
-              height: `${scrollProgress * 100}%`
-            }}
-          />
-        </div>
-        <div style={styles.sectionCounter}>
-          {String(currentSection).padStart(2, '0')} / {String(totalSections).padStart(2, '0')}
         </div>
       </div>
 
