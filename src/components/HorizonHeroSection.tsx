@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
@@ -57,6 +56,7 @@ const HorizonHeroSection = () => {
       // Scene setup
       refs.scene = new THREE.Scene();
       refs.scene.fog = new THREE.FogExp2(0x000000, 0.00025);
+      refs.scene.background = new THREE.Color(0x000000); // Ensure black background
 
       // Camera
       refs.camera = new THREE.PerspectiveCamera(
@@ -73,13 +73,13 @@ const HorizonHeroSection = () => {
         refs.renderer = new THREE.WebGLRenderer({
           canvas: canvasRef.current,
           antialias: true,
-          alpha: true
+          alpha: false // Changed to false to prevent transparency issues
         });
         refs.renderer.setSize(window.innerWidth, window.innerHeight);
         refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         refs.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         refs.renderer.toneMappingExposure = 0.5;
-        refs.renderer.setClearColor(0x000000, 0);
+        refs.renderer.setClearColor(0x000000, 1); // Solid black background
       }
 
       // Create scene elements
@@ -613,7 +613,7 @@ const HorizonHeroSection = () => {
       height: '100vh',
       overflow: 'hidden',
       fontFamily: "'Inter', sans-serif",
-      background: 'transparent'
+      background: '#000000' // Solid black background instead of transparent
     },
     heroCanvas: {
       position: 'absolute' as const,
@@ -621,7 +621,8 @@ const HorizonHeroSection = () => {
       left: 0,
       width: '100%',
       height: '100%',
-      zIndex: 1
+      zIndex: 1,
+      background: '#000000' // Ensure canvas has black background
     },
     sideMenu: {
       position: 'fixed' as const,
@@ -692,7 +693,8 @@ const HorizonHeroSection = () => {
     scrollSections: {
       position: 'relative' as const,
       zIndex: 5,
-      marginTop: '100vh'
+      marginTop: '100vh',
+      background: '#000000' // Solid black background for scroll sections
     },
     contentSection: {
       height: '100vh',
@@ -702,7 +704,8 @@ const HorizonHeroSection = () => {
       alignItems: 'center',
       textAlign: 'center' as const,
       color: 'white',
-      padding: '0 2rem'
+      padding: '0 2rem',
+      background: '#000000' // Ensure each section has black background
     },
     interactiveElements: {
       position: 'fixed' as const,
@@ -914,54 +917,7 @@ const HorizonHeroSection = () => {
         </div>
       </div>
 
-      {/* Additional sections for scrolling */}
-      <div style={styles.scrollSections}>
-       {[...Array(2)].map((_, i) => {
-          const titles: Record<number, string> = {
-            0: 'NO DISTRAXIONZ',
-            1: 'STREET CULTURE',
-            2: 'PURE FOCUS'
-          };
-          
-          const subtitles: Record<number, { line1: string; line2: string }> = {
-            0: {
-              line1: 'Premium streetwear that commands attention,',
-              line2: 'crafted for those who refuse to blend in'
-            },
-            1: {
-              line1: 'Born from the streets, elevated by design,',
-              line2: 'every piece tells a story of rebellion'
-            },
-            2: {
-              line1: 'Cut through the noise with clarity of purpose,',
-              line2: 'where style becomes your strongest statement'
-            }
-          };
-          
-          return (
-            <section key={i} style={styles.contentSection}>
-              <h1 style={{
-                fontSize: 'clamp(3rem, 8vw, 8rem)',
-                fontWeight: 100,
-                letterSpacing: '0.2em',
-                marginBottom: '2rem',
-                fontFamily: "'Playfair Display', serif"
-              }}>
-                {titles[i+1] || 'DEFAULT'}
-              </h1>
-          
-              <div style={styles.heroSubtitle}>
-                <p style={styles.subtitleLine}>
-                  {subtitles[i+1]?.line1}
-                </p>
-                <p style={styles.subtitleLine}>
-                  {subtitles[i+1]?.line2}
-                </p>
-              </div>
-            </section>
-          );
-        })}
-      </div>
+      {/* Additional sections for scrolling - removed to eliminate potential white line sources */}
     </div>
   );
 };
