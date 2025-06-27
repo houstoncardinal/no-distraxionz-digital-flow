@@ -3,9 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,7 +26,6 @@ const HorizonHeroSection = () => {
     scene: null as THREE.Scene | null,
     camera: null as THREE.PerspectiveCamera | null,
     renderer: null as THREE.WebGLRenderer | null,
-    composer: null as EffectComposer | null,
     stars: [] as THREE.Points[],
     nebula: null as THREE.Mesh | null,
     mountains: [] as THREE.Mesh[],
@@ -70,19 +66,6 @@ const HorizonHeroSection = () => {
         refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         refs.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         refs.renderer.toneMappingExposure = 0.5;
-
-        // Post-processing
-        refs.composer = new EffectComposer(refs.renderer);
-        const renderPass = new RenderPass(refs.scene, refs.camera);
-        refs.composer.addPass(renderPass);
-
-        const bloomPass = new UnrealBloomPass(
-          new THREE.Vector2(window.innerWidth, window.innerHeight),
-          0.8,
-          0.4,
-          0.85
-        );
-        refs.composer.addPass(bloomPass);
       }
 
       // Create scene elements
@@ -385,8 +368,8 @@ const HorizonHeroSection = () => {
         mountain.position.y = 50 + (Math.cos(time * 0.15) * 1 * parallaxFactor);
       });
 
-      if (refs.composer) {
-        refs.composer.render();
+      if (refs.renderer) {
+        refs.renderer.render(refs.scene, refs.camera);
       }
     };
 
@@ -404,11 +387,10 @@ const HorizonHeroSection = () => {
     // Handle resize
     const handleResize = () => {
       const { current: refs } = threeRefs;
-      if (refs.camera && refs.renderer && refs.composer) {
+      if (refs.camera && refs.renderer) {
         refs.camera.aspect = window.innerWidth / window.innerHeight;
         refs.camera.updateProjectionMatrix();
         refs.renderer.setSize(window.innerWidth, window.innerHeight);
-        refs.composer.setSize(window.innerWidth, window.innerHeight);
       }
     };
 
@@ -585,52 +567,187 @@ const HorizonHeroSection = () => {
     ));
   };
 
+  const styles = {
+    heroContainer: {
+      position: 'relative' as const,
+      width: '100vw',
+      height: '100vh',
+      overflow: 'hidden',
+      fontFamily: "'Inter', sans-serif",
+      background: 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #000000 100%)'
+    },
+    heroCanvas: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 1
+    },
+    sideMenu: {
+      position: 'fixed' as const,
+      top: '50%',
+      left: '30px',
+      transform: 'translateY(-50%)',
+      zIndex: 100,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      gap: '30px',
+      visibility: 'hidden' as const
+    },
+    menuIcon: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '4px',
+      cursor: 'pointer'
+    },
+    menuIconSpan: {
+      width: '20px',
+      height: '2px',
+      background: 'white',
+      transition: 'all 0.3s ease'
+    },
+    verticalText: {
+      writingMode: 'vertical-rl' as const,
+      color: 'white',
+      fontSize: '12px',
+      letterSpacing: '3px',
+      fontWeight: 300
+    },
+    heroContent: {
+      position: 'absolute' as const,
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      textAlign: 'center' as const,
+      zIndex: 10,
+      color: 'white'
+    },
+    heroTitle: {
+      fontSize: 'clamp(3rem, 8vw, 8rem)',
+      fontWeight: 100,
+      letterSpacing: '0.2em',
+      marginBottom: '2rem',
+      fontFamily: "'Playfair Display', serif"
+    },
+    titleChar: {
+      display: 'inline-block',
+      transition: 'all 0.3s ease'
+    },
+    heroSubtitle: {
+      fontSize: 'clamp(1rem, 2vw, 1.5rem)',
+      fontWeight: 300,
+      lineHeight: 1.6,
+      opacity: 0.8,
+      maxWidth: '600px',
+      margin: '0 auto'
+    },
+    subtitleLine: {
+      margin: '0.5rem 0'
+    },
+    scrollProgress: {
+      position: 'fixed' as const,
+      bottom: '50px',
+      right: '30px',
+      zIndex: 100,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      gap: '15px',
+      color: 'white',
+      visibility: 'hidden' as const
+    },
+    scrollText: {
+      fontSize: '10px',
+      letterSpacing: '2px',
+      writingMode: 'vertical-rl' as const,
+      opacity: 0.7
+    },
+    progressTrack: {
+      width: '2px',
+      height: '80px',
+      background: 'rgba(255, 255, 255, 0.2)',
+      position: 'relative' as const
+    },
+    progressFill: {
+      position: 'absolute' as const,
+      bottom: 0,
+      left: 0,
+      width: '100%',
+      background: 'white',
+      transition: 'height 0.3s ease'
+    },
+    sectionCounter: {
+      fontSize: '12px',
+      fontWeight: 300,
+      opacity: 0.7
+    },
+    scrollSections: {
+      position: 'relative' as const,
+      zIndex: 5,
+      marginTop: '100vh'
+    },
+    contentSection: {
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center' as const,
+      color: 'white',
+      padding: '0 2rem'
+    }
+  };
+
   return (
-    <div ref={containerRef} className="hero-container cosmos-style">
-      <canvas ref={canvasRef} className="hero-canvas" />
+    <div ref={containerRef} style={styles.heroContainer}>
+      <canvas ref={canvasRef} style={styles.heroCanvas} />
       
       {/* Side menu */}
-      <div ref={menuRef} className="side-menu" style={{ visibility: 'hidden' }}>
-        <div className="menu-icon">
-          <span></span>
-          <span></span>
-          <span></span>
+      <div ref={menuRef} style={styles.sideMenu}>
+        <div style={styles.menuIcon}>
+          <span style={styles.menuIconSpan}></span>
+          <span style={styles.menuIconSpan}></span>
+          <span style={styles.menuIconSpan}></span>
         </div>
-        <div className="vertical-text">SPACE</div>
+        <div style={styles.verticalText}>SPACE</div>
       </div>
 
       {/* Main content */}
-      <div className="hero-content cosmos-content">
-        <h1 ref={titleRef} className="hero-title">
+      <div style={styles.heroContent}>
+        <h1 ref={titleRef} style={styles.heroTitle}>
           {splitTitle("HORIZON")}
         </h1>
         
-        <div ref={subtitleRef} className="hero-subtitle cosmos-subtitle">
-          <p className="subtitle-line">
+        <div ref={subtitleRef} style={styles.heroSubtitle}>
+          <p style={styles.subtitleLine}>
             Where vision meets reality, 
           </p>
-          <p className="subtitle-line">
+          <p style={styles.subtitleLine}>
             we shape the future of tomorrow
           </p>
         </div>
       </div>
 
       {/* Scroll progress indicator */}
-      <div ref={scrollProgressRef} className="scroll-progress" style={{ visibility: 'hidden' }}>
-        <div className="scroll-text">SCROLL</div>
-        <div className="progress-track">
+      <div ref={scrollProgressRef} style={styles.scrollProgress}>
+        <div style={styles.scrollText}>SCROLL</div>
+        <div style={styles.progressTrack}>
           <div 
-            className="progress-fill" 
-            style={{ width: `${scrollProgress * 100}%` }}
+            style={{
+              ...styles.progressFill,
+              width: `${scrollProgress * 100}%`
+            }}
           />
         </div>
-        <div className="section-counter">
+        <div style={styles.sectionCounter}>
           {String(currentSection).padStart(2, '0')} / {String(totalSections).padStart(2, '0')}
         </div>
       </div>
 
       {/* Additional sections for scrolling */}
-      <div className="scroll-sections">
+      <div style={styles.scrollSections}>
        {[...Array(2)].map((_, i) => {
           const titles: Record<number, string> = {
             0: 'HORIZON',
@@ -654,16 +771,16 @@ const HorizonHeroSection = () => {
           };
           
           return (
-            <section key={i} className="content-section">
-              <h1 className="hero-title">
+            <section key={i} style={styles.contentSection}>
+              <h1 style={styles.heroTitle}>
                 {titles[i+1] || 'DEFAULT'}
               </h1>
           
-              <div className="hero-subtitle cosmos-subtitle">
-                <p className="subtitle-line">
+              <div style={styles.heroSubtitle}>
+                <p style={styles.subtitleLine}>
                   {subtitles[i+1]?.line1}
                 </p>
-                <p className="subtitle-line">
+                <p style={styles.subtitleLine}>
                   {subtitles[i+1]?.line2}
                 </p>
               </div>
@@ -671,157 +788,6 @@ const HorizonHeroSection = () => {
           );
         })}
       </div>
-
-      <style jsx>{`
-        .hero-container {
-          position: relative;
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .hero-canvas {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-        }
-
-        .side-menu {
-          position: fixed;
-          top: 50%;
-          left: 30px;
-          transform: translateY(-50%);
-          z-index: 100;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 30px;
-        }
-
-        .menu-icon {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          cursor: pointer;
-        }
-
-        .menu-icon span {
-          width: 20px;
-          height: 2px;
-          background: white;
-          transition: all 0.3s ease;
-        }
-
-        .vertical-text {
-          writing-mode: vertical-rl;
-          color: white;
-          font-size: 12px;
-          letter-spacing: 3px;
-          font-weight: 300;
-        }
-
-        .hero-content {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          text-align: center;
-          z-index: 10;
-          color: white;
-        }
-
-        .hero-title {
-          font-size: clamp(3rem, 8vw, 8rem);
-          font-weight: 100;
-          letter-spacing: 0.2em;
-          margin-bottom: 2rem;
-          font-family: 'Playfair Display', serif;
-        }
-
-        .title-char {
-          display: inline-block;
-          transition: all 0.3s ease;
-        }
-
-        .hero-subtitle {
-          font-size: clamp(1rem, 2vw, 1.5rem);
-          font-weight: 300;
-          line-height: 1.6;
-          opacity: 0.8;
-          max-width: 600px;
-          margin: 0 auto;
-        }
-
-        .subtitle-line {
-          margin: 0.5rem 0;
-        }
-
-        .scroll-progress {
-          position: fixed;
-          bottom: 50px;
-          right: 30px;
-          z-index: 100;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 15px;
-          color: white;
-        }
-
-        .scroll-text {
-          font-size: 10px;
-          letter-spacing: 2px;
-          writing-mode: vertical-rl;
-          opacity: 0.7;
-        }
-
-        .progress-track {
-          width: 2px;
-          height: 80px;
-          background: rgba(255, 255, 255, 0.2);
-          position: relative;
-        }
-
-        .progress-fill {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          background: white;
-          transition: height 0.3s ease;
-        }
-
-        .section-counter {
-          font-size: 12px;
-          font-weight: 300;
-          opacity: 0.7;
-        }
-
-        .scroll-sections {
-          position: relative;
-          z-index: 5;
-          margin-top: 100vh;
-        }
-
-        .content-section {
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          color: white;
-          padding: 0 2rem;
-        }
-
-        .cosmos-style {
-          background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #000000 100%);
-        }
-      `}</style>
     </div>
   );
 };
