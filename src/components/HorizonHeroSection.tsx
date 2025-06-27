@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
@@ -11,6 +12,7 @@ const HorizonHeroSection = () => {
   const logoRef = useRef<HTMLImageElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const interactiveElementsRef = useRef<HTMLDivElement>(null);
 
   const smoothCameraPos = useRef({ x: 0, y: 30, z: 100 });
   const cameraVelocity = useRef({ x: 0, y: 0, z: 0 });
@@ -18,6 +20,7 @@ const HorizonHeroSection = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState(1);
   const [isReady, setIsReady] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const totalSections = 2;
   
   const threeRefs = useRef({
@@ -33,6 +36,18 @@ const HorizonHeroSection = () => {
     targetCameraZ: 100,
     locations: [] as number[]
   });
+
+  // Mouse tracking for interactive effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = -(e.clientY / window.innerHeight) * 2 + 1;
+      setMousePosition({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Initialize Three.js
   useEffect(() => {
@@ -64,6 +79,7 @@ const HorizonHeroSection = () => {
         refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         refs.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         refs.renderer.toneMappingExposure = 0.5;
+        refs.renderer.setClearColor(0x000000, 0);
       }
 
       // Create scene elements
@@ -126,7 +142,8 @@ const HorizonHeroSection = () => {
         const material = new THREE.ShaderMaterial({
           uniforms: {
             time: { value: 0 },
-            depth: { value: i }
+            depth: { value: i },
+            mouse: { value: new THREE.Vector2(0, 0) }
           },
           vertexShader: `
             attribute float size;
@@ -134,10 +151,16 @@ const HorizonHeroSection = () => {
             varying vec3 vColor;
             uniform float time;
             uniform float depth;
+            uniform vec2 mouse;
             
             void main() {
               vColor = color;
               vec3 pos = position;
+              
+              // Interactive mouse effect
+              float mouseInfluence = 1.0 - depth * 0.3;
+              pos.x += mouse.x * mouseInfluence * 20.0 * sin(time + pos.y * 0.01);
+              pos.y += mouse.y * mouseInfluence * 20.0 * cos(time + pos.x * 0.01);
               
               // Slow rotation based on depth
               float angle = time * 0.05 * (1.0 - depth * 0.3);
@@ -181,18 +204,21 @@ const HorizonHeroSection = () => {
           time: { value: 0 },
           color1: { value: new THREE.Color(0x0033ff) },
           color2: { value: new THREE.Color(0xff0066) },
-          opacity: { value: 0.3 }
+          opacity: { value: 0.3 },
+          mouse: { value: new THREE.Vector2(0, 0) }
         },
         vertexShader: `
           varying vec2 vUv;
           varying float vElevation;
           uniform float time;
+          uniform vec2 mouse;
           
           void main() {
             vUv = uv;
             vec3 pos = position;
             
             float elevation = sin(pos.x * 0.01 + time) * cos(pos.y * 0.01 + time) * 20.0;
+            elevation += mouse.x * mouse.y * 50.0 * sin(time * 2.0);
             pos.z += elevation;
             vElevation = elevation;
             
@@ -204,11 +230,13 @@ const HorizonHeroSection = () => {
           uniform vec3 color2;
           uniform float opacity;
           uniform float time;
+          uniform vec2 mouse;
           varying vec2 vUv;
           varying float vElevation;
           
           void main() {
             float mixFactor = sin(vUv.x * 10.0 + time) * cos(vUv.y * 10.0 + time);
+            mixFactor += mouse.x * mouse.y * 0.5;
             vec3 color = mix(color1, color2, mixFactor * 0.5 + 0.5);
             
             float alpha = opacity * (1.0 - length(vUv - 0.5) * 2.0);
@@ -281,29 +309,38 @@ const HorizonHeroSection = () => {
       const geometry = new THREE.SphereGeometry(600, 32, 32);
       const material = new THREE.ShaderMaterial({
         uniforms: {
-          time: { value: 0 }
+          time: { value: 0 },
+          mouse: { value: new THREE.Vector2(0, 0) }
         },
         vertexShader: `
           varying vec3 vNormal;
           varying vec3 vPosition;
+          uniform vec2 mouse;
           
           void main() {
             vNormal = normalize(normalMatrix * normal);
             vPosition = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            
+            vec3 pos = position;
+            pos.x += mouse.x * 50.0;
+            pos.y += mouse.y * 50.0;
+            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
           }
         `,
         fragmentShader: `
           varying vec3 vNormal;
           varying vec3 vPosition;
           uniform float time;
+          uniform vec2 mouse;
           
           void main() {
             float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
             vec3 atmosphere = vec3(0.3, 0.6, 1.0) * intensity;
             
             float pulse = sin(time * 2.0) * 0.1 + 0.9;
-            atmosphere *= pulse;
+            float mouseEffect = length(mouse) * 0.5 + 0.5;
+            atmosphere *= pulse * mouseEffect;
             
             gl_FragColor = vec4(atmosphere, intensity * 0.25);
           }
@@ -323,29 +360,35 @@ const HorizonHeroSection = () => {
       
       const time = Date.now() * 0.001;
 
-      // Update stars
+      // Update stars with mouse interaction
       refs.stars.forEach((starField) => {
         const material = starField.material as THREE.ShaderMaterial;
         if (material.uniforms) {
           material.uniforms.time.value = time;
+          material.uniforms.mouse.value.set(mousePosition.x * 0.1, mousePosition.y * 0.1);
         }
       });
 
-      // Update nebula
+      // Update nebula with mouse interaction
       if (refs.nebula) {
         const material = refs.nebula.material as THREE.ShaderMaterial;
         if (material.uniforms) {
           material.uniforms.time.value = time * 0.5;
+          material.uniforms.mouse.value.set(mousePosition.x * 0.2, mousePosition.y * 0.2);
         }
       }
 
-      // Smooth camera movement with easing
+      // Smooth camera movement with easing and mouse influence
       if (refs.camera) {
         const smoothingFactor = 0.05;
         
+        // Add mouse influence to camera movement
+        const mouseInfluenceX = mousePosition.x * 5;
+        const mouseInfluenceY = mousePosition.y * 3;
+        
         // Calculate smooth position with easing
-        smoothCameraPos.current.x += (refs.targetCameraX - smoothCameraPos.current.x) * smoothingFactor;
-        smoothCameraPos.current.y += (refs.targetCameraY - smoothCameraPos.current.y) * smoothingFactor;
+        smoothCameraPos.current.x += (refs.targetCameraX + mouseInfluenceX - smoothCameraPos.current.x) * smoothingFactor;
+        smoothCameraPos.current.y += (refs.targetCameraY + mouseInfluenceY - smoothCameraPos.current.y) * smoothingFactor;
         smoothCameraPos.current.z += (refs.targetCameraZ - smoothCameraPos.current.z) * smoothingFactor;
         
         // Add subtle floating motion
@@ -356,13 +399,14 @@ const HorizonHeroSection = () => {
         refs.camera.position.x = smoothCameraPos.current.x + floatX;
         refs.camera.position.y = smoothCameraPos.current.y + floatY;
         refs.camera.position.z = smoothCameraPos.current.z;
-        refs.camera.lookAt(0, 10, -600);
+        refs.camera.lookAt(mousePosition.x * 10, 10 + mousePosition.y * 5, -600);
       }
 
-      // Parallax mountains with subtle animation
+      // Parallax mountains with subtle animation and mouse interaction
       refs.mountains.forEach((mountain, i) => {
         const parallaxFactor = 1 + i * 0.5;
-        mountain.position.x = Math.sin(time * 0.1) * 2 * parallaxFactor;
+        const mouseEffect = (mousePosition.x + mousePosition.y) * 0.1;
+        mountain.position.x = Math.sin(time * 0.1) * 2 * parallaxFactor + mouseEffect;
         mountain.position.y = 50 + (Math.cos(time * 0.15) * 1 * parallaxFactor);
       });
 
@@ -430,14 +474,14 @@ const HorizonHeroSection = () => {
         refs.renderer.dispose();
       }
     };
-  }, []);
+  }, [mousePosition]);
 
   // GSAP Animations - Run after component is ready
   useEffect(() => {
     if (!isReady) return;
     
     // Set initial states to prevent flash
-    gsap.set([menuRef.current, logoRef.current, subtitleRef.current], {
+    gsap.set([menuRef.current, logoRef.current, subtitleRef.current, interactiveElementsRef.current], {
       visibility: 'visible'
     });
 
@@ -453,29 +497,43 @@ const HorizonHeroSection = () => {
       });
     }
 
-    // Animate logo
+    // Animate logo with more dramatic entrance
     if (logoRef.current) {
       tl.from(logoRef.current, {
-        y: 100,
+        y: 150,
         opacity: 0,
-        scale: 0.8,
-        duration: 1.5,
+        scale: 0.6,
+        rotation: -5,
+        duration: 2,
         ease: "power4.out"
       }, "-=0.5");
     }
 
-    // Animate subtitle lines - check if element exists and has children
+    // Animate subtitle lines
     if (subtitleRef.current) {
       const subtitleLines = subtitleRef.current.querySelectorAll('.subtitle-line');
       if (subtitleLines.length > 0) {
         tl.from(subtitleLines, {
-          y: 50,
+          y: 80,
           opacity: 0,
-          duration: 1,
-          stagger: 0.2,
+          rotationX: 45,
+          duration: 1.2,
+          stagger: 0.3,
           ease: "power3.out"
-        }, "-=0.8");
+        }, "-=1.2");
       }
+    }
+
+    // Animate interactive elements
+    if (interactiveElementsRef.current) {
+      tl.from(interactiveElementsRef.current.children, {
+        scale: 0,
+        opacity: 0,
+        rotation: 180,
+        duration: 1,
+        stagger: 0.1,
+        ease: "back.out(1.7)"
+      }, "-=0.8");
     }
 
     return () => {
@@ -555,7 +613,7 @@ const HorizonHeroSection = () => {
       height: '100vh',
       overflow: 'hidden',
       fontFamily: "'Inter', sans-serif",
-      background: 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #000000 100%)'
+      background: 'transparent'
     },
     heroCanvas: {
       position: 'absolute' as const,
@@ -581,20 +639,23 @@ const HorizonHeroSection = () => {
       display: 'flex',
       flexDirection: 'column' as const,
       gap: '4px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      transition: 'all 0.3s ease'
     },
     menuIconSpan: {
       width: '20px',
       height: '2px',
       background: 'white',
-      transition: 'all 0.3s ease'
+      transition: 'all 0.3s ease',
+      borderRadius: '1px'
     },
     verticalText: {
       writingMode: 'vertical-rl' as const,
       color: 'white',
       fontSize: '12px',
       letterSpacing: '3px',
-      fontWeight: 300
+      fontWeight: 300,
+      transition: 'all 0.3s ease'
     },
     heroContent: {
       position: 'absolute' as const,
@@ -611,19 +672,22 @@ const HorizonHeroSection = () => {
       width: 'auto',
       height: 'auto',
       marginBottom: '2rem',
-      filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5))',
-      visibility: 'hidden' as const
+      filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
+      visibility: 'hidden' as const,
+      transition: 'all 0.3s ease',
+      cursor: 'pointer'
     },
     heroSubtitle: {
       fontSize: 'clamp(1rem, 2vw, 1.5rem)',
       fontWeight: 300,
       lineHeight: 1.6,
-      opacity: 0.8,
+      opacity: 0.9,
       maxWidth: '600px',
       margin: '0 auto'
     },
     subtitleLine: {
-      margin: '0.5rem 0'
+      margin: '0.5rem 0',
+      transition: 'all 0.3s ease'
     },
     scrollSections: {
       position: 'relative' as const,
@@ -639,6 +703,30 @@ const HorizonHeroSection = () => {
       textAlign: 'center' as const,
       color: 'white',
       padding: '0 2rem'
+    },
+    interactiveElements: {
+      position: 'fixed' as const,
+      bottom: '40px',
+      right: '40px',
+      zIndex: 100,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '15px',
+      visibility: 'hidden' as const
+    },
+    interactiveButton: {
+      width: '60px',
+      height: '60px',
+      borderRadius: '50%',
+      background: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      color: 'white'
     }
   };
 
@@ -646,30 +734,181 @@ const HorizonHeroSection = () => {
     <div ref={containerRef} style={styles.heroContainer}>
       <canvas ref={canvasRef} style={styles.heroCanvas} />
       
-      {/* Side menu */}
+      {/* Enhanced side menu with hover effects */}
       <div ref={menuRef} style={styles.sideMenu}>
-        <div style={styles.menuIcon}>
+        <div 
+          style={styles.menuIcon}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget.children, {
+              width: '25px',
+              background: '#00ff88',
+              duration: 0.3
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget.children, {
+              width: '20px',
+              background: 'white',
+              duration: 0.3
+            });
+          }}
+        >
           <span style={styles.menuIconSpan}></span>
           <span style={styles.menuIconSpan}></span>
           <span style={styles.menuIconSpan}></span>
         </div>
-        <div style={styles.verticalText}>STYLE</div>
+        <div 
+          style={styles.verticalText}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget, {
+              color: '#00ff88',
+              letterSpacing: '5px',
+              duration: 0.3
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget, {
+              color: 'white',
+              letterSpacing: '3px',
+              duration: 0.3
+            });
+          }}
+        >
+          STYLE
+        </div>
       </div>
 
-      {/* Main content */}
+      {/* Interactive floating elements */}
+      <div ref={interactiveElementsRef} style={styles.interactiveElements}>
+        <div 
+          style={styles.interactiveButton}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1.2,
+              background: 'rgba(0, 255, 136, 0.2)',
+              borderColor: 'rgba(0, 255, 136, 0.5)',
+              duration: 0.3
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              duration: 0.3
+            });
+          }}
+        >
+          ⚡
+        </div>
+        <div 
+          style={styles.interactiveButton}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1.2,
+              background: 'rgba(255, 0, 136, 0.2)',
+              borderColor: 'rgba(255, 0, 136, 0.5)',
+              duration: 0.3
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              duration: 0.3
+            });
+          }}
+        >
+          ✨
+        </div>
+        <div 
+          style={styles.interactiveButton}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1.2,
+              background: 'rgba(0, 136, 255, 0.2)',
+              borderColor: 'rgba(0, 136, 255, 0.5)',
+              duration: 0.3
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              duration: 0.3
+            });
+          }}
+        >
+          🚀
+        </div>
+      </div>
+
+      {/* Main content with enhanced interactivity */}
       <div style={styles.heroContent}>
         <img 
           ref={logoRef}
           src="/lovable-uploads/809945ef-fe18-461e-963e-17ee3add2941.png" 
           alt="NO DISTRAXIONZ Logo" 
           style={styles.heroLogo}
+          onMouseEnter={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1.05,
+              filter: 'drop-shadow(0 30px 60px rgba(0, 255, 136, 0.3))',
+              duration: 0.5,
+              ease: "power2.out"
+            });
+          }}
+          onMouseLeave={(e) => {
+            gsap.to(e.currentTarget, {
+              scale: 1,
+              filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
+              duration: 0.5,
+              ease: "power2.out"
+            });
+          }}
         />
         
         <div ref={subtitleRef} style={styles.heroSubtitle}>
-          <p className="subtitle-line" style={styles.subtitleLine}>
+          <p 
+            className="subtitle-line" 
+            style={styles.subtitleLine}
+            onMouseEnter={(e) => {
+              gsap.to(e.currentTarget, {
+                color: '#00ff88',
+                y: -5,
+                duration: 0.3
+              });
+            }}
+            onMouseLeave={(e) => {
+              gsap.to(e.currentTarget, {
+                color: 'white',
+                y: 0,
+                duration: 0.3
+              });
+            }}
+          >
             Premium streetwear that commands attention,
           </p>
-          <p className="subtitle-line" style={styles.subtitleLine}>
+          <p 
+            className="subtitle-line" 
+            style={styles.subtitleLine}
+            onMouseEnter={(e) => {
+              gsap.to(e.currentTarget, {
+                color: '#ff0088',
+                y: -5,
+                duration: 0.3
+              });
+            }}
+            onMouseLeave={(e) => {
+              gsap.to(e.currentTarget, {
+                color: 'white',
+                y: 0,
+                duration: 0.3
+              });
+            }}
+          >
             crafted for those who refuse to blend in
           </p>
         </div>
