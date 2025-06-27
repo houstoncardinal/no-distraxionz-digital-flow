@@ -19,11 +19,9 @@ const Index = () => {
       {/* 3D Hero Section */}
       <HorizonHeroSection />
 
-      {/* Transition Section */}
+      {/* Transition Section - removed the white line */}
       <section className="relative h-32 bg-gradient-to-b from-transparent to-background/80">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-px h-16 bg-gradient-to-b from-primary/60 to-transparent"></div>
-        </div>
+        {/* White line element removed */}
       </section>
 
       {/* Brand Philosophy Section with Elegant Background */}
