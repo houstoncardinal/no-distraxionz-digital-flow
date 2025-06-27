@@ -41,8 +41,13 @@ const Index = () => {
                 <span className="block text-gradient-corporate">Beyond Limits</span>
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
-                We don't just create clothing. We craft experiences that transcend the ordinary,
-                designed for those who refuse to be distracted by mediocrity.
+                Designed for those who refuse to be distracted. 
+                <span className="block mt-4">
+                  In a world full of noise, we create clarity. In a culture of compromise, we demand excellence.
+                </span>
+                <span className="block mt-4">
+                  Our pieces aren't just clothing—they're armor against mediocrity, statements of unwavering focus.
+                </span>
               </p>
             </div>
             
@@ -51,9 +56,9 @@ const Index = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
                   <Award className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="font-playfair text-2xl font-medium">Precision</h3>
+                <h3 className="font-playfair text-2xl font-medium">Uncompromising</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Every thread, every cut, every detail meticulously crafted to perfection.
+                  Zero tolerance for shortcuts. Every detail executed with laser focus and precision.
                 </p>
               </div>
               
@@ -61,9 +66,9 @@ const Index = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
                   <Globe className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="font-playfair text-2xl font-medium">Innovation</h3>
+                <h3 className="font-playfair text-2xl font-medium">Undistracted</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Pushing boundaries with cutting-edge design and sustainable practices.
+                  While others chase trends, we build legacy. Our vision cuts through the chaos.
                 </p>
               </div>
               
@@ -71,9 +76,9 @@ const Index = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto">
                   <Users className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="font-playfair text-2xl font-medium">Community</h3>
+                <h3 className="font-playfair text-2xl font-medium">Unstoppable</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Building a movement of individuals who demand excellence.
+                  For those who move with purpose. Who know their destination and won't be deterred.
                 </p>
               </div>
             </div>
@@ -91,10 +96,10 @@ const Index = () => {
               Featured Collection
             </Badge>
             <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light mb-8">
-              Signature Pieces
+              Focus Made Visible
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Discover our most coveted designs, each piece a testament to our unwavering commitment to excellence.
+              Each piece engineered for those who refuse distractions. Clean lines, purposeful design, unshakeable confidence.
             </p>
           </div>
 
@@ -129,13 +134,12 @@ const Index = () => {
                   The Experience
                 </Badge>
                 <h2 className="font-playfair text-4xl md:text-5xl font-light leading-tight">
-                  Crafted for the
-                  <span className="block text-gradient-corporate">Exceptional</span>
+                  Built for the
+                  <span className="block text-gradient-corporate">Relentless</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Every piece in our collection represents a harmony between timeless elegance 
-                  and contemporary innovation. We believe in creating more than clothing — 
-                  we create confidence, distinction, and an uncompromising standard of quality.
+                  When everyone else settles, you push forward. When others get distracted, you stay locked in.
+                  Our collection is for those who understand that excellence isn't an accident—it's a choice made daily.
                 </p>
               </div>
               
@@ -145,8 +149,8 @@ const Index = () => {
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">Lifetime Quality Promise</h3>
-                    <p className="text-muted-foreground">Every piece comes with our guarantee of exceptional durability and timeless style.</p>
+                    <h3 className="font-playfair text-xl font-medium mb-2">Bulletproof Quality</h3>
+                    <p className="text-muted-foreground">Built to withstand everything. Because giving up isn't in your vocabulary.</p>
                   </div>
                 </div>
                 
@@ -155,8 +159,8 @@ const Index = () => {
                     <Headphones className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">Personal Styling Service</h3>
-                    <p className="text-muted-foreground">Our expert stylists provide personalized consultations to perfect your unique aesthetic.</p>
+                    <h3 className="font-playfair text-xl font-medium mb-2">Zero Noise Service</h3>
+                    <p className="text-muted-foreground">Direct access to what you need. No fluff, no distractions, just results.</p>
                   </div>
                 </div>
                 
@@ -165,8 +169,8 @@ const Index = () => {
                     <Truck className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">White Glove Delivery</h3>
-                    <p className="text-muted-foreground">Premium packaging and express delivery service that matches our exceptional standards.</p>
+                    <h3 className="font-playfair text-xl font-medium mb-2">Precision Delivery</h3>
+                    <p className="text-muted-foreground">On time, every time. Because your momentum can't wait for delays.</p>
                   </div>
                 </div>
               </div>
@@ -195,18 +199,18 @@ const Index = () => {
         <div className="container mx-auto container-padding text-center relative z-10">
           <div className="max-w-4xl mx-auto space-y-12">
             <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
-              Join the Movement
+              No Distractions. Just Progress.
             </h2>
             <p className="text-xl md:text-2xl opacity-90 leading-relaxed font-light">
-              Step into a world where excellence is not an exception, but the standard. 
-              Where every detail matters, and every moment counts.
+              Join those who've eliminated the noise. Who've chosen focus over chaos. 
+              Who understand that true power comes from unwavering concentration on what matters.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Button asChild size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary font-medium px-12 py-6 text-lg rounded-full bg-transparent">
-                <Link to="/shop">Start Your Journey</Link>
+                <Link to="/shop">Enter the Zone</Link>
               </Button>
               <Button asChild variant="ghost" size="lg" className="text-white hover:bg-white/10 font-medium px-8 py-6 text-lg">
-                <Link to="/about">Our Story</Link>
+                <Link to="/about">Our Mission</Link>
               </Button>
             </div>
           </div>
