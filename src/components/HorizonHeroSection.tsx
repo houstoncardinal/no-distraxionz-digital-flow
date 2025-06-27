@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 const HorizonHeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const logoRef = useRef<HTMLImageElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const scrollProgressRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -438,7 +438,7 @@ const HorizonHeroSection = () => {
     if (!isReady) return;
     
     // Set initial states to prevent flash
-    gsap.set([menuRef.current, titleRef.current, subtitleRef.current, scrollProgressRef.current], {
+    gsap.set([menuRef.current, logoRef.current, subtitleRef.current, scrollProgressRef.current], {
       visibility: 'visible'
     });
 
@@ -454,14 +454,13 @@ const HorizonHeroSection = () => {
       });
     }
 
-    // Animate title with split text
-    if (titleRef.current) {
-      const titleChars = titleRef.current.querySelectorAll('.title-char');
-      tl.from(titleChars, {
-        y: 200,
+    // Animate logo instead of title
+    if (logoRef.current) {
+      tl.from(logoRef.current, {
+        y: 100,
         opacity: 0,
+        scale: 0.8,
         duration: 1.5,
-        stagger: 0.05,
         ease: "power4.out"
       }, "-=0.5");
     }
@@ -558,14 +557,6 @@ const HorizonHeroSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSections]);
 
-  const splitTitle = (text: string) => {
-    return text.split('').map((char, i) => (
-      <span key={i} className="title-char">
-        {char}
-      </span>
-    ));
-  };
-
   const styles = {
     heroContainer: {
       position: 'relative' as const,
@@ -623,16 +614,14 @@ const HorizonHeroSection = () => {
       zIndex: 10,
       color: 'white'
     },
-    heroTitle: {
-      fontSize: 'clamp(3rem, 8vw, 8rem)',
-      fontWeight: 100,
-      letterSpacing: '0.2em',
+    heroLogo: {
+      maxWidth: '80vw',
+      maxHeight: '40vh',
+      width: 'auto',
+      height: 'auto',
       marginBottom: '2rem',
-      fontFamily: "'Playfair Display', serif"
-    },
-    titleChar: {
-      display: 'inline-block',
-      transition: 'all 0.3s ease'
+      filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5))',
+      visibility: 'hidden' as const
     },
     heroSubtitle: {
       fontSize: 'clamp(1rem, 2vw, 1.5rem)',
@@ -715,9 +704,12 @@ const HorizonHeroSection = () => {
 
       {/* Main content */}
       <div style={styles.heroContent}>
-        <h1 ref={titleRef} style={styles.heroTitle}>
-          {splitTitle("NO DISTRAXIONZ")}
-        </h1>
+        <img 
+          ref={logoRef}
+          src="/lovable-uploads/809945ef-fe18-461e-963e-17ee3add2941.png" 
+          alt="NO DISTRAXIONZ Logo" 
+          style={styles.heroLogo}
+        />
         
         <div ref={subtitleRef} style={styles.heroSubtitle}>
           <p style={styles.subtitleLine}>
@@ -736,7 +728,7 @@ const HorizonHeroSection = () => {
           <div 
             style={{
               ...styles.progressFill,
-              width: `${scrollProgress * 100}%`
+              height: `${scrollProgress * 100}%`
             }}
           />
         </div>
@@ -771,7 +763,13 @@ const HorizonHeroSection = () => {
           
           return (
             <section key={i} style={styles.contentSection}>
-              <h1 style={styles.heroTitle}>
+              <h1 style={{
+                fontSize: 'clamp(3rem, 8vw, 8rem)',
+                fontWeight: 100,
+                letterSpacing: '0.2em',
+                marginBottom: '2rem',
+                fontFamily: "'Playfair Display', serif"
+              }}>
                 {titles[i+1] || 'DEFAULT'}
               </h1>
           

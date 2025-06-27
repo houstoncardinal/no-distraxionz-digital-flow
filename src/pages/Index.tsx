@@ -40,16 +40,7 @@ const Index = () => {
                 Our Philosophy
               </Badge>
               
-              {/* Logo as main title */}
-              <div className="flex justify-center mb-8">
-                <img 
-                  src="/lovable-uploads/809945ef-fe18-461e-963e-17ee3add2941.png" 
-                  alt="NO DISTRAXIONZ Logo" 
-                  className="max-w-full h-auto max-h-48 md:max-h-64 lg:max-h-80 object-contain"
-                />
-              </div>
-              
-              <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-light leading-tight">
+              <h2 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-light leading-tight">
                 Beyond Fashion,
                 <span className="block text-gradient-corporate">Beyond Limits</span>
               </h2>
