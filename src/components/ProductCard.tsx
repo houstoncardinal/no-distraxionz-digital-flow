@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingBag, Heart, Eye } from 'lucide-react';
 
 interface ProductCardProps {
   id: string;
@@ -24,54 +24,78 @@ const ProductCard = ({
   featured = false 
 }: ProductCardProps) => {
   return (
-    <Card className="group overflow-hidden border-border bg-card hover-lift transition-all duration-300">
+    <Card className="group overflow-hidden border-0 bg-card hover-lift transition-all duration-500 corporate-shadow hover:shadow-2xl">
       <div className="relative overflow-hidden">
         {featured && (
-          <Badge className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground">
-            Featured
+          <Badge className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground font-medium">
+            New Arrival
           </Badge>
         )}
-        <div className="aspect-square bg-muted overflow-hidden">
+        
+        <div className="aspect-[3/4] bg-secondary/20 overflow-hidden relative">
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-        </div>
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
-          <Button size="sm" variant="secondary" className="bg-white/90 text-black hover:bg-white">
-            <Eye className="h-4 w-4 mr-1" />
-            Quick View
-          </Button>
-          <Button size="sm" className="gradient-brand text-black font-semibold">
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            Add to Cart
+          
+          {/* Overlay with actions */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100">
+            <div className="flex space-x-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="bg-white/95 text-black hover:bg-white font-medium"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Quick View
+              </Button>
+              <Button 
+                size="sm" 
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+              >
+                <ShoppingBag className="h-4 w-4 mr-2" />
+                Add to Cart
+              </Button>
+            </div>
+          </div>
+
+          {/* Heart icon */}
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute top-4 right-4 h-8 w-8 bg-white/80 hover:bg-white text-gray-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-300"
+          >
+            <Heart className="h-4 w-4" />
           </Button>
         </div>
       </div>
       
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <p className="text-sm text-muted-foreground uppercase tracking-wide">
+      <CardContent className="p-6 space-y-4">
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
             {category}
           </p>
-          <h3 className="font-oswald font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+          <h3 className="font-playfair font-medium text-lg leading-snug group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
         </div>
         
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-lg text-primary">{price}</span>
+          <div className="flex items-center space-x-3">
+            <span className="font-semibold text-lg text-foreground">{price}</span>
             {originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
+              <span className="text-sm text-muted-foreground line-through font-medium">
                 {originalPrice}
               </span>
             )}
           </div>
-          <Button size="sm" variant="ghost" className="hover:text-primary">
-            <ShoppingCart className="h-4 w-4" />
-          </Button>
+          
+          {originalPrice && (
+            <Badge variant="destructive" className="text-xs">
+              Sale
+            </Badge>
+          )}
         </div>
       </CardContent>
     </Card>

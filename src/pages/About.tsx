@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Target, Users, Zap, Map } from 'lucide-react';
+import { Award, Users, Globe, TrendingUp, Heart, Shield } from 'lucide-react';
 
 const About = () => {
   return (
@@ -12,105 +12,149 @@ const About = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-background to-card">
-        <div className="container mx-auto px-4 text-center">
-          <Badge className="mb-4 bg-primary text-primary-foreground">
-            Our Story
+      <section className="section-padding bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto container-padding text-center">
+          <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium">
+            Our Heritage
           </Badge>
-          <h1 className="font-oswald text-5xl md:text-6xl font-bold mb-6 text-gradient">
-            More Than A Brand
+          <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light mb-6">
+            Crafting Excellence Since Day One
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            No Distraxionz isn't just clothing—it's a movement, a culture, a vision for those who refuse to settle for mediocrity.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            No Distraxionz represents more than fashion—we embody a commitment to exceptional quality, 
+            innovative design, and sustainable practices that define contemporary luxury.
           </p>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="font-oswald text-4xl font-bold">
-                The Culture. The Movement. The Vision.
+      <section className="section-padding">
+        <div className="container mx-auto container-padding">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <h2 className="font-playfair text-3xl md:text-4xl font-light">
+                Our Vision for Contemporary Fashion
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Born in the vibrant streets of New Orleans, No Distraxionz represents a mindset—a way of life for those who hustle, create, and dominate without losing focus. We understand that time is money, and every second counts in the pursuit of greatness.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                Our brand embodies the spirit of those who ask "Why be average when you can be legendary?" We create clothing for dreamers who execute, for visionaries who grind, and for anyone who believes that tunnel vision isn't a limitation—it's a superpower.
-              </p>
-              <Button className="gradient-brand text-black font-bold" size="lg">
-                Join the Movement
+              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+                <p>
+                  Founded with a vision to redefine contemporary fashion, No Distraxionz has evolved into 
+                  a global leader in sophisticated apparel. Our journey began with a simple belief: that 
+                  exceptional quality and timeless design should be accessible to discerning individuals worldwide.
+                </p>
+                <p>
+                  From our headquarters in New Orleans, we've built a reputation for excellence that extends 
+                  across continents. Every piece in our collection reflects our commitment to craftsmanship, 
+                  innovation, and the pursuit of perfection.
+                </p>
+                <p>
+                  Today, we continue to push boundaries, exploring new materials, techniques, and designs 
+                  while staying true to our core values of quality, integrity, and customer satisfaction.
+                </p>
+              </div>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium" size="lg">
+                Explore Our Collection
               </Button>
             </div>
             <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="font-oswald text-4xl font-bold text-gradient">NOLA</div>
-                  <div className="text-muted-foreground">Born & Raised</div>
+              <Card className="aspect-[4/5] border-0 corporate-shadow overflow-hidden">
+                <div className="h-full bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <Globe className="h-16 w-16 text-primary mx-auto" />
+                    <div className="font-playfair text-3xl font-light">Global Excellence</div>
+                    <div className="text-muted-foreground">Serving customers worldwide</div>
+                  </div>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </div>
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-oswald text-4xl font-bold mb-4">What We Stand For</h2>
-            <p className="text-xl text-muted-foreground">
-              Our core values drive everything we do
+      <section className="section-padding bg-secondary/30">
+        <div className="container mx-auto container-padding">
+          <div className="text-center mb-16">
+            <h2 className="font-playfair text-3xl md:text-4xl font-light mb-6">Our Core Values</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              The principles that guide every decision and define our commitment to excellence
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-background border-border hover-lift">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Target className="h-6 w-6 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Award className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="font-oswald text-xl font-bold">Tunnel Vision</h3>
-                <p className="text-muted-foreground">
-                  Stay focused on your goals. Eliminate distractions and maintain laser focus.
+                <h3 className="font-playfair text-xl font-medium">Uncompromising Quality</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  We maintain the highest standards in materials, craftsmanship, and design, 
+                  ensuring every product meets our exacting quality requirements.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border hover-lift">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Zap className="h-6 w-6 text-primary" />
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="font-oswald text-xl font-bold">Time Is Money</h3>
-                <p className="text-muted-foreground">
-                  Every moment counts. Maximize your potential and make every second valuable.
+                <h3 className="font-playfair text-xl font-medium">Innovation & Design</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Continuously pushing creative boundaries while respecting timeless design principles 
+                  that ensure lasting appeal and relevance.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border hover-lift">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Users className="h-6 w-6 text-primary" />
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="font-oswald text-xl font-bold">No Fake Friends</h3>
-                <p className="text-muted-foreground">
-                  Surround yourself with real people who support your vision and growth.
+                <h3 className="font-playfair text-xl font-medium">Customer Excellence</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Delivering exceptional service and building lasting relationships with customers 
+                  who share our appreciation for quality and sophistication.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-background border-border hover-lift">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Map className="h-6 w-6 text-primary" />
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Shield className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="font-oswald text-xl font-bold">New Orleans Pride</h3>
-                <p className="text-muted-foreground">
-                  Rooted in NOLA culture, we bring the spirit of resilience to everything we do.
+                <h3 className="font-playfair text-xl font-medium">Sustainable Practices</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Committed to responsible manufacturing and sustainable business practices 
+                  that respect our environment and communities.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Globe className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-playfair text-xl font-medium">Global Accessibility</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Making exceptional fashion accessible to discerning customers worldwide 
+                  through innovative distribution and service networks.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-0 corporate-shadow hover-lift">
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                  <Heart className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-playfair text-xl font-medium">Passionate Craftsmanship</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Every team member shares our passion for excellence, bringing dedication 
+                  and expertise to every aspect of our business.
                 </p>
               </CardContent>
             </Card>
@@ -118,23 +162,48 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team/Founder Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="font-oswald text-4xl font-bold">From The Streets of New Orleans</h2>
-            <p className="text-lg text-muted-foreground">
-              No Distraxionz was born from the understanding that greatness isn't given—it's earned. Founded in New Orleans, Louisiana, our brand represents the hustle mentality that defines our city. We create for those who understand that being average is a choice, and they choose to be legendary.
-            </p>
-            <p className="text-lg text-muted-foreground">
-              Every design, every message, every piece tells the story of someone who refused to be distracted from their vision. This is streetwear with purpose, clothing with a message, and fashion with a mission.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="gradient-brand text-black font-bold" size="lg">
-                Shop Our Story
+      {/* Heritage Section */}
+      <section className="section-padding">
+        <div className="container mx-auto container-padding">
+          <div className="max-w-4xl mx-auto text-center space-y-12">
+            <h2 className="font-playfair text-3xl md:text-4xl font-light">Our Heritage & Future</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6">
+                <h3 className="font-playfair text-2xl font-medium">Rooted in Excellence</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  No Distraxionz was born from the rich cultural heritage of New Orleans, Louisiana. 
+                  Our founders recognized the need for sophisticated fashion that reflects both 
+                  contemporary trends and timeless elegance.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Through years of dedication and continuous innovation, we've established ourselves 
+                  as a trusted name in contemporary fashion, serving discerning customers across 
+                  the globe with unwavering commitment to quality.
+                </p>
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="font-playfair text-2xl font-medium">Vision for Tomorrow</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  As we look to the future, our commitment remains unchanged: to create exceptional 
+                  fashion that empowers individuals to express their unique style while maintaining 
+                  the highest standards of quality and service.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  We continue to invest in sustainable practices, innovative technologies, and 
+                  global expansion while staying true to the values that have defined our success 
+                  from the very beginning.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium" size="lg">
+                Explore Our Collection
               </Button>
-              <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                Contact Us
+              <Button variant="outline" size="lg" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium">
+                Contact Our Team
               </Button>
             </div>
           </div>
