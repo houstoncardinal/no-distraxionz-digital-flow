@@ -126,11 +126,15 @@
   }
 
   .hover-lift {
-    @apply transition-all duration-500 hover:scale-[1.02] hover:shadow-xl;
+    @apply transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-2;
   }
 
   .corporate-shadow {
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .corporate-shadow-lg {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
   }
 
   .corporate-border {
@@ -138,10 +142,37 @@
   }
 
   .section-padding {
-    @apply py-20 lg:py-32;
+    @apply py-24 lg:py-32;
   }
 
   .container-padding {
-    @apply px-4 lg:px-8 xl:px-12;
+    @apply px-6 lg:px-8 xl:px-12;
+  }
+
+  /* Artistic glass morphism effect */
+  .glass-morphism {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Parallax utility */
+  .parallax {
+    transform-style: preserve-3d;
   }
 }
