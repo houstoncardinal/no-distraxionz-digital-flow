@@ -173,27 +173,29 @@ const LavaCrackEffect = () => {
         }}
       />
 
-      <style jsx>{`
-        @keyframes lavaFlow {
-          0%, 100% {
-            background-position: 0% 50%;
+      <style>
+        {`
+          @keyframes lavaFlow {
+            0%, 100% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
           }
-          50% {
-            background-position: 100% 50%;
-          }
-        }
 
-        @keyframes lavaGlow {
-          0% {
-            opacity: 0.6;
-            transform: scale(1);
+          @keyframes lavaGlow {
+            0% {
+              opacity: 0.6;
+              transform: scale(1);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1.2);
+            }
           }
-          100% {
-            opacity: 1;
-            transform: scale(1.2);
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

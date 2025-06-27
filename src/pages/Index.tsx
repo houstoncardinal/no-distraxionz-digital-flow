@@ -7,7 +7,7 @@ import LavaCrackEffect from '@/components/LavaCrackEffect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { products } from '@/data/products';
-import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play } from 'lucide-react';
+import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag } from 'lucide-react';
 
 const Index = () => {
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
@@ -39,10 +39,21 @@ const Index = () => {
               <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium px-6 py-2">
                 Our Philosophy
               </Badge>
-              <h2 className="font-playfair text-4xl md:text-6xl lg:text-7xl font-light leading-tight">
+              
+              {/* Logo as main title */}
+              <div className="flex justify-center mb-8">
+                <img 
+                  src="/lovable-uploads/809945ef-fe18-461e-963e-17ee3add2941.png" 
+                  alt="NO DISTRAXIONZ Logo" 
+                  className="max-w-full h-auto max-h-48 md:max-h-64 lg:max-h-80 object-contain"
+                />
+              </div>
+              
+              <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-light leading-tight">
                 Beyond Fashion,
                 <span className="block text-gradient-corporate">Beyond Limits</span>
               </h2>
+              
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
                 Designed for those who refuse to be distracted. 
                 <span className="block mt-4">
@@ -52,6 +63,17 @@ const Index = () => {
                   Our pieces aren't just clothing—they're armor against mediocrity, statements of unwavering focus.
                 </span>
               </p>
+              
+              {/* Shop Button */}
+              <div className="mt-12">
+                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-12 py-6 text-lg rounded-full">
+                  <Link to="/shop">
+                    <ShoppingBag className="mr-3 h-6 w-6" />
+                    Enter the Shop
+                    <ChevronRight className="ml-3 h-6 w-6" />
+                  </Link>
+                </Button>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
