@@ -1,14 +1,13 @@
-
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HorizonHeroSection from '@/components/HorizonHeroSection';
 import ProductCard from '@/components/ProductCard';
+import LavaCrackEffect from '@/components/LavaCrackEffect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
-import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, ArrowDown, Play } from 'lucide-react';
+import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play } from 'lucide-react';
 
 const Index = () => {
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
@@ -27,9 +26,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Brand Philosophy Section */}
-      <section className="section-padding bg-background relative">
+      {/* Brand Philosophy Section with Lava Effect */}
+      <section className="section-padding bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10"></div>
+        
+        {/* Lava Crack Effect */}
+        <LavaCrackEffect />
+        
         <div className="container mx-auto container-padding relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-12">
             <div className="space-y-6">
