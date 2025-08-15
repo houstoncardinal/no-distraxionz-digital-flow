@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import MountainHeroSection from '@/components/MountainHeroSection';
+import HorizonHeroSection from '@/components/HorizonHeroSection';
 import ProductCard from '@/components/ProductCard';
 import ElegantBackgroundEffect from '@/components/ElegantBackgroundEffect';
 import { Button } from '@/components/ui/button';
@@ -17,8 +17,8 @@ const Index = () => {
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       
-      {/* Mountain Hero Section */}
-      <MountainHeroSection />
+      {/* 3D Hero Section */}
+      <HorizonHeroSection />
 
       {/* Professional Luxury Section */}
       <section className="relative -mt-32 pt-32 pb-32 bg-gradient-to-b from-transparent via-white/95 to-white overflow-hidden">
