@@ -1,26 +1,26 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Award, Users, Globe, TrendingUp, Heart, Shield } from 'lucide-react';
+import { Award, Users, Globe, TrendingUp, Heart, Shield, Sparkles, Target } from 'lucide-react';
 
 const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="section-padding bg-gradient-to-b from-background to-secondary/20">
-        <div className="container mx-auto container-padding text-center">
-          <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium">
+      {/* Modern Hero Section */}
+      <section className="section-padding-modern bg-gradient-modern">
+        <div className="w-full container-padding-modern text-center">
+          <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium px-4 py-2">
+            <Sparkles className="h-4 w-4 mr-2" />
             Our Heritage
           </Badge>
-          <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light mb-6">
+          <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-medium mb-6 text-gradient tracking-tight">
             Crafting Excellence Since Day One
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground leading-relaxed">
             No Distraxionz represents more than fashion—we embody a commitment to exceptional quality, 
             innovative design, and sustainable practices that define contemporary luxury.
           </p>
@@ -28,13 +28,19 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="section-padding">
-        <div className="container mx-auto container-padding">
+      <section className="section-padding-modern">
+        <div className="w-full container-padding-modern">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="font-playfair text-3xl md:text-4xl font-light">
-                Our Vision for Contemporary Fashion
-              </h2>
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10">
+                  <Target className="h-4 w-4 text-primary" />
+                  <span className="text-primary font-medium text-sm">Our Vision</span>
+                </div>
+                <h2 className="font-playfair text-3xl md:text-4xl font-medium">
+                  Redefining Contemporary Fashion
+                </h2>
+              </div>
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
                 <p>
                   Founded with a vision to redefine contemporary fashion, No Distraxionz has evolved into 
@@ -51,17 +57,21 @@ const About = () => {
                   while staying true to our core values of quality, integrity, and customer satisfaction.
                 </p>
               </div>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium" size="lg">
+              <Button className="btn-primary" size="lg">
                 Explore Our Collection
               </Button>
             </div>
             <div className="relative">
-              <Card className="aspect-[4/5] border-0 corporate-shadow overflow-hidden">
-                <div className="h-full bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <Globe className="h-16 w-16 text-primary mx-auto" />
-                    <div className="font-playfair text-3xl font-light">Global Excellence</div>
-                    <div className="text-muted-foreground">Serving customers worldwide</div>
+              <Card className="aspect-[4/5] card-modern shadow-modern-lg overflow-hidden">
+                <div className="h-full bg-gradient-brand flex items-center justify-center text-white">
+                  <div className="text-center space-y-6">
+                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
+                      <Globe className="h-10 w-10 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-playfair text-3xl font-medium mb-2">Global Excellence</div>
+                      <div className="text-white/90">Serving customers worldwide</div>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -71,20 +81,24 @@ const About = () => {
       </section>
 
       {/* Values Section */}
-      <section className="section-padding bg-secondary/30">
-        <div className="container mx-auto container-padding">
+      <section className="section-padding-modern bg-gradient-modern">
+        <div className="w-full container-padding-modern">
           <div className="text-center mb-16">
-            <h2 className="font-playfair text-3xl md:text-4xl font-light mb-6">Our Core Values</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10 mb-6">
+              <Heart className="h-4 w-4 text-primary" />
+              <span className="text-primary font-medium text-sm">Core Values</span>
+            </div>
+            <h2 className="font-playfair text-3xl md:text-4xl font-medium mb-6">What Drives Us Forward</h2>
+            <p className="text-lg text-muted-foreground">
               The principles that guide every decision and define our commitment to excellence
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Award className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto">
+                  <Award className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Uncompromising Quality</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -94,10 +108,10 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <TrendingUp className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-gradient-warm rounded-xl flex items-center justify-center mx-auto">
+                  <TrendingUp className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Innovation & Design</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -107,10 +121,10 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Users className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto">
+                  <Users className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Customer Excellence</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -120,10 +134,10 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Shield className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-secondary rounded-xl flex items-center justify-center mx-auto border">
+                  <Shield className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Sustainable Practices</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -133,10 +147,10 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Globe className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-gradient-brand rounded-xl flex items-center justify-center mx-auto">
+                  <Globe className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Global Accessibility</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -146,10 +160,10 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-0 corporate-shadow hover-lift">
+            <Card className="card-hover shadow-modern">
               <CardContent className="p-8 text-center space-y-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Heart className="h-8 w-8 text-primary" />
+                <div className="w-16 h-16 bg-gradient-warm rounded-xl flex items-center justify-center mx-auto">
+                  <Heart className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="font-playfair text-xl font-medium">Passionate Craftsmanship</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -163,46 +177,66 @@ const About = () => {
       </section>
 
       {/* Heritage Section */}
-      <section className="section-padding">
-        <div className="container mx-auto container-padding">
-          <div className="max-w-4xl mx-auto text-center space-y-12">
-            <h2 className="font-playfair text-3xl md:text-4xl font-light">Our Heritage & Future</h2>
+      <section className="section-padding-modern">
+        <div className="w-full container-padding-modern">
+          <div className="w-full text-center space-y-12">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-primary font-medium text-sm">Our Story</span>
+              </div>
+              <h2 className="font-playfair text-3xl md:text-4xl font-medium">Our Heritage & Future</h2>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
-              <div className="space-y-6">
-                <h3 className="font-playfair text-2xl font-medium">Rooted in Excellence</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  No Distraxionz was born from the rich cultural heritage of New Orleans, Louisiana. 
-                  Our founders recognized the need for sophisticated fashion that reflects both 
-                  contemporary trends and timeless elegance.
-                </p>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  Through years of dedication and continuous innovation, we've established ourselves 
-                  as a trusted name in contemporary fashion, serving discerning customers across 
-                  the globe with unwavering commitment to quality.
-                </p>
-              </div>
+              <Card className="card-modern p-8 shadow-modern">
+                <div className="space-y-6">
+                  <div className="w-12 h-12 bg-gradient-brand rounded-xl flex items-center justify-center">
+                    <Target className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="font-playfair text-2xl font-medium">Rooted in Excellence</h3>
+                  <div className="space-y-4 text-muted-foreground leading-relaxed">
+                    <p>
+                      No Distraxionz was born from the rich cultural heritage of New Orleans, Louisiana. 
+                      Our founders recognized the need for sophisticated fashion that reflects both 
+                      contemporary trends and timeless elegance.
+                    </p>
+                    <p>
+                      Through years of dedication and continuous innovation, we've established ourselves 
+                      as a trusted name in contemporary fashion, serving discerning customers across 
+                      the globe with unwavering commitment to quality.
+                    </p>
+                  </div>
+                </div>
+              </Card>
               
-              <div className="space-y-6">
-                <h3 className="font-playfair text-2xl font-medium">Vision for Tomorrow</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  As we look to the future, our commitment remains unchanged: to create exceptional 
-                  fashion that empowers individuals to express their unique style while maintaining 
-                  the highest standards of quality and service.
-                </p>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  We continue to invest in sustainable practices, innovative technologies, and 
-                  global expansion while staying true to the values that have defined our success 
-                  from the very beginning.
-                </p>
-              </div>
+              <Card className="card-modern p-8 shadow-modern">
+                <div className="space-y-6">
+                  <div className="w-12 h-12 bg-gradient-warm rounded-xl flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="font-playfair text-2xl font-medium">Vision for Tomorrow</h3>
+                  <div className="space-y-4 text-muted-foreground leading-relaxed">
+                    <p>
+                      As we look to the future, our commitment remains unchanged: to create exceptional 
+                      fashion that empowers individuals to express their unique style while maintaining 
+                      the highest standards of quality and service.
+                    </p>
+                    <p>
+                      We continue to invest in sustainable practices, innovative technologies, and 
+                      global expansion while staying true to the values that have defined our success 
+                      from the very beginning.
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium" size="lg">
+              <Button className="btn-primary" size="lg">
                 Explore Our Collection
               </Button>
-              <Button variant="outline" size="lg" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium">
+              <Button variant="outline" size="lg" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium rounded-xl">
                 Contact Our Team
               </Button>
             </div>

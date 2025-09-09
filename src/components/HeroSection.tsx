@@ -25,7 +25,7 @@ const HeroSection = () => {
   return (
     <section className="relative bg-gradient-to-b from-background to-secondary/30 overflow-hidden">
       {/* Main Hero Content */}
-      <div className="container mx-auto container-padding section-padding">
+      <div className="w-full container-padding-modern py-20 lg:py-28 xl:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
           {/* Left Column - Content */}
           <div className="space-y-8 animate-fade-in">
@@ -46,7 +46,7 @@ const HeroSection = () => {
               </div>
             </div>
 
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
               Discover our meticulously curated collection of contemporary fashion. 
               Each piece represents our commitment to quality, innovation, and timeless design.
             </p>
@@ -86,7 +86,7 @@ const HeroSection = () => {
 
       {/* Bottom Stats Bar */}
       <div className="bg-card border-t border-border">
-        <div className="container mx-auto container-padding py-8">
+        <div className="w-full container-padding-modern py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="flex items-center justify-center space-x-3">
               <Globe className="h-6 w-6 text-primary" />

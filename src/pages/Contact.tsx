@@ -1,12 +1,11 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 
 const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
@@ -19,201 +18,211 @@ const Contact = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-background to-card">
-        <div className="container mx-auto px-4 text-center">
-          <Badge className="mb-4 bg-primary text-primary-foreground">
+      {/* Modern Hero Section */}
+      <section className="section-padding-modern bg-gradient-modern">
+        <div className="w-full container-padding-modern text-center">
+          <Badge className="mb-6 bg-primary/10 text-primary border border-primary/20 font-medium px-4 py-2">
             Get In Touch
           </Badge>
-          <h1 className="font-oswald text-5xl md:text-6xl font-bold mb-6 text-gradient">
-            Contact Us
+          <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-medium mb-6 text-gradient tracking-tight">
+            Let's Connect
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Have questions? Want to collaborate? Ready to join the movement? We'd love to hear from you.
+          <p className="text-xl text-muted-foreground leading-relaxed">
+            Ready to elevate your style? Have questions about our collection? 
+            We're here to help you find exactly what you need.
           </p>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <section className="section-padding-modern">
+        <div className="w-full container-padding-modern">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <div className="space-y-8">
-              <div>
-                <h2 className="font-oswald text-3xl font-bold mb-4">Send Us A Message</h2>
-                <p className="text-muted-foreground">
-                  Drop us a line and we'll get back to you as soon as possible. Time is money, so we respect yours.
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                  <span className="text-primary font-medium text-sm">Send Message</span>
+                </div>
+                <h2 className="font-playfair text-3xl md:text-4xl font-medium">
+                  Drop Us a Line
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  We value your time as much as ours. Expect a response within 24 hours.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium mb-2">
-                      First Name
+              <Card className="card-modern p-8 shadow-modern">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="firstName" className="text-sm font-medium text-foreground">
+                        First Name
+                      </label>
+                      <Input
+                        id="firstName"
+                        placeholder="Your first name"
+                        className="input-modern"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="lastName" className="text-sm font-medium text-foreground">
+                        Last Name
+                      </label>
+                      <Input
+                        id="lastName"
+                        placeholder="Your last name"
+                        className="input-modern"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium text-foreground">
+                      Email Address
                     </label>
                     <Input
-                      id="firstName"
-                      placeholder="Enter your first name"
-                      className="bg-card border-border"
+                      id="email"
+                      type="email"
+                      placeholder="your.email@example.com"
+                      className="input-modern"
                       required
                     />
                   </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium mb-2">
-                      Last Name
+
+                  <div className="space-y-2">
+                    <label htmlFor="subject" className="text-sm font-medium text-foreground">
+                      Subject
                     </label>
                     <Input
-                      id="lastName"
-                      placeholder="Enter your last name"
-                      className="bg-card border-border"
+                      id="subject"
+                      placeholder="What's this about?"
+                      className="input-modern"
                       required
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="bg-card border-border"
-                    required
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium text-foreground">
+                      Message
+                    </label>
+                    <Textarea
+                      id="message"
+                      placeholder="Tell us how we can help you..."
+                      rows={6}
+                      className="input-modern resize-none"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                    Subject
-                  </label>
-                  <Input
-                    id="subject"
-                    placeholder="What's this about?"
-                    className="bg-card border-border"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
-                    placeholder="Tell us what's on your mind..."
-                    rows={6}
-                    className="bg-card border-border resize-none"
-                    required
-                  />
-                </div>
-
-                <Button type="submit" className="w-full gradient-brand text-black font-bold" size="lg">
-                  Send Message
-                </Button>
-              </form>
+                  <Button type="submit" className="btn-primary w-full" size="lg">
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                </form>
+              </Card>
             </div>
 
             {/* Contact Information */}
             <div className="space-y-8">
-              <div>
-                <h2 className="font-oswald text-3xl font-bold mb-4">Get In Touch</h2>
-                <p className="text-muted-foreground">
-                  Based in New Orleans, Louisiana. We're here to help and answer any questions you might have.
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <span className="text-primary font-medium text-sm">Contact Info</span>
+                </div>
+                <h2 className="font-playfair text-3xl md:text-4xl font-medium">
+                  Reach Out Directly
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Based in New Orleans, Louisiana. Available to help you make the perfect choice.
                 </p>
               </div>
 
               <div className="space-y-6">
-                <Card className="bg-card border-border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-oswald text-lg font-bold mb-1">Email</h3>
-                        <p className="text-muted-foreground mb-2">Send us an email anytime</p>
-                        <a 
-                          href="mailto:nodistraxionz@gmail.com" 
-                          className="text-primary hover:underline font-medium"
-                        >
-                          nodistraxionz@gmail.com
-                        </a>
-                      </div>
+                <Card className="card-hover p-6 shadow-modern">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-14 h-14 bg-gradient-brand rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Mail className="h-6 w-6 text-white" />
                     </div>
-                  </CardContent>
+                    <div className="flex-1">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Email</h3>
+                      <p className="text-muted-foreground mb-3">Send us an email anytime</p>
+                      <a 
+                        href="mailto:nodistraxionz@gmail.com" 
+                        className="text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        nodistraxionz@gmail.com
+                      </a>
+                    </div>
+                  </div>
                 </Card>
 
-                <Card className="bg-card border-border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-oswald text-lg font-bold mb-1">Phone</h3>
-                        <p className="text-muted-foreground mb-2">Call us during business hours</p>
-                        <a 
-                          href="tel:+15043168944" 
-                          className="text-primary hover:underline font-medium"
-                        >
-                          (504) 316-8944
-                        </a>
-                      </div>
+                <Card className="card-hover p-6 shadow-modern">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-14 h-14 bg-gradient-warm rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-6 w-6 text-white" />
                     </div>
-                  </CardContent>
+                    <div className="flex-1">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Phone</h3>
+                      <p className="text-muted-foreground mb-3">Call us during business hours</p>
+                      <a 
+                        href="tel:+15043168944" 
+                        className="text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        (504) 316-8944
+                      </a>
+                    </div>
+                  </div>
                 </Card>
 
-                <Card className="bg-card border-border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-oswald text-lg font-bold mb-1">Location</h3>
-                        <p className="text-muted-foreground mb-2">Born and based in</p>
-                        <p className="text-primary font-medium">New Orleans, Louisiana</p>
-                      </div>
+                <Card className="card-hover p-6 shadow-modern">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                      <MapPin className="h-6 w-6 text-primary-foreground" />
                     </div>
-                  </CardContent>
+                    <div className="flex-1">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Location</h3>
+                      <p className="text-muted-foreground mb-3">Born and based in</p>
+                      <p className="text-primary font-medium">New Orleans, Louisiana</p>
+                    </div>
+                  </div>
                 </Card>
 
-                <Card className="bg-card border-border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-oswald text-lg font-bold mb-1">Business Hours</h3>
-                        <p className="text-muted-foreground mb-2">We hustle daily</p>
-                        <div className="space-y-1 text-sm">
-                          <p>Monday - Friday: 9:00 AM - 8:00 PM</p>
-                          <p>Saturday: 10:00 AM - 6:00 PM</p>
-                          <p>Sunday: 12:00 PM - 5:00 PM</p>
-                        </div>
+                <Card className="card-hover p-6 shadow-modern">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center flex-shrink-0 border">
+                      <Clock className="h-6 w-6 text-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Business Hours</h3>
+                      <p className="text-muted-foreground mb-3">We're here when you need us</p>
+                      <div className="space-y-1 text-sm">
+                        <p className="text-foreground">Monday - Friday: 9:00 AM - 8:00 PM</p>
+                        <p className="text-foreground">Saturday: 10:00 AM - 6:00 PM</p>
+                        <p className="text-foreground">Sunday: 12:00 PM - 5:00 PM</p>
                       </div>
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
               </div>
 
-              {/* Map Placeholder */}
-              <Card className="bg-card border-border">
-                <CardContent className="p-6">
-                  <h3 className="font-oswald text-lg font-bold mb-4">Find Us</h3>
-                  <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-center space-y-2">
-                      <MapPin className="h-12 w-12 text-primary mx-auto" />
-                      <p className="text-muted-foreground">New Orleans, Louisiana</p>
+              {/* Modern Map Placeholder */}
+              <Card className="card-modern p-6 shadow-modern">
+                <h3 className="font-playfair text-xl font-medium mb-4">Find Us</h3>
+                <div className="aspect-video bg-gradient-modern rounded-xl flex items-center justify-center border">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                      <MapPin className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">New Orleans, Louisiana</p>
                       <p className="text-sm text-muted-foreground">Interactive map coming soon</p>
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </Card>
             </div>
           </div>

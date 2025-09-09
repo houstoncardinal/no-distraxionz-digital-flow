@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import HorizonHeroSection from '@/components/HorizonHeroSection';
+import { Hero } from '@/components/ui/animated-hero';
 import ProductCard from '@/components/ProductCard';
-import ElegantBackgroundEffect from '@/components/ElegantBackgroundEffect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { products } from '@/data/products';
-import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag, Star, Filter, Search, Heart, TrendingUp, Package, CreditCard, Sparkles, Crown, Diamond } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag, Star, Filter, Search, Heart, TrendingUp, Package, CreditCard, Sparkles, Crown, Diamond, Zap, Target, ArrowRight, Shirt, Zap as ZapIcon, Eye } from 'lucide-react';
 
 const Index = () => {
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
@@ -17,346 +17,675 @@ const Index = () => {
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       
-      {/* 3D Hero Section */}
-      <HorizonHeroSection />
+      {/* Animated Streetwear Hero */}
+      <Hero />
 
-      {/* Professional Luxury Section */}
-      <section className="relative -mt-32 pt-32 pb-32 bg-gradient-to-b from-transparent via-white/95 to-white overflow-hidden">
-        {/* Professional Background Elements */}
-        <div className="absolute inset-0">
-          {/* Subtle gradient mesh */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-gray-50/30 to-slate-100/40"></div>
-          
-          {/* Elegant grid pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="w-full h-full" style={{
-              backgroundImage: `
-                linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px)
-              `,
-              backgroundSize: '40px 40px'
-            }}></div>
-          </div>
-
-          {/* Floating Professional Elements */}
-          <div className="absolute top-20 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-indigo-200/20 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-1/4 w-24 h-24 bg-gradient-to-br from-purple-100/20 to-violet-200/20 rounded-full blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/6 w-16 h-16 bg-gradient-to-br from-gray-100/20 to-slate-200/20 rounded-full blur-lg animate-pulse delay-500"></div>
-        </div>
-        
-        <div className="container mx-auto container-padding relative z-10">
-          <div className="max-w-7xl mx-auto">
-            {/* Professional Header */}
-            <div className="text-center mb-20">
-              <div className="inline-flex items-center gap-3 px-8 py-4 bg-white/80 rounded-full border border-gray-200/60 backdrop-blur-sm mb-8 shadow-lg">
-                <Crown className="h-5 w-5 text-amber-600" />
-                <span className="text-gray-700 font-medium tracking-wide">EXCELLENCE REDEFINED</span>
-                <Diamond className="h-5 w-5 text-amber-600" />
-              </div>
-              
-              <h2 className="font-playfair text-5xl md:text-7xl lg:text-8xl font-light leading-tight text-gray-900 mb-8">
-                Tunnel Vision,
-                <span className="block bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 bg-clip-text text-transparent">
-                  Beyond Limits
-                </span>
-              </h2>
-              
-              <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
-                Where uncompromising vision meets flawless execution.
-                <span className="block mt-4 text-gray-500">
-                  For those who demand nothing less than perfection.
-                </span>
-              </p>
-            </div>
-
-            {/* Professional Feature Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-              {/* Uncompromising Excellence */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-100/30 to-yellow-100/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <Card className="relative bg-white/90 backdrop-blur-xl border border-gray-200/40 hover:border-amber-300/60 transition-all duration-500 overflow-hidden shadow-xl">
-                  <CardContent className="p-10 text-center space-y-8">
-                    <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-amber-100/40 to-yellow-100/40 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-500">
-                        <Award className="h-10 w-10 text-amber-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2">
-                        <Sparkles className="h-6 w-6 text-amber-500 animate-pulse" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-playfair text-2xl font-medium mb-4 text-gray-900">Uncompromising</h3>
-                      <p className="text-gray-600 leading-relaxed mb-6">
-                        Zero tolerance for shortcuts. Every detail executed with surgical precision and unwavering focus.
-                      </p>
-                      <div className="flex items-center justify-center space-x-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-amber-500 text-amber-500" />
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              {/* Undistracted Vision */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-indigo-100/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <Card className="relative bg-white/90 backdrop-blur-xl border border-gray-200/40 hover:border-blue-300/60 transition-all duration-500 overflow-hidden shadow-xl">
-                  <CardContent className="p-10 text-center space-y-8">
-                    <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-blue-100/40 to-indigo-100/40 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-500">
-                        <Globe className="h-10 w-10 text-blue-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2">
-                        <Diamond className="h-5 w-5 text-blue-500 animate-pulse" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-playfair text-2xl font-medium mb-4 text-gray-900">Undistracted</h3>
-                      <p className="text-gray-600 leading-relaxed mb-6">
-                        While others chase trends, we forge legacy. Our vision cuts through the chaos with laser clarity.
-                      </p>
-                      <Badge className="bg-blue-100/80 text-blue-700 border border-blue-200/60 backdrop-blur-sm">
-                        Global Excellence
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              {/* Unstoppable Force */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-100/30 to-violet-100/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <Card className="relative bg-white/90 backdrop-blur-xl border border-gray-200/40 hover:border-purple-300/60 transition-all duration-500 overflow-hidden shadow-xl">
-                  <CardContent className="p-10 text-center space-y-8">
-                    <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-purple-100/40 to-violet-100/40 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-500">
-                        <Users className="h-10 w-10 text-purple-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2">
-                        <Crown className="h-5 w-5 text-purple-500 animate-pulse" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-playfair text-2xl font-medium mb-4 text-gray-900">Unstoppable</h3>
-                      <p className="text-gray-600 leading-relaxed mb-6">
-                        For those who move with purpose. Who know their destination and refuse to be deterred.
-                      </p>
-                      <div className="text-sm text-gray-500">
-                        <span className="font-semibold text-purple-600 text-lg">10K+</span> Elite Members
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Professional Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-              {/* Premium Collection */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-200/20 to-yellow-200/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <Card className="relative bg-gradient-to-br from-amber-50/90 to-yellow-50/90 backdrop-blur-xl border border-amber-200/40 text-gray-900 overflow-hidden shadow-xl">
-                  <CardContent className="p-10 text-center space-y-8">
-                    <div className="w-20 h-20 bg-amber-100/60 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
-                      <ShoppingBag className="h-10 w-10 text-amber-700" />
-                    </div>
-                    <div>
-                      <h3 className="font-playfair text-3xl font-medium mb-4 text-amber-900">Premium Collection</h3>
-                      <p className="text-amber-800 text-lg mb-8 leading-relaxed">
-                        Discover curated pieces where artistry meets engineering. Each item a masterpiece of design and function.
-                      </p>
-                      <Button asChild size="lg" className="bg-amber-600 text-white hover:bg-amber-700 font-semibold px-10 py-6 text-lg rounded-full shadow-lg">
-                        <Link to="/shop">
-                          Explore Excellence
-                          <ChevronRight className="ml-3 h-6 w-6" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Elite Access */}
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-200/20 to-slate-200/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                <Card className="relative bg-gradient-to-br from-gray-50/90 to-slate-50/90 backdrop-blur-xl border border-gray-200/40 text-gray-900 overflow-hidden shadow-xl">
-                  <CardContent className="p-10 text-center space-y-8">
-                    <div className="w-20 h-20 bg-gray-100/60 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
-                      <Crown className="h-10 w-10 text-gray-700" />
-                    </div>
-                    <div>
-                      <h3 className="font-playfair text-3xl font-medium mb-4 text-gray-900">Elite Access</h3>
-                      <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                        Join the inner circle. Exclusive previews, priority access, and experiences reserved for the few.
-                      </p>
-                      <Button asChild size="lg" variant="outline" className="border-2 border-gray-400 text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-semibold px-10 py-6 text-lg rounded-full bg-white/80 backdrop-blur-sm shadow-lg">
-                        <Link to="/about">
-                          Join Elite
-                          <Diamond className="ml-3 h-5 w-5" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Professional Benefits Bar */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-gray-50/40 to-white/60 rounded-3xl blur-xl"></div>
-              <div className="relative bg-white/80 backdrop-blur-2xl rounded-3xl p-8 border border-gray-200/50 shadow-xl">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <div className="flex items-center justify-center space-x-6 text-center md:text-left">
-                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-100/60 to-green-100/60 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                      <Shield className="h-7 w-7 text-emerald-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-playfair text-xl font-medium text-gray-900 mb-1">Fort Knox Security</h4>
-                      <p className="text-sm text-gray-600">Military-grade protection</p>
-                    </div>
+      {/* Floating Benefits Bar over Hero */}
+      <motion.div 
+        className="relative -mt-20 md:-mt-28 z-20 container-padding-modern"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-gray-900/60 to-black/40 rounded-3xl blur-xl"></div>
+            <motion.div 
+              className="relative bg-black/90 backdrop-blur-2xl rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <motion.div 
+                  className="flex items-center justify-center space-x-6 text-center md:text-left group"
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <motion.div 
+                    className="w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm border border-white/20"
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Shield className="h-7 w-7 text-white group-hover:text-green-400 transition-colors duration-300" />
+                  </motion.div>
+                  <div>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-green-400 transition-colors duration-300">Fort Knox Security</h4>
+                    <p className="text-sm text-white/70">Military-grade protection</p>
                   </div>
-                  
-                  <div className="flex items-center justify-center space-x-6 text-center md:text-left">
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100/60 to-cyan-100/60 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                      <Truck className="h-7 w-7 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-playfair text-xl font-medium text-gray-900 mb-1">White Glove Delivery</h4>
-                      <p className="text-sm text-gray-600">Concierge service included</p>
-                    </div>
+                </motion.div>
+                <motion.div 
+                  className="flex items-center justify-center space-x-6 text-center md:text-left group"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <motion.div 
+                    className="w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm border border-white/20"
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Truck className="h-7 w-7 text-white group-hover:text-blue-400 transition-colors duration-300" />
+                  </motion.div>
+                  <div>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-blue-400 transition-colors duration-300">White Glove Delivery</h4>
+                    <p className="text-sm text-white/70">Concierge service included</p>
                   </div>
-                  
-                  <div className="flex items-center justify-center space-x-6 text-center md:text-left">
-                    <div className="w-14 h-14 bg-gradient-to-br from-purple-100/60 to-violet-100/60 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
-                      <Headphones className="h-7 w-7 text-purple-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-playfair text-xl font-medium text-gray-900 mb-1">24/7 Elite Support</h4>
-                      <p className="text-sm text-gray-600">Personal styling consultants</p>
-                    </div>
+                </motion.div>
+                <motion.div 
+                  className="flex items-center justify-center space-x-6 text-center md:text-left group"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 1.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <motion.div 
+                    className="w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-full flex items-center justify-center mx-auto flex-shrink-0 backdrop-blur-sm border border-white/20"
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Headphones className="h-7 w-7 text-white group-hover:text-purple-400 transition-colors duration-300" />
+                  </motion.div>
+                  <div>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-purple-400 transition-colors duration-300">24/7 Elite Support</h4>
+                    <p className="text-sm text-white/70">Personal styling consultants</p>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.div>
 
-      {/* Smooth Transition to Products */}
-      <section className="relative bg-gradient-to-b from-white via-slate-50/50 to-background overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
-        
-        <div className="container mx-auto container-padding relative z-10 py-20">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 rounded-full border border-primary/20 backdrop-blur-sm mb-8">
-              <Star className="h-4 w-4 text-primary" />
-              <span className="text-primary font-medium tracking-wide">FEATURED COLLECTION</span>
-            </div>
-            <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light mb-8 text-foreground">
-              Focus Made Visible
-            </h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Each piece engineered for those who refuse distractions. Clean lines, purposeful design, unshakeable confidence.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
-            {featuredProducts.map((product, index) => (
-              <div key={product.id} className="group hover-lift">
-                <div className={`${index === 1 ? 'md:scale-110 md:z-10 relative' : ''}`}>
-                  <ProductCard {...product} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-12 py-6 text-lg rounded-full">
-              <Link to="/shop">
-                Explore Full Collection
-                <ChevronRight className="ml-3 h-6 w-6" />
-              </Link>
-            </Button>
-          </div>
+      {/* Ultra Modern Featured Collection Section */}
+      <section className="relative -mt-32 pt-40 pb-32 bg-white">
+        {/* Subtle Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-gray-100/50 to-gray-200/30 rounded-full blur-3xl"
+            animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/3 -right-24 w-80 h-80 bg-gradient-to-br from-gray-200/40 to-gray-100/30 rounded-full blur-3xl"
+            animate={{ x: [0, -25, 0], y: [0, 25, 0] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-50/30 to-transparent" />
         </div>
-      </section>
 
-      {/* Experience Section */}
-      <section className="section-padding bg-gradient-to-br from-primary/5 via-background to-secondary/10 relative">
-        <div className="container mx-auto container-padding">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <Badge className="bg-primary/10 text-primary border border-primary/20 font-medium px-4 py-2">
-                  The Experience
+        <div className="w-full container-padding-modern relative z-10">
+          <div className="w-full">
+            {/* Ultra Modern Header */}
+            <motion.div 
+              className="text-center mb-24"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Badge className="mb-8 bg-black text-white border-0 px-8 py-4 text-sm font-bold shadow-xl rounded-full">
+                  <Crown className="h-4 w-4 mr-2" />
+                  PREMIUM COLLECTION
                 </Badge>
-                <h2 className="font-playfair text-4xl md:text-5xl font-light leading-tight">
-                  Built for the
-                  <span className="block text-gradient-corporate">Relentless</span>
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  When everyone else settles, you push forward. When others get distracted, you stay locked in.
-                  Our collection is for those who understand that excellence isn't an accident—it's a choice made daily.
-                </p>
-              </div>
+              </motion.div>
               
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Shield className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">Bulletproof Quality</h3>
-                    <p className="text-muted-foreground">Built to withstand everything. Because giving up isn't in your vocabulary.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Headphones className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">Zero Noise Service</h3>
-                    <p className="text-muted-foreground">Direct access to what you need. No fluff, no distractions, just results.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Truck className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-playfair text-xl font-medium mb-2">Precision Delivery</h3>
-                    <p className="text-muted-foreground">On time, every time. Because your momentum can't wait for delays.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <motion.h2 
+                className="font-playfair text-6xl md:text-7xl lg:text-8xl font-light leading-tight mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <span className="text-gray-900">Featured</span>
+                <span className="block bg-gradient-to-r from-black via-gray-700 to-gray-900 bg-clip-text text-transparent font-bold">
+                  Collection
+                </span>
+              </motion.h2>
+              
+              <motion.p 
+                className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                Premium streetwear engineered for the relentless. Limited drops, precision details, uncompromising quality.
+              </motion.p>
 
-            <div className="relative">
-              <div className="aspect-[4/5] bg-gradient-to-br from-primary/10 to-secondary/20 rounded-2xl overflow-hidden corporate-shadow-lg relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center space-y-6 text-white/90">
-                    <Play className="h-20 w-20 mx-auto mb-6 opacity-80" />
-                    <div className="text-3xl font-playfair font-light">Behind the Craft</div>
-                    <div className="text-lg font-medium">Discover Our Process</div>
+              {/* Enhanced Stats Bar */}
+              <motion.div 
+                className="flex flex-wrap items-center justify-center gap-12 mt-16"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+              >
+                <motion.div 
+                  className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-full"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Crown className="h-5 w-5 text-yellow-500" />
+                  <span className="text-sm font-bold text-gray-900">Limited Edition</span>
+                </motion.div>
+                <motion.div 
+                  className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-full"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Shield className="h-5 w-5 text-green-500" />
+                  <span className="text-sm font-bold text-gray-900">Premium Quality</span>
+                </motion.div>
+                <motion.div 
+                  className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-full"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Zap className="h-5 w-5 text-blue-500" />
+                  <span className="text-sm font-bold text-gray-900">Fast Shipping</span>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+
+            {/* Enhanced Products Grid */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-20"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              {featuredProducts.map((product, index) => (
+                <motion.div 
+                  key={product.id} 
+                  className="group"
+                  initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: 0.6 + (index * 0.15),
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ y: -10, scale: 1.02 }}
+                >
+                  <div className={`relative ${index === 1 ? 'md:scale-110 md:z-10' : ''}`}>
+                    {/* Glow Effect */}
+                    <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Enhanced Product Card */}
+                    <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white/20 group-hover:shadow-3xl transition-all duration-500">
+                      <ProductCard {...product} />
+                      
+                      {/* Center Badge for Featured Item */}
+                      {index === 1 && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold px-4 py-2 shadow-lg">
+                            <Crown className="h-4 w-4 mr-1" />
+                            BESTSELLER
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
                   </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Ultra Modern Call to Action */}
+            <motion.div 
+              className="text-center space-y-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              {/* Quick Purchase Options */}
+              <div className="bg-gray-50 rounded-3xl p-8 max-w-4xl mx-auto">
+                <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Quick Checkout</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl">
+                      <ShoppingBag className="mr-3 h-6 w-6" />
+                      Buy Now
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button variant="outline" className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl">
+                      <Heart className="mr-3 h-6 w-6" />
+                      Add to Wishlist
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button variant="outline" className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl">
+                      <Eye className="mr-3 h-6 w-6" />
+                      Quick View
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
-            </div>
+
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <Button asChild size="lg" className="bg-black text-white hover:bg-gray-800 font-bold px-16 py-6 text-xl rounded-full shadow-2xl group">
+                  <Link to="/shop">
+                    <ShoppingBag className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
+                    Shop All Products
+                    <ChevronRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                
+                <Button asChild size="lg" variant="outline" className="border-2 border-gray-300 text-gray-900 hover:bg-gray-100 font-bold px-12 py-6 text-xl rounded-full">
+                  <Link to="/about">
+                    <Target className="mr-2 h-5 w-5" />
+                    Our Story
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div className="flex items-center justify-center gap-3 text-gray-600">
+                  <Truck className="h-6 w-6" />
+                  <span className="font-medium">Free shipping over $75</span>
+                </div>
+                <div className="flex items-center justify-center gap-3 text-gray-600">
+                  <Shield className="h-6 w-6" />
+                  <span className="font-medium">30-day easy returns</span>
+                </div>
+                <div className="flex items-center justify-center gap-3 text-gray-600">
+                  <Star className="h-6 w-6" />
+                  <span className="font-medium">Lifetime warranty</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ultra Sleek Brand Section */}
+      <section className="relative w-full bg-black overflow-hidden py-32">
+        {/* Ultra sleek dark vignette */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_60%)]" />
+        
+        {/* Animated gradient blobs (subtle white glows) */}
+        <motion.div
+          aria-hidden
+          className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-white/5 blur-3xl"
+          animate={{ x: [-10, 10, -10], y: [0, -8, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute top-40 -right-24 w-96 h-96 rounded-full bg-white/3 blur-3xl"
+          animate={{ x: [10, -10, 10], y: [0, 12, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute -bottom-32 left-1/3 w-[28rem] h-[28rem] rounded-full bg-white/4 blur-3xl"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Sleek moving grid */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            maskImage: "linear-gradient(to bottom, transparent, white 15%, white 85%, transparent)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent, white 15%, white 85%, transparent)",
+          }}
+        />
+
+        <div className="w-full container-padding-modern relative z-10">
+          <div className="w-full">
+            {/* Powerful Section Header */}
+            <motion.div 
+              className="text-center mb-24"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Badge className="bg-white/10 text-white border border-white/20 font-bold px-8 py-4 mb-8 text-sm tracking-wider backdrop-blur-sm">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  PREMIUM STREETWEAR
+                </Badge>
+              </motion.div>
+
+              <motion.h2 
+                className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-tight mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <span className="text-white">NO</span>
+                <motion.span 
+                  className="block bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent font-bold"
+                  animate={{ 
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                  }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  style={{ backgroundSize: "200% 200%" }}
+                >
+                  DISTRAXIONZ
+                </motion.span>
+              </motion.h2>
+
+              <motion.p 
+                className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-4xl mx-auto mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                Premium streetwear built for focus and movement. Limited drops, precision details, everyday comfort.
+              </motion.p>
+
+              {/* Performance Metrics */}
+              <motion.div 
+                className="flex flex-wrap items-center justify-center gap-12 mb-16"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+              >
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl md:text-4xl font-black text-white mb-2">99%</div>
+                  <div className="text-sm text-white/60 font-medium">Customer Satisfaction</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl md:text-4xl font-black text-green-400 mb-2">24/7</div>
+                  <div className="text-sm text-white/60 font-medium">Premium Support</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-3xl md:text-4xl font-black text-blue-400 mb-2">48H</div>
+                  <div className="text-sm text-white/60 font-medium">Express Delivery</div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+
+            {/* No Distraxionz Features Grid */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-20"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              {/* Quick Shipping */}
+              <motion.div 
+                className="group relative"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                whileHover={{ y: -15, rotateY: 5 }}
+              >
+                {/* Animated Glow Effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-cyan-500/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100"
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+                
+                <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 hover:border-cyan-400/50 transition-all duration-700 overflow-hidden shadow-2xl h-full">
+                  {/* Animated Border Effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-3xl"
+                    style={{
+                      background: "linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.3), transparent)",
+                      backgroundSize: "200% 200%",
+                    }}
+                    animate={{
+                      backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  />
+                  
+                  <CardContent className="relative p-8 lg:p-10 text-center space-y-6 h-full flex flex-col justify-center">
+                    {/* Animated Icon Container */}
+                    <motion.div 
+                      className="relative w-24 h-24 mx-auto"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full backdrop-blur-sm border border-white/20"
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                      />
+                      <motion.div 
+                        className="absolute inset-2 bg-gradient-to-br from-cyan-400/30 to-blue-500/30 rounded-full flex items-center justify-center"
+                        whileHover={{ rotate: 180 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Truck className="h-12 w-12 text-cyan-400" />
+                      </motion.div>
+                      
+                      {/* Pulse Effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-cyan-400/50"
+                        animate={{ scale: [1, 1.2, 1], opacity: [1, 0, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    </motion.div>
+                    
+                    <div className="space-y-4">
+                      <h3 className="font-playfair text-2xl lg:text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
+                        Lightning Delivery
+                      </h3>
+                      <p className="text-white/80 leading-relaxed text-base lg:text-lg">
+                        24-48 hour express shipping. Your focus can't wait, neither should your gear.
+                      </p>
+                      
+                      {/* Feature Tags */}
+                      <div className="flex flex-wrap gap-2 justify-center pt-2">
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Free Over $75</span>
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Same Day NYC</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Quality Clothing */}
+              <motion.div 
+                className="group relative"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                whileHover={{ y: -15, rotateY: -5 }}
+              >
+                {/* Animated Glow Effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-green-500/40 to-emerald-500/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100"
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                />
+                
+                <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 hover:border-emerald-400/50 transition-all duration-700 overflow-hidden shadow-2xl h-full">
+                  {/* Animated Border Effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-3xl"
+                    style={{
+                      background: "linear-gradient(45deg, transparent, rgba(52, 211, 153, 0.3), transparent)",
+                      backgroundSize: "200% 200%",
+                    }}
+                    animate={{
+                      backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                    }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+                  />
+                  
+                  <CardContent className="relative p-8 lg:p-10 text-center space-y-6 h-full flex flex-col justify-center">
+                    {/* Animated Icon Container */}
+                    <motion.div 
+                      className="relative w-24 h-24 mx-auto"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-green-500/20 rounded-full backdrop-blur-sm border border-white/20"
+                        animate={{ rotate: [0, -360] }}
+                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                      />
+                      <motion.div 
+                        className="absolute inset-2 bg-gradient-to-br from-emerald-400/30 to-green-500/30 rounded-full flex items-center justify-center"
+                        whileHover={{ rotate: -180 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Shirt className="h-12 w-12 text-emerald-400" />
+                      </motion.div>
+                      
+                      {/* Pulse Effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-emerald-400/50"
+                        animate={{ scale: [1, 1.3, 1], opacity: [1, 0, 1] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    </motion.div>
+                    
+                    <div className="space-y-4">
+                      <h3 className="font-playfair text-2xl lg:text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                        Premium Materials
+                      </h3>
+                      <p className="text-white/80 leading-relaxed text-base lg:text-lg">
+                        100% premium cotton blends. Comfort that moves with your hustle, durability that lasts.
+                      </p>
+                      
+                      {/* Feature Tags */}
+                      <div className="flex flex-wrap gap-2 justify-center pt-2">
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Lifetime Quality</span>
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Eco-Friendly</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Customization */}
+              <motion.div 
+                className="group relative"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                whileHover={{ y: -15, rotateY: 5 }}
+              >
+                {/* Animated Glow Effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-purple-500/40 to-pink-500/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100"
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+                
+                <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 hover:border-purple-400/50 transition-all duration-700 overflow-hidden shadow-2xl h-full">
+                  {/* Animated Border Effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-3xl"
+                    style={{
+                      background: "linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.3), transparent)",
+                      backgroundSize: "200% 200%",
+                    }}
+                    animate={{
+                      backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                    }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  />
+                  
+                  <CardContent className="relative p-8 lg:p-10 text-center space-y-6 h-full flex flex-col justify-center">
+                    {/* Animated Icon Container */}
+                    <motion.div 
+                      className="relative w-24 h-24 mx-auto"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full backdrop-blur-sm border border-white/20"
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                      />
+                      <motion.div 
+                        className="absolute inset-2 bg-gradient-to-br from-purple-400/30 to-pink-500/30 rounded-full flex items-center justify-center"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Sparkles className="h-12 w-12 text-purple-400" />
+                      </motion.div>
+                      
+                      {/* Pulse Effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-purple-400/50"
+                        animate={{ scale: [1, 1.4, 1], opacity: [1, 0, 1] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    </motion.div>
+                    
+                    <div className="space-y-4">
+                      <h3 className="font-playfair text-2xl lg:text-3xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300">
+                        Custom Designs
+                      </h3>
+                      <p className="text-white/80 leading-relaxed text-base lg:text-lg">
+                        Make it yours. Custom prints, embroidery, and exclusive colorways for the focused few.
+                      </p>
+                      
+                      {/* Feature Tags */}
+                      <div className="flex flex-wrap gap-2 justify-center pt-2">
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Personal Touch</span>
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Limited Runs</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
+
+
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="section-padding bg-gradient-to-r from-primary via-primary/95 to-primary text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-r from-primary via-primary/95 to-primary text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20"></div>
         
-        <div className="container mx-auto container-padding text-center relative z-10">
-          <div className="max-w-4xl mx-auto space-y-12">
+        <div className="w-full container-padding-modern text-center relative z-10">
+          <div className="w-full space-y-12">
             <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
               No Distractions. Just Progress.
             </h2>
