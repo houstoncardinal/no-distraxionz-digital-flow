@@ -8,7 +8,6 @@ import {
   TouchEvent,
   WheelEvent,
 } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 interface ScrollExpandMediaProps {
@@ -181,17 +180,10 @@ const ScrollExpandMedia = ({
             animate={{ opacity: 1 - scrollProgress }}
             transition={{ duration: 0.1 }}
           >
-            <Image
+            <img
               src={bgImageSrc}
               alt='Background'
-              width={1920}
-              height={1080}
-              className='w-screen h-screen'
-              style={{
-                objectFit: 'cover',
-                objectPosition: 'center',
-              }}
-              priority
+              className='w-screen h-screen object-cover'
             />
             <div className='absolute inset-0 bg-black/10' />
           </motion.div>
