@@ -262,11 +262,9 @@ const ScrollExpandMedia = ({
                   )
                 ) : (
                   <div className='relative w-full h-full'>
-                    <Image
+                    <img
                       src={mediaSrc}
                       alt={title || 'Media content'}
-                      width={1280}
-                      height={720}
                       className='w-full h-full object-cover rounded-xl'
                     />
 
