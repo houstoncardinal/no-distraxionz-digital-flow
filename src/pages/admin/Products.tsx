@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -26,13 +24,11 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { Plus, Search, Trash2, Sparkles, Clipboard, Image as ImageIcon, RefreshCw } from 'lucide-react';
-import { Product, categories } from '@/data/products';
-import { createProduct, deleteProduct, listProducts } from '@/lib/adminRepo';
-import { useToast } from '@/components/ui/use-toast';
+import { Plus, Search, Trash2, Sparkles, Clipboard, Image as ImageIcon, RefreshCw, Loader2 } from 'lucide-react';
+import { categories } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import ProductCard from '@/components/ProductCard';
 import { Separator } from '@/components/ui/separator';
 
@@ -42,44 +38,41 @@ const WOMEN_SIZES = ['XS','S','M','L','XL'];
 const KIDS_SIZES = ['6M','12M','18M','24M'];
 const COMMON_COLORS = ['Black','White','Gray','Navy','Red','Pink','Charcoal'];
 
+interface ProductFormData {
+  name: string;
+  price: string;
+  description: string;
+  category: string;
+  image: string;
+  stock: number;
+}
+
 const Products = () => {
-  const { toast } = useToast();
+  const { products, loading, createProduct, deleteProduct } = useProducts();
   const [query, setQuery] = useState('');
-  const [items, setItems] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
   const closingRef = useRef(false);
 
-  useEffect(() => {
-    setItems(listProducts());
-  }, []);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter((p) =>
-      [p.name, p.category, p.description].some((f) => f.toLowerCase().includes(q))
+    if (!q) return products;
+    return products.filter((p) =>
+      [p.name, p.category, p.description].some((f) => (f || '').toLowerCase().includes(q))
     );
-  }, [items, query]);
+  }, [products, query]);
 
-  type NewProduct = Omit<Product, 'id'>;
-
-  const form = useForm<NewProduct>({
+  const form = useForm<ProductFormData>({
     defaultValues: {
       name: '',
       price: '',
-      originalPrice: '',
-      priceRange: '',
       description: '',
       category: 'Men',
       image: '',
-      featured: true,
-      sizes: [],
-      colors: [],
+      stock: 0,
     },
     mode: 'onChange',
   });
 
-  // Guard against accidental close if there are unsaved changes
   function handleOpenChange(next: boolean) {
     if (!next && form.formState.isDirty && !closingRef.current) {
       const confirmClose = window.confirm('Discard your changes?');
@@ -93,25 +86,8 @@ const Products = () => {
     if (!next) form.reset();
   }
 
-  // Helpers to toggle chip selections
-  function toggleInArray(name: 'sizes' | 'colors', value: string) {
-    const arr = (form.getValues(name) as string[]) || [];
-    if (arr.includes(value)) {
-      form.setValue(name, arr.filter(v => v !== value), { shouldDirty: true });
-    } else {
-      form.setValue(name, [...arr, value], { shouldDirty: true });
-    }
-  }
-
   function setCategoryQuick(value: string) {
     form.setValue('category', value, { shouldDirty: true });
-    if (value === 'Women') {
-      form.setValue('sizes', WOMEN_SIZES, { shouldDirty: true });
-    } else if (value === 'Kids') {
-      form.setValue('sizes', KIDS_SIZES, { shouldDirty: true });
-    } else {
-      form.setValue('sizes', COMMON_SIZES, { shouldDirty: true });
-    }
   }
 
   function pasteImageFromClipboard() {
@@ -128,48 +104,51 @@ const Products = () => {
     form.setValue('description', snippet, { shouldDirty: true });
   }
 
-  function onSubmit(values: NewProduct) {
-    const sizes = Array.isArray(values.sizes)
-      ? values.sizes
-      : String(values.sizes || '').split(',').map(s => s.trim()).filter(Boolean);
-    const colors = Array.isArray(values.colors)
-      ? values.colors
-      : String(values.colors || '').split(',').map(s => s.trim()).filter(Boolean);
-    const priceRange = values.priceRange || values.price || '';
+  async function onSubmit(values: ProductFormData) {
+    // Parse price to number
+    const priceValue = parseFloat(values.price.replace(/[$,]/g, ''));
+    
+    await createProduct({
+      name: values.name,
+      description: values.description,
+      price: priceValue,
+      image: values.image,
+      category: values.category,
+      stock: values.stock,
+    });
 
-    const next = createProduct({ ...values, sizes, colors, priceRange });
-    setItems((prev) => [next, ...prev]);
     setOpen(false);
     form.reset();
-    toast({ title: 'Product added', description: `${next.name} was created.` });
   }
 
-  function handleDelete(id: string) {
-    const ok = deleteProduct(id);
-    if (ok) {
-      setItems((prev) => prev.filter((p) => p.id !== id));
-      toast({ title: 'Product deleted', description: `The product has been removed.` });
-    } else {
-      toast({ title: 'Delete failed', description: 'Unable to delete the product.', variant: 'destructive' });
-    }
+  async function handleDelete(id: string) {
+    await deleteProduct(id);
   }
 
   // Live preview data
-  const previewData: Product = {
+  const previewData = {
     id: 'preview',
     name: form.watch('name') || 'New Product',
     price: form.watch('price') || '$45',
-    originalPrice: form.watch('originalPrice') || undefined,
-    priceRange: form.watch('priceRange') || '',
+    priceRange: '',
+    originalPrice: undefined,
     description: form.watch('description') || 'Premium streetwear with precision details.',
     category: form.watch('category') || 'Men',
     image: form.watch('image') || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
-    featured: !!form.watch('featured'),
-    sizes: (form.watch('sizes') as string[]) || [],
-    colors: (form.watch('colors') as string[]) || [],
+    featured: false,
+    sizes: [],
+    colors: [],
   };
 
   const canSubmit = form.formState.isValid && !!form.watch('name') && !!form.watch('price') && !!form.watch('category') && !!form.watch('image');
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -187,13 +166,17 @@ const Products = () => {
             />
           </div>
           <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-              <Button className="gap-2 h-8 px-3"><Plus className="h-4 w-4" />Add product</Button>
-            </DialogTrigger>
+            <Button onClick={() => setOpen(true)} className="gap-2 h-8 px-3">
+              <Plus className="h-4 w-4" />Add product
+            </Button>
             <DialogContent className="max-w-4xl p-4">
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2 text-lg">Create product <Sparkles className="h-4 w-4 text-primary" /></DialogTitle>
-                <DialogDescription className="text-xs">Complete the details below. Live preview updates as you type.</DialogDescription>
+                <DialogTitle className="flex items-center gap-2 text-lg">
+                  Create product <Sparkles className="h-4 w-4 text-primary" />
+                </DialogTitle>
+                <DialogDescription className="text-xs">
+                  Complete the details below. Live preview updates as you type.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -205,7 +188,14 @@ const Products = () => {
                       <Label className="text-xs">Category</Label>
                       <div className="flex flex-wrap gap-1.5">
                         {CATEGORY_VALUES.map((c) => (
-                          <Button key={c} type="button" variant={form.watch('category') === c ? 'default' : 'outline'} size="sm" onClick={() => setCategoryQuick(c)} className="capitalize h-7 px-2.5 text-xs">
+                          <Button 
+                            key={c} 
+                            type="button" 
+                            variant={form.watch('category') === c ? 'default' : 'outline'} 
+                            size="sm" 
+                            onClick={() => setCategoryQuick(c)} 
+                            className="capitalize h-7 px-2.5 text-xs"
+                          >
                             {c}
                           </Button>
                         ))}
@@ -238,40 +228,27 @@ const Products = () => {
                           <FormItem>
                             <FormLabel className="text-xs">Price</FormLabel>
                             <FormControl>
-                              <Input placeholder="$45" {...field} className="h-8" />
+                              <Input placeholder="45.00" type="number" step="0.01" {...field} className="h-8" />
                             </FormControl>
-                            <FormDescription className="text-[11px]">Display price (include currency)</FormDescription>
+                            <FormDescription className="text-[11px]">Enter price (USD)</FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="originalPrice"
+                        name="stock"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-xs">Original price</FormLabel>
+                            <FormLabel className="text-xs">Stock</FormLabel>
                             <FormControl>
-                              <Input placeholder="$60" {...field} className="h-8" />
+                              <Input placeholder="100" type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} className="h-8" />
                             </FormControl>
-                            <FormDescription className="text-[11px]">Optional compare-at</FormDescription>
+                            <FormDescription className="text-[11px]">Available quantity</FormDescription>
                           </FormItem>
                         )}
                       />
                     </div>
-
-                    <FormField
-                      control={form.control}
-                      name="priceRange"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs">Price range</FormLabel>
-                          <FormControl>
-                            <Input placeholder="$35-50 (optional)" {...field} className="h-8" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
 
                     <div className="space-y-1.5">
                       <FormLabel className="text-xs">Image URL</FormLabel>
@@ -305,7 +282,9 @@ const Products = () => {
                         <FormItem>
                           <div className="flex items-center justify-between">
                             <FormLabel className="text-xs">Description</FormLabel>
-                            <Button type="button" variant="ghost" size="sm" className="gap-2 h-7 px-2.5 text-xs" onClick={autofillDescription}><Sparkles className="h-4 w-4" />Autofill</Button>
+                            <Button type="button" variant="ghost" size="sm" className="gap-2 h-7 px-2.5 text-xs" onClick={autofillDescription}>
+                              <Sparkles className="h-4 w-4" />Autofill
+                            </Button>
                           </div>
                           <FormControl>
                             <Textarea rows={3} placeholder="Describe the product…" {...field} />
@@ -314,42 +293,22 @@ const Products = () => {
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="space-y-1.5">
-                        <Label className="text-xs">Sizes</Label>
-                        <div className="flex flex-wrap gap-1.5">
-                          {(form.watch('category') === 'Kids' ? KIDS_SIZES : form.watch('category') === 'Women' ? WOMEN_SIZES : COMMON_SIZES).map(s => (
-                            <Button key={s} type="button" size="sm" className="h-7 px-2.5 text-xs" variant={(form.watch('sizes') as string[])?.includes(s) ? 'default' : 'outline'} onClick={() => toggleInArray('sizes', s)}>{s}</Button>
-                          ))}
-                        </div>
-                        <FormDescription className="text-[11px]">Click to select. Change category to update suggestions.</FormDescription>
-                      </div>
-                      <div className="space-y-1.5 md:col-span-2">
-                        <Label className="text-xs">Colors</Label>
-                        <div className="flex flex-wrap gap-1.5">
-                          {COMMON_COLORS.map(c => (
-                            <Button key={c} type="button" size="sm" className="h-7 px-2.5 text-xs capitalize" variant={(form.watch('colors') as string[])?.includes(c) ? 'default' : 'outline'} onClick={() => toggleInArray('colors', c)}>{c}</Button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-center gap-2">
-                        <Checkbox checked={!!form.watch('featured')} onCheckedChange={(v) => form.setValue('featured', !!v, { shouldDirty: true })} />
-                        <Label className="text-xs">Featured on homepage</Label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button type="button" variant="outline" className="gap-2 h-8 px-3" onClick={() => form.reset()}><RefreshCw className="h-4 w-4" />Reset</Button>
-                        <Button type="submit" disabled={!canSubmit} className="h-8 px-3">Create product</Button>
-                      </div>
+                    <div className="flex items-center justify-end gap-2 pt-1">
+                      <Button type="button" variant="outline" className="gap-2 h-8 px-3" onClick={() => form.reset()}>
+                        <RefreshCw className="h-4 w-4" />Reset
+                      </Button>
+                      <Button type="submit" disabled={!canSubmit} className="h-8 px-3">
+                        Create product
+                      </Button>
                     </div>
                   </form>
                 </Form>
 
                 {/* Right: Live preview */}
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-xs"><ImageIcon className="h-4 w-4" />Live preview</Label>
+                  <Label className="flex items-center gap-2 text-xs">
+                    <ImageIcon className="h-4 w-4" />Live preview
+                  </Label>
                   <Card className="p-2">
                     <ProductCard {...previewData} />
                   </Card>
@@ -372,54 +331,57 @@ const Products = () => {
                 <TableHead className="text-xs">Name</TableHead>
                 <TableHead className="text-xs">Category</TableHead>
                 <TableHead className="text-xs">Price</TableHead>
-                <TableHead className="text-xs">Featured</TableHead>
+                <TableHead className="text-xs">Stock</TableHead>
                 <TableHead className="text-right text-xs">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                      <img src={p.image} alt={p.name} className="h-8 w-8 rounded object-cover" />
-                      <div>
-                        <div className="text-sm">{p.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{p.priceRange || p.price}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">{p.category}</TableCell>
-                  <TableCell className="text-sm">{p.price}</TableCell>
-                  <TableCell className="text-sm">{p.featured ? 'Yes' : 'No'}</TableCell>
-                  <TableCell className="text-right">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-destructive h-7 w-7">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete product?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the product.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(p.id)}>Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filtered.length === 0 && (
+              {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-20 text-center text-muted-foreground text-sm">
-                    No products found.
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    No products found
                   </TableCell>
                 </TableRow>
+              ) : (
+                filtered.map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-3">
+                        <img src={p.image || ''} alt={p.name} className="h-8 w-8 rounded object-cover" />
+                        <div>
+                          <div className="text-sm">{p.name}</div>
+                          <div className="text-[11px] text-muted-foreground">{p.description}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm">{p.category}</TableCell>
+                    <TableCell className="text-sm">${p.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-sm">{p.stock || 0}</TableCell>
+                    <TableCell className="text-right">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete product?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. {p.name} will be permanently deleted.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(p.id)}>
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
@@ -429,4 +391,4 @@ const Products = () => {
   );
 };
 
-export default Products; 
+export default Products;
