@@ -33,12 +33,12 @@ export const useProducts = () => {
 
       if (error) throw error;
       
-      // Transform the data to handle JSON fields
+      // Transform the data to handle JSON fields and missing fields
       const transformedProducts = (data || []).map(product => ({
         ...product,
-        sizes: Array.isArray(product.sizes) ? product.sizes : (product.sizes ? JSON.parse(product.sizes) : []),
-        colors: Array.isArray(product.colors) ? product.colors : (product.colors ? JSON.parse(product.colors) : []),
-        featured: product.featured || false
+        sizes: product.sizes ? (Array.isArray(product.sizes) ? product.sizes : JSON.parse(product.sizes as string)) : [],
+        colors: product.colors ? (Array.isArray(product.colors) ? product.colors : JSON.parse(product.colors as string)) : [],
+        featured: product.featured !== undefined ? product.featured : false
       }));
       
       setProducts(transformedProducts);
