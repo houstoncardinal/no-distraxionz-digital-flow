@@ -10,6 +10,11 @@ export interface Product {
   image: string | null;
   category: string | null;
   stock: number | null;
+  featured: boolean;
+  sizes: string[];
+  colors: string[];
+  original_price?: number | null;
+  price_range?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -27,7 +32,16 @@ export const useProducts = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      
+      // Transform the data to handle JSON fields
+      const transformedProducts = (data || []).map(product => ({
+        ...product,
+        sizes: Array.isArray(product.sizes) ? product.sizes : (product.sizes ? JSON.parse(product.sizes) : []),
+        colors: Array.isArray(product.colors) ? product.colors : (product.colors ? JSON.parse(product.colors) : []),
+        featured: product.featured || false
+      }));
+      
+      setProducts(transformedProducts);
     } catch (error) {
       console.error('Error fetching products:', error);
       toast({
@@ -66,9 +80,16 @@ export const useProducts = () => {
 
   const createProduct = async (product: Omit<Product, 'id'>) => {
     try {
+      const productData = {
+        ...product,
+        sizes: JSON.stringify(product.sizes || []),
+        colors: JSON.stringify(product.colors || []),
+        featured: product.featured || false
+      };
+
       const { data, error } = await supabase
         .from('products')
-        .insert([product])
+        .insert([productData])
         .select()
         .single();
 
@@ -93,9 +114,15 @@ export const useProducts = () => {
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
     try {
+      const updateData = {
+        ...updates,
+        sizes: updates.sizes ? JSON.stringify(updates.sizes) : undefined,
+        colors: updates.colors ? JSON.stringify(updates.colors) : undefined,
+      };
+
       const { data, error } = await supabase
         .from('products')
-        .update(updates)
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();

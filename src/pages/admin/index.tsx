@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ShoppingBag, Package, Users, DollarSign, TrendingUp, ArrowUpRight } from 'lucide-react';
+import ProductPopulator from '@/components/ProductPopulator';
 
 const MetricCard = ({ label, value, trend, icon: Icon, accent }: { label: string; value: string; trend?: string; icon: any; accent: string }) => (
   <Card className="p-4">
@@ -143,6 +144,9 @@ const AdminDashboard = () => {
           </div>
         </div>
       </Card>
+
+      {/* Product Database Sync */}
+      <ProductPopulator />
 
       {/* Enhanced Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
