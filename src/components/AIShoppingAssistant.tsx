@@ -145,11 +145,11 @@ const AIShoppingAssistant = () => {
   };
 
   const quickSuggestions = [
-    "Show me premium black pieces",
-    "What luxury hoodies do you have?",
-    "I need something elegant for winter",
-    "Show me ladies luxury collection",
-    "What's your most exclusive item?"
+    "Premium black pieces",
+    "Luxury hoodies",
+    "Elegant winter wear",
+    "Ladies collection",
+    "Most exclusive items"
   ];
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
@@ -198,7 +198,7 @@ const AIShoppingAssistant = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-24 right-6 z-40 w-96 h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+            className="fixed bottom-24 right-6 z-40 w-96 h-[650px] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -226,7 +226,7 @@ const AIShoppingAssistant = () => {
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 h-[400px] p-4 bg-white">
+            <ScrollArea className="flex-1 h-[420px] p-4 bg-white">
               <div className="space-y-4">
                 {messages.map((message) => (
                   <motion.div
@@ -314,15 +314,15 @@ const AIShoppingAssistant = () => {
 
             {/* Quick Suggestions */}
             {messages.length <= 1 && (
-              <div className="p-4 border-t border-gray-200 bg-gray-50">
-                <p className="text-sm text-gray-600 mb-3 font-medium">Try asking:</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="p-3 border-t border-gray-200 bg-gray-50">
+                <p className="text-xs text-gray-600 mb-2 font-medium">Try asking:</p>
+                <div className="flex flex-wrap gap-1.5">
                   {quickSuggestions.map((suggestion, index) => (
                     <Button
                       key={index}
                       variant="outline"
                       size="sm"
-                      className="text-xs h-8 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200 rounded-full px-3"
+                      className="text-xs h-7 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200 rounded-full px-2.5 whitespace-nowrap"
                       onClick={() => setInputValue(suggestion)}
                     >
                       {suggestion}
