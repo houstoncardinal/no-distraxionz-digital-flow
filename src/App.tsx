@@ -22,6 +22,7 @@ import Products from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Settings from "./pages/admin/Settings";
+import Reviews from "./pages/admin/Reviews";
 
 import './App.css';
 
@@ -48,6 +49,7 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="orders" element={<Orders />} />
               <Route path="customers" element={<Customers />} />
+              <Route path="reviews" element={<Reviews />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             
