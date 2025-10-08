@@ -594,24 +594,64 @@ const Products = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-sm hidden md:table-cell">
-                      <Badge variant="outline" className="text-xs">
-                        {p.category}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {p.category}
+                        </Badge>
+                        {p.featured && (
+                          <Badge variant="default" className="text-xs bg-yellow-100 text-yellow-800">
+                            Featured
+                          </Badge>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-sm font-medium">${p.price.toFixed(2)}</TableCell>
-                    <TableCell className="text-sm hidden lg:table-cell">
-                      <span className={p.stock && p.stock < 10 ? 'text-orange-500 font-medium' : ''}>
-                        {p.stock || 0}
-                      </span>
+                    <TableCell className="text-sm">
+                      <div>
+                        <div className="font-medium">${p.price.toFixed(2)}</div>
+                        {p.original_price && (
+                          <div className="text-xs text-muted-foreground line-through">
+                            ${p.original_price.toFixed(2)}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-sm hidden lg:table-cell">
-                      {(p.stock || 0) === 0 ? (
-                        <Badge variant="destructive" className="text-xs">Out of Stock</Badge>
-                      ) : (p.stock || 0) < 10 ? (
-                        <Badge variant="secondary" className="text-xs">Low Stock</Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs">In Stock</Badge>
-                      )}
+                      <div>
+                        <div className="font-medium">{p.stock || 0}</div>
+                        {p.sizes && p.sizes.length > 0 && (
+                          <div className="text-xs text-muted-foreground">
+                            {p.sizes.length} sizes
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm hidden lg:table-cell">
+                      <div className="space-y-1">
+                        <div>
+                          {(p.stock || 0) === 0 ? (
+                            <Badge variant="destructive" className="text-xs">Out of Stock</Badge>
+                          ) : (p.stock || 0) < 10 ? (
+                            <Badge variant="secondary" className="text-xs">Low Stock</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-xs">In Stock</Badge>
+                          )}
+                        </div>
+                        {p.colors && p.colors.length > 0 && (
+                          <div className="flex gap-1">
+                            {p.colors.slice(0, 3).map((color, index) => (
+                              <div
+                                key={index}
+                                className="w-3 h-3 rounded-full border"
+                                style={{ backgroundColor: color.toLowerCase() === 'white' ? '#ffffff' : color.toLowerCase() }}
+                                title={color}
+                              />
+                            ))}
+                            {p.colors.length > 3 && (
+                              <span className="text-xs text-muted-foreground">+{p.colors.length - 3}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
