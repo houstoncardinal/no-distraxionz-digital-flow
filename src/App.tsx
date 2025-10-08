@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from '@/contexts/CartContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
+import AIShoppingAssistant from '@/components/AIShoppingAssistant';
 
 // Pages
 import Index from './pages/Index';
@@ -59,6 +60,7 @@ function App() {
           
           {/* Global Components */}
           <CartSidebar />
+          <AIShoppingAssistant />
           <Toaster />
         </div>
       </Router>

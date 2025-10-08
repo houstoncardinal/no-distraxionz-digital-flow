@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Product } from '@/data/products';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Eye, Star, Zap, Shield, Crown } from 'lucide-react';
+import ColorSwatch from '@/components/ColorSwatch';
 
 interface ProductCardProps extends Product {}
 
@@ -217,24 +218,27 @@ const ProductCard = (product: ProductCardProps) => {
             </div>
 
             {/* Category and Colors */}
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="capitalize">{product.category}</span>
-              {product.colors.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Badge variant="outline" className="text-xs capitalize">
+                  {product.category}
+                </Badge>
                 <div className="flex items-center gap-1">
-                  <span>Colors:</span>
-                  <div className="flex gap-1">
-                    {product.colors.slice(0, 3).map((color, index) => (
-                      <div
-                        key={index}
-                        className="w-3 h-3 rounded-full border border-gray-200"
-                        style={{ backgroundColor: color.toLowerCase() }}
-                        title={color}
-                      />
-                    ))}
-                    {product.colors.length > 3 && (
-                      <span className="text-xs">+{product.colors.length - 3}</span>
-                    )}
-                  </div>
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                  ))}
+                  <span className="text-xs text-muted-foreground ml-1">(4.8)</span>
+                </div>
+              </div>
+              
+              {product.colors.length > 0 && (
+                <div className="space-y-1">
+                  <span className="text-xs font-medium text-gray-600">Available Colors:</span>
+                  <ColorSwatch
+                    colors={product.colors}
+                    size="sm"
+                    showLabels={false}
+                  />
                 </div>
               )}
             </div>

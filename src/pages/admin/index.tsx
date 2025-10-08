@@ -131,12 +131,60 @@ const AdminDashboard = () => {
             <p className="text-xs text-muted-foreground">Manage the most important parts of your shop</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-8 px-3">Add product</Button>
-            <Button variant="outline" size="sm" className="h-8 px-3">Create discount</Button>
-            <Button variant="outline" size="sm" className="h-8 px-3">Review orders</Button>
+            <Button variant="outline" size="sm" className="h-8 px-3" asChild>
+              <a href="/admin/products">Add product</a>
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 px-3" asChild>
+              <a href="/admin/orders">Review orders</a>
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 px-3" asChild>
+              <a href="/admin/analytics">View analytics</a>
+            </Button>
           </div>
         </div>
       </Card>
+
+      {/* Enhanced Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium">Inventory Health</h3>
+              <p className="text-2xl font-bold text-green-600">88%</p>
+              <p className="text-xs text-muted-foreground">Products in stock</p>
+            </div>
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Package className="h-5 w-5 text-green-600" />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium">Customer Satisfaction</h3>
+              <p className="text-2xl font-bold text-blue-600">4.8/5</p>
+              <p className="text-xs text-muted-foreground">Average rating</p>
+            </div>
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Users className="h-5 w-5 text-blue-600" />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium">Conversion Rate</h3>
+              <p className="text-2xl font-bold text-purple-600">3.2%</p>
+              <p className="text-xs text-muted-foreground">Visitor to customer</p>
+            </div>
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-purple-600" />
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
