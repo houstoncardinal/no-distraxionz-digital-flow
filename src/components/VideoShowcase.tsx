@@ -198,41 +198,6 @@ const VideoShowcase = () => {
         </div>
       </div>
 
-      {/* Bottom Stats */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        viewport={{ once: true }}
-        className="container mx-auto px-4 mt-20"
-      >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-              10K+
-            </div>
-            <div className="text-gray-400 text-sm">Happy Customers</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-              500+
-            </div>
-            <div className="text-gray-400 text-sm">Products Sold</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-400 to-red-400 bg-clip-text text-transparent mb-2">
-              4.9★
-            </div>
-            <div className="text-gray-400 text-sm">Average Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2">
-              100%
-            </div>
-            <div className="text-gray-400 text-sm">Quality Guarantee</div>
-          </div>
-        </div>
-      </motion.div>
     </section>
   );
 };

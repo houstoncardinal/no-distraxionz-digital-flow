@@ -95,8 +95,8 @@ const Index = () => {
                     <Shield className="h-7 w-7 text-white group-hover:text-green-400 transition-colors duration-300" />
                   </motion.div>
                   <div>
-                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-green-400 transition-colors duration-300">Fort Knox Security</h4>
-                    <p className="text-sm text-white/70">Military-grade protection</p>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-green-400 transition-colors duration-300">Secure Checkout</h4>
+                    <p className="text-sm text-white/70">SSL encrypted transactions</p>
                   </div>
                 </motion.div>
                 <motion.div 
@@ -114,8 +114,8 @@ const Index = () => {
                     <Truck className="h-7 w-7 text-white group-hover:text-blue-400 transition-colors duration-300" />
                   </motion.div>
                   <div>
-                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-blue-400 transition-colors duration-300">White Glove Delivery</h4>
-                    <p className="text-sm text-white/70">Concierge service included</p>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-blue-400 transition-colors duration-300">Fast Shipping</h4>
+                    <p className="text-sm text-white/70">Delivery in 3-5 business days</p>
                   </div>
                 </motion.div>
                 <motion.div 
@@ -133,8 +133,8 @@ const Index = () => {
                     <Headphones className="h-7 w-7 text-white group-hover:text-purple-400 transition-colors duration-300" />
                   </motion.div>
                   <div>
-                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-purple-400 transition-colors duration-300">24/7 Elite Support</h4>
-                    <p className="text-sm text-white/70">Personal styling consultants</p>
+                    <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-purple-400 transition-colors duration-300">Customer Support</h4>
+                    <p className="text-sm text-white/70">We're here to help</p>
                   </div>
                 </motion.div>
               </div>
@@ -458,36 +458,6 @@ const Index = () => {
                 Premium streetwear built for focus and movement. Limited drops, precision details, everyday comfort.
               </motion.p>
 
-              {/* Performance Metrics */}
-              <motion.div 
-                className="flex flex-wrap items-center justify-center gap-12 mb-16"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-              >
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-3xl md:text-4xl font-black text-white mb-2">99%</div>
-                  <div className="text-sm text-white/60 font-medium">Customer Satisfaction</div>
-                </motion.div>
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-3xl md:text-4xl font-black text-green-400 mb-2">24/7</div>
-                  <div className="text-sm text-white/60 font-medium">Premium Support</div>
-                </motion.div>
-                <motion.div 
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-3xl md:text-4xl font-black text-blue-400 mb-2">48H</div>
-                  <div className="text-sm text-white/60 font-medium">Express Delivery</div>
-                </motion.div>
-              </motion.div>
             </motion.div>
 
             {/* No Distraxionz Features Grid */}

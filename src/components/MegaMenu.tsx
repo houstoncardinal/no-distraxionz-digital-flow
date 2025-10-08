@@ -495,7 +495,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Headphones className="h-4 w-4" />
-                <span>24/7 Support</span>
+                <span>Customer Support</span>
               </div>
             </div>
             <div className="flex items-center gap-4">
