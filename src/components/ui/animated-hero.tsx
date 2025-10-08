@@ -81,11 +81,6 @@ function Hero() {
 
       <div className="w-full relative z-10">
         <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
-          <div>
-            <Button variant="outline" size="sm" className="gap-4 border-white/20 text-white hover:bg-white hover:text-black bg-transparent">
-              New drop live now <MoveRight className="w-4 h-4" />
-            </Button>
-          </div>
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
               <span className="text-white">NO DISTRAXIONZ</span>

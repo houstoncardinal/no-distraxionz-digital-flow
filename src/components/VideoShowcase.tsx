@@ -184,12 +184,6 @@ const VideoShowcase = () => {
                 </div>
               </div>
 
-              {/* Decorative Elements */}
-              <div className="absolute top-4 right-4">
-                <div className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-full text-white text-xs font-bold shadow-lg">
-                  LIVE NOW
-                </div>
-              </div>
             </div>
 
             {/* Decorative Glow */}
