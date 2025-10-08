@@ -136,7 +136,7 @@ function Hero() {
                 Shop Now
               </Link>
             </Button>
-            <Button asChild size="lg" className="gap-4 border-white/30 text-white hover:bg-white hover:text-black bg-transparent" variant="outline">
+            <Button asChild size="lg" className="gap-4 border-white/30 text-black bg-white hover:bg-gray-100 font-medium" variant="outline">
               <Link to="/shop">
                 Browse Catalog <MoveRight className="w-4 h-4" />
               </Link>
