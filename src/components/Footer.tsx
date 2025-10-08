@@ -223,8 +223,6 @@ const Footer = () => {
               >
                 <span className="text-green-600">Cardinal</span> Consulting
               </a>
-              <span className="text-gray-400">•</span>
-              <span className="text-gray-500">Professional Web Development</span>
             </div>
           </div>
         </div>
