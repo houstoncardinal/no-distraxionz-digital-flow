@@ -25,15 +25,17 @@ const Index = () => {
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   const [showQuickView, setShowQuickView] = useState(false);
   
+  // Show featured products, or if none are marked as featured, just show first 3 products
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
+  const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 3);
 
   const handleBuyNow = () => {
-    if (featuredProducts.length > 0) {
-      // Add the first featured product to cart and go to checkout
-      addItem(featuredProducts[0]);
+    if (displayProducts.length > 0) {
+      // Add the first product to cart and go to checkout
+      addItem(displayProducts[0]);
       toast({
         title: "Added to cart!",
-        description: `${featuredProducts[0].name} has been added to your cart.`,
+        description: `${displayProducts[0].name} has been added to your cart.`,
       });
       // Navigate to checkout
       window.location.href = '/checkout';
@@ -41,18 +43,18 @@ const Index = () => {
   };
 
   const handleAddToWishlist = () => {
-    if (featuredProducts.length > 0) {
-      toggleItem(featuredProducts[0]);
+    if (displayProducts.length > 0) {
+      toggleItem(displayProducts[0]);
       toast({
-        title: isInWishlist(featuredProducts[0].id) ? "Removed from wishlist" : "Added to wishlist",
-        description: `${featuredProducts[0].name} has been ${isInWishlist(featuredProducts[0].id) ? 'removed from' : 'added to'} your wishlist.`,
+        title: isInWishlist(displayProducts[0].id) ? "Removed from wishlist" : "Added to wishlist",
+        description: `${displayProducts[0].name} has been ${isInWishlist(displayProducts[0].id) ? 'removed from' : 'added to'} your wishlist.`,
       });
     }
   };
 
   const handleQuickView = () => {
-    if (featuredProducts.length > 0) {
-      setQuickViewProduct(featuredProducts[0]);
+    if (displayProducts.length > 0) {
+      setQuickViewProduct(displayProducts[0]);
       setShowQuickView(true);
     }
   };
@@ -245,7 +247,26 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              {featuredProducts.map((product, index) => (
+              {loading ? (
+                // Loading state
+                <div className="col-span-3 text-center py-20">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                  <p className="mt-4 text-gray-600">Loading products...</p>
+                </div>
+              ) : displayProducts.length === 0 ? (
+                // No products state
+                <div className="col-span-3 text-center py-20">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ShoppingBag className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Products Loading</h3>
+                  <p className="text-gray-600 mb-6">Our products are being added to the store. Please refresh in a moment.</p>
+                  <Button onClick={() => window.location.reload()} className="bg-black text-white hover:bg-gray-800">
+                    Refresh Page
+                  </Button>
+                </div>
+              ) : (
+                displayProducts.map((product, index) => (
                 <motion.div 
                   key={product.id} 
                   className="group"
@@ -279,7 +300,7 @@ const Index = () => {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+              )))}
             </motion.div>
 
             {/* Ultra Modern Call to Action */}
@@ -290,41 +311,43 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              {/* Quick Purchase Options */}
-              <div className="bg-gray-50 rounded-3xl p-8 max-w-4xl mx-auto">
-                <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Quick Checkout</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button 
-                      onClick={handleBuyNow}
-                      className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl"
-                    >
-                      <ShoppingBag className="mr-3 h-6 w-6" />
-                      Buy Now
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button 
-                      onClick={handleAddToWishlist}
-                      variant="outline" 
-                      className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
-                    >
-                      <Heart className={`mr-3 h-6 w-6 ${featuredProducts.length > 0 && isInWishlist(featuredProducts[0].id) ? 'fill-red-500 text-red-500' : ''}`} />
-                      Add to Wishlist
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button 
-                      onClick={handleQuickView}
-                      variant="outline" 
-                      className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
-                    >
-                      <Eye className="mr-3 h-6 w-6" />
-                      Quick View
-                    </Button>
-                  </motion.div>
+              {/* Quick Purchase Options - Only show if products exist */}
+              {displayProducts.length > 0 && (
+                <div className="bg-gray-50 rounded-3xl p-8 max-w-4xl mx-auto">
+                  <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Quick Checkout</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Button 
+                        onClick={handleBuyNow}
+                        className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl"
+                      >
+                        <ShoppingBag className="mr-3 h-6 w-6" />
+                        Buy Now
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Button 
+                        onClick={handleAddToWishlist}
+                        variant="outline" 
+                        className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
+                      >
+                        <Heart className={`mr-3 h-6 w-6 ${displayProducts.length > 0 && isInWishlist(displayProducts[0].id) ? 'fill-red-500 text-red-500' : ''}`} />
+                        Add to Wishlist
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Button 
+                        onClick={handleQuickView}
+                        variant="outline" 
+                        className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
+                      >
+                        <Eye className="mr-3 h-6 w-6" />
+                        Quick View
+                      </Button>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Button asChild size="lg" className="bg-black text-white hover:bg-gray-800 font-bold px-16 py-6 text-xl rounded-full shadow-2xl group">
