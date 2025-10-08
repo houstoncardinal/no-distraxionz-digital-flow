@@ -51,14 +51,14 @@ const ProductCard = (product: ProductCardProps) => {
   };
 
   return (
-    <div className="block relative">
+    <Link to={`/product/${product.id}`} className="block relative">
       <motion.div
         className="group"
         whileHover={{ y: -5 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
         <Card 
-          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white backdrop-blur-sm group-hover:bg-white/95"
+          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white backdrop-blur-sm group-hover:bg-white/95 cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -246,7 +246,7 @@ const ProductCard = (product: ProductCardProps) => {
           </CardContent>
         </Card>
       </motion.div>
-    </div>
+    </Link>
   );
 };
 

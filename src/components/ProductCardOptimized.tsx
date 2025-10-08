@@ -70,7 +70,7 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="block relative">
+    <Link to={`/product/${product.id}`} className="block relative">
       <motion.div
         className="group"
         whileHover={{ y: -8 }}
@@ -84,7 +84,7 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
         }}
       >
         <Card 
-          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white backdrop-blur-sm group-hover:bg-white/95"
+          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white backdrop-blur-sm group-hover:bg-white/95 cursor-pointer"
         >
           <div className="relative overflow-hidden">
             <OptimizedImage
@@ -275,7 +275,7 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
           </CardContent>
         </Card>
       </motion.div>
-    </div>
+    </Link>
   );
 });
 
