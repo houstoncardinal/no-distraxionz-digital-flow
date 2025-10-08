@@ -4,6 +4,8 @@ import { WishlistProvider } from '@/contexts/WishlistContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
 import AIShoppingAssistant from '@/components/AIShoppingAssistant';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { ConstructionBanner } from '@/components/ConstructionBanner';
 import { quickPopulateProducts } from '@/utils/quickPopulate';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
@@ -46,6 +48,8 @@ function App() {
     <CartProvider>
       <WishlistProvider>
         <Router>
+        <ScrollToTop />
+        <ConstructionBanner />
         <div className="App">
           <Routes>
             {/* Public Routes */}
