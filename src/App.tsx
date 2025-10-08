@@ -4,7 +4,6 @@ import { WishlistProvider } from '@/contexts/WishlistContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
 import AIShoppingAssistant from '@/components/AIShoppingAssistant';
-import PerformanceMonitor from '@/components/PerformanceMonitor';
 import { quickPopulateProducts } from '@/utils/quickPopulate';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
@@ -79,7 +78,6 @@ function App() {
           <CartSidebar />
           <AIShoppingAssistant />
           <Toaster />
-          <PerformanceMonitor />
         </div>
         </Router>
       </WishlistProvider>
