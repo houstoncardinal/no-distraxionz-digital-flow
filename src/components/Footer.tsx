@@ -209,22 +209,22 @@ const Footer = () => {
         </div>
       </div>
       
-      {/* Cardinal Consulting Credit Bar */}
-      <div className="bg-gradient-to-r from-gray-900 via-black to-gray-900 border-t border-gray-800">
+      {/* Ultra Luxury Cardinal Consulting Credit Bar */}
+      <div className="bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 border-t border-gray-200 shadow-2xl">
         <div className="w-full container-padding-modern">
-          <div className="flex items-center justify-center py-3">
-            <div className="flex items-center space-x-2 text-white/80 text-sm">
+          <div className="flex items-center justify-center py-2">
+            <div className="flex items-center space-x-2 text-gray-600 text-xs font-medium">
               <span>Created by</span>
               <a 
                 href="https://www.cardinalhtx.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="font-semibold text-white hover:text-blue-400 transition-colors duration-300 hover:underline decoration-blue-400 underline-offset-2"
+                className="font-bold text-gray-800 hover:text-green-600 transition-all duration-300 hover:underline decoration-green-500 underline-offset-2 hover:shadow-sm"
               >
-                Cardinal Consulting
+                <span className="text-green-600">Cardinal</span> Consulting
               </a>
-              <span className="text-white/60">•</span>
-              <span className="text-white/60">Professional Web Development</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-500">Professional Web Development</span>
             </div>
           </div>
         </div>
