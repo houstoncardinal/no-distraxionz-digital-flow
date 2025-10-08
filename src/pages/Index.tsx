@@ -741,7 +741,7 @@ const Index = () => {
         <div className="w-full container-padding-modern text-center relative z-10">
           <div className="w-full space-y-12">
             <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
-              No Distractions. Just Progress.
+              No Distraxionz. Just Progress.
             </h2>
             <p className="text-xl md:text-2xl opacity-90 leading-relaxed font-light">
               Join those who've eliminated the noise. Who've chosen focus over chaos. 
