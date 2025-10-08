@@ -63,7 +63,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       image: '/shirts/envato-labs-image-edit (62).png',
       subcategories: ['Basic Tees', 'Graphic Tees', 'Long Sleeve', 'Tank Tops'],
       features: ['100% Cotton', 'Pre-shrunk', 'Machine Washable', 'Unisex Fit'],
-      priceRange: '$25 - $45'
+      priceRange: '$40'
     },
     {
       id: 'ladies',
@@ -77,7 +77,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       image: '/ladies/envato-labs-image-edit (63).png',
       subcategories: ['Blouses', 'Tops', 'Dresses', 'Activewear'],
       features: ['Premium Materials', 'Perfect Fit', 'Trendy Designs', 'Comfortable'],
-      priceRange: '$30 - $60'
+      priceRange: '$35'
     },
     {
       id: 'hoodies',
@@ -91,7 +91,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       image: '/hoodie/envato-labs-image-edit (62).png',
       subcategories: ['Pullover', 'Zip-up', 'Cropped', 'Oversized'],
       features: ['Fleece Lined', 'Kangaroo Pocket', 'Drawstring Hood', 'Ribbed Cuffs'],
-      priceRange: '$45 - $75'
+      priceRange: '$65'
     },
     {
       id: 'hats',
@@ -105,7 +105,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       image: '/hats/envato-labs-image-edit (62).png',
       subcategories: ['Baseball Caps', 'Beanies', 'Snapbacks', 'Bucket Hats'],
       features: ['Adjustable Fit', 'UV Protection', 'Moisture Wicking', 'Durable'],
-      priceRange: '$20 - $40'
+      priceRange: '$35'
     },
     {
       id: 'toddler shirts',
@@ -119,7 +119,21 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       image: '/toddler-shirts/envato-labs-image-edit - 2025-10-07T220721.938.png',
       subcategories: ['Basic Tees', 'Graphic Tees', 'Performance Tees', 'Premium Cotton'],
       features: ['Soft Fabric', 'Durable', 'Easy Care', 'Toddler Sizes'],
-      priceRange: '$20 - $26'
+      priceRange: '$25'
+    },
+    {
+      id: 'onesies',
+      name: 'Onesies',
+      description: 'Adorable onesies for your little ones',
+      icon: Users,
+      color: 'from-yellow-500 to-yellow-600',
+      bgColor: 'bg-yellow-50',
+      textColor: 'text-yellow-700',
+      borderColor: 'border-yellow-200',
+      image: '/onesie/envato-labs-image-edit - 2025-10-07T213233.751.png',
+      subcategories: ['Newborn', 'Infant', 'Cotton Blend', 'Organic Cotton'],
+      features: ['Soft Cotton', 'Easy Snaps', 'Machine Washable', 'Baby Safe'],
+      priceRange: '$20'
     }
   ];
 
