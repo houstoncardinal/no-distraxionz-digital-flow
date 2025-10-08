@@ -23,10 +23,19 @@ const ProductCard = (product: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     
+    if (!selectedSize && product.sizes && product.sizes.length > 0) {
+      toast({
+        title: "Please select a size",
+        description: "Choose your size before adding to cart.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    addItem(product, selectedSize);
     toast({
-      title: "Database Pending",
-      description: "Products are being added to the database. Please check back soon!",
-      variant: "destructive",
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
     });
   };
 
@@ -34,10 +43,10 @@ const ProductCard = (product: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     
+    setIsWishlisted(!isWishlisted);
     toast({
-      title: "Database Pending",
-      description: "Products are being added to the database. Please check back soon!",
-      variant: "destructive",
+      title: isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+      description: `${product.name} ${isWishlisted ? 'removed from' : 'added to'} your wishlist.`,
     });
   };
 
@@ -96,17 +105,6 @@ const ProductCard = (product: ProductCardProps) => {
 
             {/* Enhanced Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {/* Pending Database Badge - Always Show */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold shadow-lg border-0">
-                  <Shield className="h-3 w-3 mr-1" />
-                  Pending Database
-                </Badge>
-              </motion.div>
               {product.featured && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}

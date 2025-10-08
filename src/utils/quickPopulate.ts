@@ -48,3 +48,4 @@ if (typeof window !== 'undefined') {
   console.log('💡 Run quickPopulateProducts() in console to populate products');
 }
 
+
