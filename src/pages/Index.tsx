@@ -1,18 +1,61 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Hero } from '@/components/ui/animated-hero';
 import ProductCard from '@/components/ProductCard';
 import CategoryShowcase from '@/components/CategoryShowcase';
+import VideoShowcase from '@/components/VideoShowcase';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { products } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
+import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { ChevronRight, Award, Shield, Truck, Headphones, Globe, Users, Play, ShoppingBag, Star, Filter, Search, Heart, TrendingUp, Package, CreditCard, Sparkles, Crown, Diamond, Zap, Target, ArrowRight, Shirt, Zap as ZapIcon, Eye } from 'lucide-react';
+import QuickViewModal from '@/components/QuickViewModal';
 
 const Index = () => {
+  const { products, loading } = useProducts();
+  const { addItem } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+  const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
+  const [showQuickView, setShowQuickView] = useState(false);
+  
   const featuredProducts = products.filter(product => product.featured).slice(0, 3);
+
+  const handleBuyNow = () => {
+    if (featuredProducts.length > 0) {
+      // Add the first featured product to cart and go to checkout
+      addItem(featuredProducts[0]);
+      toast({
+        title: "Added to cart!",
+        description: `${featuredProducts[0].name} has been added to your cart.`,
+      });
+      // Navigate to checkout
+      window.location.href = '/checkout';
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    if (featuredProducts.length > 0) {
+      toggleItem(featuredProducts[0]);
+      toast({
+        title: isInWishlist(featuredProducts[0].id) ? "Removed from wishlist" : "Added to wishlist",
+        description: `${featuredProducts[0].name} has been ${isInWishlist(featuredProducts[0].id) ? 'removed from' : 'added to'} your wishlist.`,
+      });
+    }
+  };
+
+  const handleQuickView = () => {
+    if (featuredProducts.length > 0) {
+      setQuickViewProduct(featuredProducts[0]);
+      setShowQuickView(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -252,19 +295,30 @@ const Index = () => {
                 <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Quick Checkout</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl">
+                    <Button 
+                      onClick={handleBuyNow}
+                      className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl"
+                    >
                       <ShoppingBag className="mr-3 h-6 w-6" />
                       Buy Now
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button variant="outline" className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl">
-                      <Heart className="mr-3 h-6 w-6" />
+                    <Button 
+                      onClick={handleAddToWishlist}
+                      variant="outline" 
+                      className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
+                    >
+                      <Heart className={`mr-3 h-6 w-6 ${featuredProducts.length > 0 && isInWishlist(featuredProducts[0].id) ? 'fill-red-500 text-red-500' : ''}`} />
                       Add to Wishlist
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button variant="outline" className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl">
+                    <Button 
+                      onClick={handleQuickView}
+                      variant="outline" 
+                      className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
+                    >
                       <Eye className="mr-3 h-6 w-6" />
                       Quick View
                     </Button>
@@ -311,6 +365,9 @@ const Index = () => {
 
       {/* Category Showcase */}
       <CategoryShowcase />
+
+      {/* Video Showcase */}
+      <VideoShowcase />
 
       {/* Ultra Sleek Brand Section */}
       <section className="relative w-full bg-black overflow-hidden py-32">
@@ -710,6 +767,13 @@ const Index = () => {
       </section>
 
       <Footer />
+      
+      {/* Quick View Modal */}
+      <QuickViewModal 
+        product={quickViewProduct}
+        isOpen={showQuickView}
+        onClose={() => setShowQuickView(false)}
+      />
     </div>
   );
 };

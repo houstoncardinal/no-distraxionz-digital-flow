@@ -221,4 +221,5 @@ export const categories = [
   { name: 'Ladies', value: 'Ladies' },
   { name: 'Hoodies', value: 'Hoodies' },
   { name: 'Hats', value: 'Hats' },
+  { name: 'Toddler Shirts', value: 'Toddler Shirts' },
 ];

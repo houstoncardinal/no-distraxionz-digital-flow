@@ -24,8 +24,25 @@ function Hero() {
 
   return (
     <div className="relative w-full bg-black overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'brightness(0.4) contrast(1.1)' }}
+        >
+          <source src="/vid1.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      {/* Enhanced Dark Overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+      
       {/* Ultra sleek dark vignette */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.8)_100%)]" />
 
       {/* Animated gradient blobs (subtle white glows) */}
       <motion.div

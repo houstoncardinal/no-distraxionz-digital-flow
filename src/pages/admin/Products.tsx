@@ -65,6 +65,10 @@ import { Separator } from '@/components/ui/separator';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { ProductVariations, ProductVariation } from '@/components/admin/ProductVariations';
 import { MetaTags } from '@/components/admin/MetaTags';
+import { populateDatabase } from '@/utils/populateDatabase';
+import QuickPopulate from '@/components/admin/QuickPopulate';
+import ImageDatabasePopulator from '@/components/admin/ImageDatabasePopulator';
+import ProductGallery from '@/components/admin/ProductGallery';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -221,6 +225,16 @@ const Products = () => {
     setSelectedProducts([]);
   };
 
+  const handlePopulateProducts = async () => {
+    try {
+      await populateDatabase();
+      // Refresh products after population
+      window.location.reload();
+    } catch (error) {
+      console.error('Error populating products:', error);
+    }
+  };
+
   const handleSelectAll = () => {
     if (selectedProducts.length === filtered.length) {
       setSelectedProducts([]);
@@ -245,27 +259,49 @@ const Products = () => {
 
   return (
     <div className="space-y-4 pb-8">
-      {/* Enhanced Toolbar */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">Products</h1>
-            <p className="text-sm text-muted-foreground">Manage your product catalog</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
-              <Download className="h-4 w-4" />
-              Export
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Upload className="h-4 w-4" />
-              Import
-            </Button>
-            <Dialog open={open} onOpenChange={handleOpenChange}>
-              <Button onClick={() => setOpen(true)} className="gap-2 h-9 px-4">
-                <Plus className="h-4 w-4" />
-                Add Product
-              </Button>
+      {/* Quick Populate Section */}
+      {products.length === 0 && (
+        <div className="mb-6 space-y-6">
+          <ImageDatabasePopulator />
+          <QuickPopulate />
+        </div>
+      )}
+
+      {/* Product Gallery */}
+      {products.length > 0 ? (
+        <ProductGallery />
+      ) : (
+        <div className="space-y-6">
+          {/* Enhanced Toolbar for Empty State */}
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+              <div>
+                <h1 className="text-xl font-semibold tracking-tight">Products</h1>
+                <p className="text-sm text-muted-foreground">Manage your product catalog</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Export
+                </Button>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Upload className="h-4 w-4" />
+                  Import
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handlePopulateProducts}
+                >
+                  <Package className="h-4 w-4" />
+                  Populate Products
+                </Button>
+                <Dialog open={open} onOpenChange={handleOpenChange}>
+                  <Button onClick={() => setOpen(true)} className="gap-2 h-9 px-4">
+                    <Plus className="h-4 w-4" />
+                    Add Product
+                  </Button>
               <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 bg-background border-b px-6 py-4">
                   <DialogHeader>
