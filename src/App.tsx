@@ -1,8 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from '@/contexts/CartContext';
+import { WishlistProvider } from '@/contexts/WishlistContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
 import AIShoppingAssistant from '@/components/AIShoppingAssistant';
+import PerformanceMonitor from '@/components/PerformanceMonitor';
+import { quickPopulateProducts } from '@/utils/quickPopulate';
+import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
+import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
 
 // Pages
 import Index from './pages/Index';
@@ -19,7 +24,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 // Admin Pages
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin";
-import Products from "./pages/admin/Products";
+import Products from "./pages/admin/ProductsNew";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Settings from "./pages/admin/Settings";
@@ -28,9 +33,17 @@ import Reviews from "./pages/admin/Reviews";
 import './App.css';
 
 function App() {
+  // Make populate functions available globally for debugging
+  if (typeof window !== 'undefined') {
+    (window as any).populateProducts = quickPopulateProducts;
+    (window as any).populateFromImages = populateProductsFromImageDatabase;
+    (window as any).populateToddlerShirts = populateToddlerShirts;
+  }
+
   return (
     <CartProvider>
-      <Router>
+      <WishlistProvider>
+        <Router>
         <div className="App">
           <Routes>
             {/* Public Routes */}
@@ -62,8 +75,10 @@ function App() {
           <CartSidebar />
           <AIShoppingAssistant />
           <Toaster />
+          <PerformanceMonitor />
         </div>
-      </Router>
+        </Router>
+      </WishlistProvider>
     </CartProvider>
   );
 }

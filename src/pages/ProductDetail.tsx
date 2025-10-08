@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { products } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { products, loading } = useProducts();
   
   const product = products.find(p => p.id === id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== id).slice(0, 3);
@@ -25,6 +26,21 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="w-full px-4 py-16">
+          <div className="text-center space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading product...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -123,7 +139,7 @@ const ProductDetail = () => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   {product.featured && <Badge>Featured</Badge>}
-                  {product.originalPrice && <Badge variant="destructive">Sale</Badge>}
+                  {product.original_price && <Badge variant="destructive">Sale</Badge>}
                 </div>
                 <h1 className="text-3xl font-playfair font-medium mb-2">{product.name}</h1>
                 <div className="flex items-center gap-4 mb-4">
@@ -137,10 +153,10 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mb-6">
-                  <span className="text-3xl font-bold">{product.price}</span>
-                  {product.originalPrice && (
+                  <span className="text-3xl font-bold">${product.price}</span>
+                  {product.original_price && (
                     <span className="text-xl text-muted-foreground line-through">
-                      {product.originalPrice}
+                      ${product.original_price}
                     </span>
                   )}
                 </div>

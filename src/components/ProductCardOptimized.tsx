@@ -1,25 +1,32 @@
-import { useState } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/components/ui/use-toast';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { useToast } from '@/hooks/use-toast';
 import { Product } from '@/hooks/useProducts';
-import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Eye, Star, Zap, Shield, Crown } from 'lucide-react';
-import ColorSwatch from '@/components/ColorSwatch';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { ShoppingCart, Heart, Eye, Star, StarOff, Crown } from 'lucide-react';
+import OptimizedImage from './OptimizedImage';
 
-interface ProductCardProps extends Product {}
+interface ProductCardOptimizedProps extends Product {}
 
-const ProductCard = (product: ProductCardProps) => {
+const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>('');
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const { addItem } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
   const { toast } = useToast();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  // Optimized motion values for smooth animations
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
+
+  const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -37,37 +44,53 @@ const ProductCard = (product: ProductCardProps) => {
       title: "Added to cart!",
       description: `${product.name} has been added to your cart.`,
     });
-  };
+  }, [product, selectedSize, addItem, toast]);
 
-  const handleWishlist = (e: React.MouseEvent) => {
+  const handleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
+    toggleItem(product);
     toast({
-      title: isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-      description: `${product.name} has been ${isWishlisted ? 'removed from' : 'added to'} your wishlist.`,
+      title: isInWishlist(product.id) ? "Removed from wishlist" : "Added to wishlist",
+      description: `${product.name} has been ${isInWishlist(product.id) ? 'removed from' : 'added to'} your wishlist.`,
     });
-  };
+  }, [product, toggleItem, isInWishlist, toast]);
+
+  const handleMouseMove = useCallback((event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    mouseX.set(event.clientX - rect.left - rect.width / 2);
+    mouseY.set(event.clientY - rect.top - rect.height / 2);
+  }, [mouseX, mouseY]);
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(0);
+    mouseY.set(0);
+    setIsHovered(false);
+  }, [mouseX, mouseY]);
 
   return (
     <Link to={`/product/${product.id}`} className="block">
       <motion.div
         className="group"
-        whileHover={{ y: -5 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        whileHover={{ y: -8 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsHovered(true)}
+        style={{
+          rotateX: isHovered ? rotateX : 0,
+          rotateY: isHovered ? rotateY : 0,
+        }}
       >
         <Card 
-          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white backdrop-blur-sm group-hover:bg-white/95"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white backdrop-blur-sm group-hover:bg-white/95"
         >
           <div className="relative overflow-hidden">
-            <motion.img
+            <OptimizedImage
               src={product.image}
               alt={product.name}
               className="w-full aspect-square object-cover"
-              whileHover={{ scale: 1.08 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              priority={product.featured}
             />
             
             {/* Enhanced Overlay with Gradient */}
@@ -75,14 +98,14 @@ const ProductCard = (product: ProductCardProps) => {
               className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
               initial={{ opacity: 0 }}
               animate={{ opacity: isHovered ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2 }}
             >
               {/* Action Buttons */}
               <motion.div 
                 className="absolute top-4 right-4 flex flex-col gap-2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
+                transition={{ duration: 0.2, delay: 0.1 }}
               >
                 <Button
                   variant="secondary"
@@ -90,7 +113,7 @@ const ProductCard = (product: ProductCardProps) => {
                   className="h-10 w-10 rounded-full bg-white/95 hover:bg-white shadow-xl backdrop-blur-sm border border-white/20"
                   onClick={handleWishlist}
                 >
-                  <Heart className={`h-5 w-5 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+                  <Heart className={`h-5 w-5 transition-colors ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
                 </Button>
                 <Button
                   variant="secondary"
@@ -108,22 +131,21 @@ const ProductCard = (product: ProductCardProps) => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold shadow-lg border-0">
+                  <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold shadow-lg">
                     <Crown className="h-3 w-3 mr-1" />
                     Featured
                   </Badge>
                 </motion.div>
               )}
-              {product.originalPrice && (
+              {product.original_price && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
+                  transition={{ duration: 0.2, delay: 0.1 }}
                 >
-                  <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg border-0">
-                    <Zap className="h-3 w-3 mr-1" />
+                  <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg">
                     Sale
                   </Badge>
                 </motion.div>
@@ -138,7 +160,7 @@ const ProductCard = (product: ProductCardProps) => {
                 opacity: isHovered ? 1 : 0, 
                 y: isHovered ? 0 : 20 
               }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: 0.2, delay: 0.2 }}
             >
               {product.sizes && product.sizes.length > 0 ? (
                 <div className="space-y-3">
@@ -190,7 +212,7 @@ const ProductCard = (product: ProductCardProps) => {
 
           <CardContent className="p-4 space-y-3">
             <div>
-              <h3 className="font-playfair text-lg font-medium text-gray-900 group-hover:text-primary transition-colors">
+              <h3 className="font-playfair text-lg font-medium text-gray-900 group-hover:text-primary transition-colors line-clamp-1">
                 {product.name}
               </h3>
               <p className="text-sm text-muted-foreground line-clamp-2">
@@ -210,10 +232,11 @@ const ProductCard = (product: ProductCardProps) => {
                 )}
               </div>
               <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                ))}
-                <span className="text-xs text-muted-foreground ml-1">(4.8)</span>
+                {product.featured ? (
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                ) : (
+                  <StarOff className="h-3 w-3 text-gray-400" />
+                )}
               </div>
             </div>
 
@@ -224,9 +247,7 @@ const ProductCard = (product: ProductCardProps) => {
                   {product.category}
                 </Badge>
                 <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  ))}
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                   <span className="text-xs text-muted-foreground ml-1">(4.8)</span>
                 </div>
               </div>
@@ -234,11 +255,19 @@ const ProductCard = (product: ProductCardProps) => {
               {product.colors && product.colors.length > 0 && (
                 <div className="space-y-1">
                   <span className="text-xs font-medium text-gray-600">Available Colors:</span>
-                  <ColorSwatch
-                    colors={product.colors}
-                    size="sm"
-                    showLabels={false}
-                  />
+                  <div className="flex gap-1">
+                    {product.colors.slice(0, 4).map((color, index) => (
+                      <div
+                        key={index}
+                        className="w-4 h-4 rounded-full border border-gray-300"
+                        style={{ backgroundColor: color.toLowerCase() === 'white' ? '#ffffff' : color.toLowerCase() }}
+                        title={color}
+                      />
+                    ))}
+                    {product.colors.length > 4 && (
+                      <span className="text-xs text-gray-500">+{product.colors.length - 4}</span>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -247,6 +276,8 @@ const ProductCard = (product: ProductCardProps) => {
       </motion.div>
     </Link>
   );
-};
+});
 
-export default ProductCard; 
+ProductCardOptimized.displayName = 'ProductCardOptimized';
+
+export default ProductCardOptimized;

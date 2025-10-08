@@ -3,16 +3,24 @@ import { Link, NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CartTrigger } from '@/components/cart/CartSidebar';
 import { useCart } from '@/contexts/CartContext';
-import { Menu, X, Search, User, Heart } from 'lucide-react';
+import MegaMenu from './MegaMenu';
+import MobileMegaMenu from './MobileMegaMenu';
+import { Menu, X, Search, User, Heart, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [isMobileMegaMenuOpen, setIsMobileMegaMenuOpen] = useState(false);
   const { state } = useCart();
 
   const navLinks = [
     { to: '/', label: 'Home' },
-    { to: '/shop', label: 'Shop' },
+    { 
+      to: '/shop', 
+      label: 'Shop',
+      hasMegaMenu: true 
+    },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
     { to: '/faq', label: 'FAQ' },
@@ -58,18 +66,33 @@ const Header = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.3 + (index * 0.1) }}
+                className="relative"
               >
-                <NavLink
-                  to={link.to}
-                  className={({ isActive }) =>
-                    `relative text-sm font-semibold transition-all duration-300 hover:text-black group ${
-                      isActive ? 'text-black' : 'text-gray-600'
-                    }`
-                  }
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 h-0.5 bg-black transition-all duration-300 w-0 group-hover:w-full" />
-                </NavLink>
+                {link.hasMegaMenu ? (
+                  <div
+                    className="relative text-sm font-semibold transition-all duration-300 hover:text-black group cursor-pointer flex items-center gap-1"
+                    onMouseEnter={() => setIsMegaMenuOpen(true)}
+                    onMouseLeave={() => setIsMegaMenuOpen(false)}
+                  >
+                    {link.label}
+                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
+                      isMegaMenuOpen ? 'rotate-180' : ''
+                    }`} />
+                    <span className="absolute -bottom-1 left-0 h-0.5 bg-black transition-all duration-300 w-0 group-hover:w-full" />
+                  </div>
+                ) : (
+                  <NavLink
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `relative text-sm font-semibold transition-all duration-300 hover:text-black group ${
+                        isActive ? 'text-black' : 'text-gray-600'
+                      }`
+                    }
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 h-0.5 bg-black transition-all duration-300 w-0 group-hover:w-full" />
+                  </NavLink>
+                )}
               </motion.div>
             ))}
           </motion.nav>
@@ -128,17 +151,30 @@ const Header = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    <NavLink
-                      to={link.to}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `block text-lg font-semibold transition-colors duration-200 ${
-                          isActive ? 'text-black' : 'text-gray-600 hover:text-black'
-                        }`
-                      }
-                    >
-                      {link.label}
-                    </NavLink>
+                    {link.hasMegaMenu ? (
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsMobileMegaMenuOpen(true);
+                        }}
+                        className="block text-lg font-semibold transition-colors duration-200 text-gray-600 hover:text-black flex items-center gap-2"
+                      >
+                        {link.label}
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                    ) : (
+                      <NavLink
+                        to={link.to}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `block text-lg font-semibold transition-colors duration-200 ${
+                            isActive ? 'text-black' : 'text-gray-600 hover:text-black'
+                          }`
+                        }
+                      >
+                        {link.label}
+                      </NavLink>
+                    )}
                   </motion.div>
                 ))}
                 <motion.div 
@@ -162,6 +198,18 @@ const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mega Menu */}
+      <MegaMenu 
+        isOpen={isMegaMenuOpen} 
+        onClose={() => setIsMegaMenuOpen(false)} 
+      />
+
+      {/* Mobile Mega Menu */}
+      <MobileMegaMenu 
+        isOpen={isMobileMegaMenuOpen} 
+        onClose={() => setIsMobileMegaMenuOpen(false)} 
+      />
     </motion.header>
   );
 };

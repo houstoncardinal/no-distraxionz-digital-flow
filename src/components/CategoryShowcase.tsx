@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Shirt, Users, ShirtIcon, HardHat } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useProducts } from '@/hooks/useProducts';
+import OptimizedImage from './OptimizedImage';
 
 const categories = [
   {
@@ -45,10 +47,28 @@ const categories = [
     color: 'from-orange-500 to-orange-600',
     count: '4 Products',
     featured: false
+  },
+  {
+    id: 'toddler-shirts',
+    name: 'Toddler Shirts',
+    description: 'Premium tees for active toddlers',
+    image: '/toddler-shirts/envato-labs-image-edit - 2025-10-07T220721.938.png',
+    href: '/shop?category=Toddler Shirts',
+    icon: Users,
+    color: 'from-green-500 to-green-600',
+    count: '6 Products',
+    featured: true
   }
 ];
 
 const CategoryShowcase = () => {
+  const { products } = useProducts();
+
+  // Get product counts for each category
+  const getProductCount = (categoryName: string) => {
+    return products.filter(product => product.category === categoryName).length;
+  };
+
   return (
     <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-4">
@@ -81,38 +101,40 @@ const CategoryShowcase = () => {
               whileHover={{ y: -8 }}
             >
               <Link to={category.href}>
-                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white">
+                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white hover:scale-105">
                   <div className="relative overflow-hidden">
-                    <motion.img
+                    <OptimizedImage
                       src={category.image}
                       alt={category.name}
                       className="w-full h-64 object-cover"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
+                      priority={category.featured}
                     />
                     
-                    {/* Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-0 group-hover:opacity-90 transition-opacity duration-500`} />
+                    {/* Base Gradient Overlay for better text visibility */}
+                    <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-60 group-hover:opacity-90 transition-opacity duration-500`} />
+                    
+                    {/* Dark overlay for better text contrast */}
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500" />
                     
                     {/* Content Overlay */}
                     <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                         <div className="flex items-center gap-2 mb-2">
-                          <category.icon className="h-5 w-5 text-white" />
-                          <Badge className="bg-white/20 text-white border-white/30">
-                            {category.count}
+                          <category.icon className="h-5 w-5 text-white drop-shadow-lg" />
+                          <Badge className="bg-white/30 text-white border-white/40 backdrop-blur-sm font-semibold">
+                            {getProductCount(category.name)} Products
                           </Badge>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">
+                        <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
                           {category.name}
                         </h3>
-                        <p className="text-white/90 text-sm mb-4">
+                        <p className="text-white text-sm mb-4 drop-shadow-md leading-relaxed">
                           {category.description}
                         </p>
                         <Button 
                           variant="secondary" 
                           size="sm"
-                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 w-fit"
+                          className="bg-white/30 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm w-fit font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                           Shop Now
                           <ArrowRight className="h-4 w-4 ml-2" />
@@ -123,7 +145,7 @@ const CategoryShowcase = () => {
                     {/* Featured Badge */}
                     {category.featured && (
                       <div className="absolute top-4 right-4">
-                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold">
+                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold shadow-lg backdrop-blur-sm">
                           Featured
                         </Badge>
                       </div>

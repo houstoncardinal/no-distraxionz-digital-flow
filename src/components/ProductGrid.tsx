@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo, lazy, Suspense, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,26 +11,74 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import ProductCard from '@/components/ProductCard';
 import ColorSwatch from '@/components/ColorSwatch';
-import { products, categories } from '@/data/products';
-import { Search, Filter, Grid, List, SortAsc, SortDesc } from 'lucide-react';
+import { categories } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
+import { Search, Filter, Grid, List, SortAsc, SortDesc, Loader2 } from 'lucide-react';
 
-const ProductGrid = () => {
+// Lazy load the ProductCard component for better performance
+const ProductCard = lazy(() => import('./ProductCard'));
+
+// Loading component for lazy loaded cards
+const ProductCardSkeleton = () => (
+  <Card className="overflow-hidden border-0 shadow-lg bg-white">
+    <div className="aspect-square bg-gray-200 animate-pulse" />
+    <div className="p-4 space-y-3">
+      <div className="h-4 bg-gray-200 rounded animate-pulse" />
+      <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4" />
+      <div className="flex justify-between items-center">
+        <div className="h-4 bg-gray-200 rounded animate-pulse w-16" />
+        <div className="h-3 bg-gray-200 rounded animate-pulse w-12" />
+      </div>
+    </div>
+  </Card>
+);
+
+const ProductGrid = memo(() => {
+  const { products, loading } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedColor, setSelectedColor] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  // Optimized callbacks to prevent unnecessary re-renders
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
+  const handleCategoryChange = useCallback((value: string) => {
+    setSelectedCategory(value);
+  }, []);
+
+  const handleColorChange = useCallback((color: string) => {
+    setSelectedColor(color);
+  }, []);
+
+  const handleSortChange = useCallback((value: string) => {
+    setSortBy(value);
+  }, []);
+
+  const handleViewModeChange = useCallback((mode: 'grid' | 'list') => {
+    setViewMode(mode);
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setSearchQuery('');
+    setSelectedCategory('all');
+    setSelectedColor('all');
+  }, []);
+
   // Get all unique colors from products
   const allColors = useMemo(() => {
     const colors = new Set<string>();
     products.forEach(product => {
-      product.colors.forEach(color => colors.add(color));
+      if (product.colors) {
+        product.colors.forEach(color => colors.add(color));
+      }
     });
     return Array.from(colors).sort();
-  }, []);
+  }, [products]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -40,7 +88,7 @@ const ProductGrid = () => {
     if (searchQuery) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -51,16 +99,16 @@ const ProductGrid = () => {
 
     // Color filter
     if (selectedColor !== 'all') {
-      filtered = filtered.filter(product => product.colors.includes(selectedColor));
+      filtered = filtered.filter(product => product.colors && product.colors.includes(selectedColor));
     }
 
     // Sort products
     switch (sortBy) {
       case 'price-low':
-        filtered.sort((a, b) => parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', '')));
+        filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price-high':
-        filtered.sort((a, b) => parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', '')));
+        filtered.sort((a, b) => b.price - a.price);
         break;
       case 'name':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -72,7 +120,18 @@ const ProductGrid = () => {
     }
 
     return filtered;
-  }, [searchQuery, selectedCategory, selectedColor, sortBy]);
+  }, [products, searchQuery, selectedCategory, selectedColor, sortBy]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -85,7 +144,7 @@ const ProductGrid = () => {
             <Input
               placeholder="Search products..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="pl-10 h-12 text-lg border-2 border-gray-200 focus:border-primary rounded-xl"
             />
           </div>
@@ -95,7 +154,7 @@ const ProductGrid = () => {
             {/* Category Filter */}
             <div className="flex items-center gap-2">
               <Filter className="h-5 w-5 text-gray-600" />
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
                 <SelectTrigger className="w-40 h-10 border-2 border-gray-200 rounded-lg">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
@@ -116,7 +175,7 @@ const ProductGrid = () => {
                 <Button
                   variant={selectedColor === 'all' ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setSelectedColor('all')}
+                  onClick={() => handleColorChange('all')}
                   className="h-8"
                 >
                   All
@@ -126,7 +185,7 @@ const ProductGrid = () => {
                     key={color}
                     variant={selectedColor === color ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => handleColorChange(color)}
                     className="h-8 capitalize"
                   >
                     {color}
@@ -137,7 +196,7 @@ const ProductGrid = () => {
 
             {/* Sort Options */}
             <div className="flex items-center gap-2 ml-auto">
-              <Select value={sortBy} onValueChange={setSortBy}>
+              <Select value={sortBy} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-40 h-10 border-2 border-gray-200 rounded-lg">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
@@ -154,7 +213,7 @@ const ProductGrid = () => {
                 <Button
                   variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setViewMode('grid')}
+                  onClick={() => handleViewModeChange('grid')}
                   className="rounded-r-none"
                 >
                   <Grid className="h-4 w-4" />
@@ -162,7 +221,7 @@ const ProductGrid = () => {
                 <Button
                   variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setViewMode('list')}
+                  onClick={() => handleViewModeChange('list')}
                   className="rounded-l-none"
                 >
                   <List className="h-4 w-4" />
@@ -227,7 +286,7 @@ const ProductGrid = () => {
         </div>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Grid with Lazy Loading */}
       <motion.div
         className={
           viewMode === 'grid'
@@ -241,10 +300,12 @@ const ProductGrid = () => {
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
             layout
           >
-            <ProductCard {...product} />
+            <Suspense fallback={<ProductCardSkeleton />}>
+              <ProductCard {...product} />
+            </Suspense>
           </motion.div>
         ))}
       </motion.div>
@@ -261,11 +322,7 @@ const ProductGrid = () => {
               Try adjusting your search or filter criteria
             </p>
             <Button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all');
-                setSelectedColor('all');
-              }}
+              onClick={clearFilters}
               variant="outline"
             >
               Clear all filters
@@ -275,6 +332,8 @@ const ProductGrid = () => {
       )}
     </div>
   );
-};
+});
+
+ProductGrid.displayName = 'ProductGrid';
 
 export default ProductGrid;
