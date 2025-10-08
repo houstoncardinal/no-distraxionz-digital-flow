@@ -30,23 +30,32 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
     e.preventDefault();
     e.stopPropagation();
     
+    if (!selectedSize && product.sizes && product.sizes.length > 0) {
+      toast({
+        title: "Please select a size",
+        description: "Choose your size before adding to cart.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    addItem(product, selectedSize);
     toast({
-      title: "Database Pending",
-      description: "Products are being added to the database. Please check back soon!",
-      variant: "destructive",
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
     });
-  }, [toast]);
+  }, [addItem, product, selectedSize, toast]);
 
   const handleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
+    toggleItem(product.id);
     toast({
-      title: "Database Pending",
-      description: "Products are being added to the database. Please check back soon!",
-      variant: "destructive",
+      title: isInWishlist(product.id) ? "Removed from wishlist" : "Added to wishlist",
+      description: `${product.name} ${isInWishlist(product.id) ? 'removed from' : 'added to'} your wishlist.`,
     });
-  }, [toast]);
+  }, [toggleItem, product.id, product.name, isInWishlist, toast]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -119,17 +128,6 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
 
             {/* Enhanced Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {/* Pending Database Badge - Always Show */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold shadow-lg">
-                  <Shield className="h-3 w-3 mr-1" />
-                  Pending Database
-                </Badge>
-              </motion.div>
               {product.featured && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}

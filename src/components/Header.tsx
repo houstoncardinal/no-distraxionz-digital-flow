@@ -70,15 +70,18 @@ const Header = () => {
                 className="relative"
               >
                 {link.hasMegaMenu ? (
-                  <div
-                    className="relative text-sm font-semibold transition-all duration-300 hover:text-black group cursor-pointer flex items-center gap-1"
-                    onMouseEnter={() => setIsMegaMenuOpen(true)}
-                  >
-                    {link.label}
-                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
-                      isMegaMenuOpen ? 'rotate-180' : ''
-                    }`} />
-                    <span className="absolute -bottom-1 left-0 h-0.5 bg-black transition-all duration-300 w-0 group-hover:w-full" />
+                  <div className="relative group">
+                    <Link
+                      to={link.to}
+                      className="relative text-sm font-semibold transition-all duration-300 hover:text-black flex items-center gap-1"
+                      onMouseEnter={() => setIsMegaMenuOpen(true)}
+                    >
+                      {link.label}
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
+                        isMegaMenuOpen ? 'rotate-180' : ''
+                      }`} />
+                      <span className="absolute -bottom-1 left-0 h-0.5 bg-black transition-all duration-300 w-0 group-hover:w-full" />
+                    </Link>
                   </div>
                 ) : (
                   <NavLink

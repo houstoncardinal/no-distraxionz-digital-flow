@@ -60,3 +60,4 @@ if (typeof window !== 'undefined') {
   console.log('💡 Run populateFromImages() in console to populate from your image database');
 }
 
+
