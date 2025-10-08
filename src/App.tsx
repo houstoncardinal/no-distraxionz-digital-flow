@@ -10,6 +10,7 @@ import { quickPopulateProducts } from '@/utils/quickPopulate';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
 import { populateAllProducts } from '@/utils/populateAllProducts';
+import { populateBasicProducts } from '@/utils/populateBasicProducts';
 
 // Pages
 import Index from './pages/Index';
@@ -42,6 +43,7 @@ function App() {
     (window as any).populateFromImages = populateProductsFromImageDatabase;
     (window as any).populateToddlerShirts = populateToddlerShirts;
     (window as any).populateAllProducts = populateAllProducts;
+    (window as any).populateBasicProducts = populateBasicProducts;
   }
 
   return (
