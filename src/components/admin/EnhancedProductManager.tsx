@@ -787,3 +787,4 @@ const ProductForm = ({ formData, setFormData, onSubmit, onCancel, isEdit = false
 };
 
 export default EnhancedProductManager;
+

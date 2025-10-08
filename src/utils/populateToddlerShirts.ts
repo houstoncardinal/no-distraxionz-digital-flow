@@ -227,3 +227,4 @@ if (typeof window !== 'undefined') {
   (window as any).populateToddlerShirts = populateToddlerShirts;
   console.log('💡 Run populateToddlerShirts() in console to add toddler shirts');
 }
+
