@@ -280,10 +280,17 @@ export async function populateAllProducts() {
       console.log('Note: Could not clear existing products:', deleteError.message);
     }
 
+    // Transform products to match database format (sizes and colors as JSON strings)
+    const productsForDB = products.map(product => ({
+      ...product,
+      sizes: JSON.stringify(product.sizes || []),
+      colors: JSON.stringify(product.colors || [])
+    }));
+
     // Insert all products
     const { data, error } = await supabase
       .from('products')
-      .insert(products)
+      .insert(productsForDB)
       .select();
 
     if (error) {
