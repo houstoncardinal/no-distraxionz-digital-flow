@@ -8,6 +8,7 @@ import PerformanceMonitor from '@/components/PerformanceMonitor';
 import { quickPopulateProducts } from '@/utils/quickPopulate';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
+import { populateAllProducts } from '@/utils/populateAllProducts';
 
 // Pages
 import Index from './pages/Index';
@@ -29,6 +30,7 @@ import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Settings from "./pages/admin/Settings";
 import Reviews from "./pages/admin/Reviews";
+import PopulateProducts from "./pages/admin/PopulateProducts";
 
 import './App.css';
 
@@ -38,6 +40,7 @@ function App() {
     (window as any).populateProducts = quickPopulateProducts;
     (window as any).populateFromImages = populateProductsFromImageDatabase;
     (window as any).populateToddlerShirts = populateToddlerShirts;
+    (window as any).populateAllProducts = populateAllProducts;
   }
 
   return (
@@ -65,6 +68,7 @@ function App() {
               <Route path="customers" element={<Customers />} />
               <Route path="reviews" element={<Reviews />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="populate" element={<PopulateProducts />} />
             </Route>
             
             {/* 404 Route */}
