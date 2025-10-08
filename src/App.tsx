@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
@@ -11,6 +12,7 @@ import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
 import { populateAllProducts } from '@/utils/populateAllProducts';
 import { populateBasicProducts } from '@/utils/populateBasicProducts';
+import { checkAndPopulateProducts } from '@/utils/autoPopulate';
 
 // Pages
 import Index from './pages/Index';
@@ -37,6 +39,11 @@ import PopulateProducts from "./pages/admin/PopulateProducts";
 import './App.css';
 
 function App() {
+  // Auto-populate products if none exist
+  useEffect(() => {
+    checkAndPopulateProducts();
+  }, []);
+
   // Make populate functions available globally for debugging
   if (typeof window !== 'undefined') {
     (window as any).populateProducts = quickPopulateProducts;
