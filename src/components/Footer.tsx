@@ -208,6 +208,27 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      
+      {/* Cardinal Consulting Credit Bar */}
+      <div className="bg-gradient-to-r from-gray-900 via-black to-gray-900 border-t border-gray-800">
+        <div className="w-full container-padding-modern">
+          <div className="flex items-center justify-center py-3">
+            <div className="flex items-center space-x-2 text-white/80 text-sm">
+              <span>Created by</span>
+              <a 
+                href="https://www.cardinalhtx.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-white hover:text-blue-400 transition-colors duration-300 hover:underline decoration-blue-400 underline-offset-2"
+              >
+                Cardinal Consulting
+              </a>
+              <span className="text-white/60">•</span>
+              <span className="text-white/60">Professional Web Development</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 };
