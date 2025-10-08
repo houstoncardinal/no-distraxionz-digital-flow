@@ -38,7 +38,7 @@ const Header = () => {
                 <img
                   src="/lovable-uploads/30a4fcab-8cc9-4f74-8a58-f4c349a4cb3c.png"
                   alt="NO DISTRAXIONZ"
-                  className="h-32 w-auto transition-transform duration-300 group-hover:scale-105"
+                  className="h-16 w-auto transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
               </div>

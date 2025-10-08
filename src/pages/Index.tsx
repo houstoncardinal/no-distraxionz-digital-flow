@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Hero } from '@/components/ui/animated-hero';
 import ProductCard from '@/components/ProductCard';
+import CategoryShowcase from '@/components/CategoryShowcase';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -307,6 +308,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Category Showcase */}
+      <CategoryShowcase />
 
       {/* Ultra Sleek Brand Section */}
       <section className="relative w-full bg-black overflow-hidden py-32">
