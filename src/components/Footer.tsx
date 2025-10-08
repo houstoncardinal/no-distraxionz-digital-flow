@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
@@ -221,15 +222,65 @@ const Footer = () => {
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-gray-400"></div>
               
               <div className="flex items-center space-x-2">
-                <span>Created by</span>
-                <a 
+                <motion.span 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="text-gray-500"
+                >
+                  Created by
+                </motion.span>
+                <motion.a 
                   href="https://www.cardinalhtx.com" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="font-bold text-gray-700 hover:text-green-600 transition-all duration-300 hover:underline decoration-green-500 underline-offset-2 hover:shadow-sm hover:scale-105"
+                  className="font-bold text-gray-700 hover:text-green-600 transition-all duration-500 hover:underline decoration-green-500 underline-offset-2 hover:shadow-lg hover:scale-110 relative group"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  whileHover={{ 
+                    scale: 1.1,
+                    textShadow: "0 0 8px rgba(34, 197, 94, 0.3)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <span className="text-green-600">Cardinal</span> Consulting
-                </a>
+                  <motion.span 
+                    className="text-green-600 relative inline-block"
+                    animate={{ 
+                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                    }}
+                    transition={{ 
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                    style={{
+                      background: "linear-gradient(90deg, #22c55e, #16a34a, #15803d, #16a34a, #22c55e)",
+                      backgroundSize: "200% 100%",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text"
+                    }}
+                  >
+                    Cardinal
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.8 }}
+                    className="ml-1"
+                  >
+                    Consulting
+                  </motion.span>
+                  
+                  {/* Luxury shimmer effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100"
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "100%" }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                  />
+                </motion.a>
               </div>
               
               {/* Right decorative line */}
