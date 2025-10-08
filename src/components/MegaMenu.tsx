@@ -196,7 +196,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
       className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-gray-300 shadow-2xl"
       style={{ marginTop: '80px' }}
       onMouseEnter={() => {}} // Keep menu open on hover
-      onMouseLeave={() => {}} // Prevent auto-close
+      onMouseLeave={() => onClose()} // Close when mouse leaves menu
     >
       <div className="max-w-7xl mx-auto px-6 py-10 bg-white">
         {/* Enhanced Search Bar */}

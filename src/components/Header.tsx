@@ -59,6 +59,7 @@ const Header = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            onMouseLeave={() => setIsMegaMenuOpen(false)}
           >
             {navLinks.map((link, index) => (
               <motion.div
@@ -72,7 +73,6 @@ const Header = () => {
                   <div
                     className="relative text-sm font-semibold transition-all duration-300 hover:text-black group cursor-pointer flex items-center gap-1"
                     onMouseEnter={() => setIsMegaMenuOpen(true)}
-                    onMouseLeave={() => setIsMegaMenuOpen(false)}
                   >
                     {link.label}
                     <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
