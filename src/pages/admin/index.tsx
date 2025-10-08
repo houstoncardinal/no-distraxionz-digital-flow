@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ShoppingBag, Package, Users, DollarSign, TrendingUp, ArrowUpRight } from 'lucide-react';
 import ProductPopulator from '@/components/ProductPopulator';
+import { populateDatabase } from '@/utils/populateDatabase';
 
 const MetricCard = ({ label, value, trend, icon: Icon, accent }: { label: string; value: string; trend?: string; icon: any; accent: string }) => (
   <Card className="p-4">
@@ -145,8 +146,39 @@ const AdminDashboard = () => {
         </div>
       </Card>
 
-      {/* Product Database Sync */}
-      <ProductPopulator />
+      {/* Database Setup */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold">Database Setup</h2>
+            <p className="text-sm text-muted-foreground">Import all products to your database</p>
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="font-medium text-blue-900 mb-2">Quick Setup</h3>
+            <p className="text-sm text-blue-700 mb-3">
+              Click the button below to import all your products (Shirts, Ladies, Hoodies, Hats) into the database.
+            </p>
+            <Button 
+              onClick={async () => {
+                try {
+                  await populateDatabase();
+                  alert('✅ Products imported successfully!');
+                } catch (error) {
+                  alert('❌ Error importing products: ' + error);
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Import All Products
+            </Button>
+          </div>
+          
+          <ProductPopulator />
+        </div>
+      </Card>
 
       {/* Enhanced Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
