@@ -279,3 +279,4 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
 };
 
 export default QuickViewModal;
+

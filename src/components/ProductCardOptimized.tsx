@@ -8,7 +8,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useToast } from '@/hooks/use-toast';
 import { Product } from '@/hooks/useProducts';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { ShoppingCart, Heart, Eye, Star, StarOff, Crown } from 'lucide-react';
+import { ShoppingCart, Heart, Eye, Star, StarOff, Crown, Shield } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
 
 interface ProductCardOptimizedProps extends Product {}
@@ -30,31 +30,23 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      toast({
-        title: "Please select a size",
-        description: "Choose a size before adding to cart.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    addItem(product, selectedSize || undefined);
     toast({
-      title: "Added to cart!",
-      description: `${product.name} has been added to your cart.`,
+      title: "Database Pending",
+      description: "Products are being added to the database. Please check back soon!",
+      variant: "destructive",
     });
-  }, [product, selectedSize, addItem, toast]);
+  }, [toast]);
 
   const handleWishlist = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleItem(product);
+    
     toast({
-      title: isInWishlist(product.id) ? "Removed from wishlist" : "Added to wishlist",
-      description: `${product.name} has been ${isInWishlist(product.id) ? 'removed from' : 'added to'} your wishlist.`,
+      title: "Database Pending",
+      description: "Products are being added to the database. Please check back soon!",
+      variant: "destructive",
     });
-  }, [product, toggleItem, isInWishlist, toast]);
+  }, [toast]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -69,7 +61,7 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
   }, [mouseX, mouseY]);
 
   return (
-    <Link to={`/product/${product.id}`} className="block">
+    <div className="block relative">
       <motion.div
         className="group"
         whileHover={{ y: -8 }}
@@ -127,11 +119,22 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
 
             {/* Enhanced Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
+              {/* Pending Database Badge - Always Show */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold shadow-lg">
+                  <Shield className="h-3 w-3 mr-1" />
+                  Pending Database
+                </Badge>
+              </motion.div>
               {product.featured && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.2, delay: 0.1 }}
                 >
                   <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold shadow-lg">
                     <Crown className="h-3 w-3 mr-1" />
@@ -143,7 +146,7 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2, delay: 0.1 }}
+                  transition={{ duration: 0.2, delay: 0.2 }}
                 >
                   <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg">
                     Sale
@@ -274,10 +277,11 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
           </CardContent>
         </Card>
       </motion.div>
-    </Link>
+    </div>
   );
 });
 
 ProductCardOptimized.displayName = 'ProductCardOptimized';
 
 export default ProductCardOptimized;
+

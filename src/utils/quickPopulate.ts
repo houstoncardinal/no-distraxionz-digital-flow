@@ -47,3 +47,4 @@ if (typeof window !== 'undefined') {
   (window as any).quickPopulateProducts = quickPopulateProducts;
   console.log('💡 Run quickPopulateProducts() in console to populate products');
 }
+

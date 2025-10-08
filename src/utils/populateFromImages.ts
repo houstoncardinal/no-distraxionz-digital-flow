@@ -59,3 +59,4 @@ if (typeof window !== 'undefined') {
   (window as any).populateFromImages = populateProductsFromImageDatabase;
   console.log('💡 Run populateFromImages() in console to populate from your image database');
 }
+

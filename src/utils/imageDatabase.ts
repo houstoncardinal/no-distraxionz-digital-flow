@@ -209,3 +209,4 @@ export const populateFromImageDatabase = async () => {
   const products = generateProductsFromImages();
   return products;
 };
+
