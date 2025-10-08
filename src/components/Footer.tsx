@@ -96,34 +96,34 @@ const Footer = () => {
             <h3 className="font-playfair text-lg font-medium">Collections</h3>
             <div className="space-y-3">
               <Link 
-                to="/shop/men" 
+                to="/shop?category=Shirts" 
                 className="block text-muted-foreground hover:text-primary transition-colors duration-200 py-1"
               >
-                Men's Collection
+                Shirts
               </Link>
               <Link 
-                to="/shop/women" 
+                to="/shop?category=Ladies" 
                 className="block text-muted-foreground hover:text-primary transition-colors duration-200 py-1"
               >
-                Women's Collection
+                Ladies Collection
               </Link>
               <Link 
-                to="/shop/kids" 
+                to="/shop?category=Hoodies" 
                 className="block text-muted-foreground hover:text-primary transition-colors duration-200 py-1"
               >
-                Kids Collection
+                Hoodies
               </Link>
               <Link 
-                to="/shop/supplements" 
+                to="/shop?category=Hats" 
                 className="block text-muted-foreground hover:text-primary transition-colors duration-200 py-1"
               >
-                Wellness Supplements
+                Hats
               </Link>
               <Link 
-                to="/shop/winter" 
+                to="/shop" 
                 className="block text-muted-foreground hover:text-primary transition-colors duration-200 py-1"
               >
-                Winter Collection
+                All Products
               </Link>
             </div>
           </div>
@@ -151,10 +151,10 @@ const Footer = () => {
               <div className="flex items-center space-x-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
                 <a 
-                  href="mailto:hello@nodistraxionz.com"
+                  href="mailto:nodistraxionz@gmail.com"
                   className="hover:text-primary transition-colors"
                 >
-                  hello@nodistraxionz.com
+                  nodistraxionz@gmail.com
                 </a>
               </div>
               <div className="flex items-center space-x-3 text-sm text-muted-foreground">
