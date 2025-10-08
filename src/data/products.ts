@@ -2,15 +2,16 @@
 export interface Product {
   id: string;
   name: string;
-  price: string;
-  originalPrice?: string;
+  price: string | number;
+  originalPrice?: string | number;
   priceRange: string;
   description: string;
   category: string;
-  image: string;
+  image: string | null;
   featured: boolean;
   sizes: string[];
   colors: string[];
+  stock?: number | null;
 }
 
 export const products: Product[] = [

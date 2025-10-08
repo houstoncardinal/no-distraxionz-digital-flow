@@ -11,6 +11,7 @@ export function CartSidebar() {
   const { state, updateQuantity, removeItem, closeCart } = useCart();
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
+  const getImageSrc = (image: string | null) => image || '/placeholder.svg';
 
   return (
     <Sheet open={state.isOpen} onOpenChange={() => closeCart()}>
@@ -43,17 +44,17 @@ export function CartSidebar() {
         ) : (
           <div className="flex flex-col h-full">
             <ScrollArea className="flex-1 pr-4">
-              <div className="space-y-4 py-4">
+                <div className="space-y-4 py-4">
                 {state.items.map((item) => (
                   <div key={item.id} className="flex items-start space-x-4 p-4 border rounded-lg">
                     <img
-                      src={item.product.image}
+                      src={getImageSrc(item.product.image)}
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item.product.price}</p>
+                      <p className="text-sm text-muted-foreground">{formatPrice(typeof item.product.price === 'number' ? item.product.price : parseFloat(String(item.product.price).replace('$', '')))}</p>
                       {item.size && (
                         <p className="text-xs text-muted-foreground">Size: {item.size}</p>
                       )}

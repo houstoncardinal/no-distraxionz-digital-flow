@@ -37,7 +37,10 @@ const CART_STORAGE_KEY = 'ndx:cart';
 
 function calculateTotal(items: CartItem[]): number {
   return items.reduce((sum, item) => {
-    const price = parseFloat(item.product.price.replace('$', ''));
+    // Handle both number and string prices
+    const price = typeof item.product.price === 'number' 
+      ? item.product.price 
+      : parseFloat(String(item.product.price).replace('$', ''));
     return sum + (price * item.quantity);
   }, 0);
 }

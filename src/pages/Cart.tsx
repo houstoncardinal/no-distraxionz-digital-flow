@@ -15,6 +15,8 @@ const Cart = () => {
   const shipping = state.total > 75 ? 0 : 9.99;
   const tax = state.total * 0.08; // 8% tax
   const finalTotal = state.total + shipping + tax;
+  
+  const getImageSrc = (image: string | null) => image || '/placeholder.svg';
 
   if (state.items.length === 0) {
     return (
@@ -67,7 +69,7 @@ const Cart = () => {
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-6">
                       <img
-                        src={item.product.image}
+                        src={getImageSrc(item.product.image)}
                         alt={item.product.name}
                         className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
                       />
@@ -117,7 +119,7 @@ const Cart = () => {
                           
                           <div className="flex items-center space-x-4">
                             <span className="text-lg font-semibold">
-                              {item.product.price}
+                              {formatPrice(typeof item.product.price === 'number' ? item.product.price : parseFloat(String(item.product.price).replace('$', '')))}
                             </span>
                             <Button
                               variant="ghost"

@@ -42,6 +42,7 @@ const Checkout = () => {
   const shipping = state.total > 75 ? 0 : 9.99;
   const tax = state.total * 0.08;
   const finalTotal = state.total + shipping + tax;
+  const getImageSrc = (image: string | null) => image || '/placeholder.svg';
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -315,7 +316,7 @@ const Checkout = () => {
                       {state.items.map((item) => (
                         <div key={item.id} className="flex items-center space-x-3">
                           <img
-                            src={item.product.image}
+                            src={getImageSrc(item.product.image)}
                             alt={item.product.name}
                             className="w-12 h-12 object-cover rounded"
                           />
@@ -327,7 +328,7 @@ const Checkout = () => {
                             </p>
                           </div>
                           <span className="font-medium text-sm">
-                            {item.product.price}
+                            {formatPrice(typeof item.product.price === 'number' ? item.product.price : parseFloat(String(item.product.price).replace('$', '')))}
                           </span>
                         </div>
                       ))}
