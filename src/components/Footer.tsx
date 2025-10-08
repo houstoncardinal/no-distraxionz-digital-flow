@@ -216,16 +216,24 @@ const Footer = () => {
         
         <div className="w-full container-padding-modern relative">
           <div className="flex items-center justify-center py-1.5">
-            <div className="flex items-center space-x-2 text-gray-500 text-xs font-medium">
-              <span>Created by</span>
-              <a 
-                href="https://www.cardinalhtx.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="font-bold text-gray-700 hover:text-green-600 transition-all duration-300 hover:underline decoration-green-500 underline-offset-2 hover:shadow-sm hover:scale-105"
-              >
-                <span className="text-green-600">Cardinal</span> Consulting
-              </a>
+            <div className="flex items-center space-x-4 text-gray-500 text-xs font-medium">
+              {/* Left decorative line */}
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-gray-400"></div>
+              
+              <div className="flex items-center space-x-2">
+                <span>Created by</span>
+                <a 
+                  href="https://www.cardinalhtx.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-bold text-gray-700 hover:text-green-600 transition-all duration-300 hover:underline decoration-green-500 underline-offset-2 hover:shadow-sm hover:scale-105"
+                >
+                  <span className="text-green-600">Cardinal</span> Consulting
+                </a>
+              </div>
+              
+              {/* Right decorative line */}
+              <div className="flex-1 h-px bg-gradient-to-l from-transparent via-gray-300 to-gray-400"></div>
             </div>
           </div>
         </div>
