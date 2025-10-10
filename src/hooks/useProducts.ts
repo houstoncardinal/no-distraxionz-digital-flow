@@ -2,25 +2,11 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  image: string | null;
-  category: string | null;
-  stock: number | null;
-  featured: boolean;
-  sizes: string[];
-  colors: string[];
-  original_price?: number | null;
-  price_range?: string | null;
-  created_at?: string;
-  updated_at?: string;
-}
+// Export Product type from data/products.ts to keep types consistent
+export type { Product } from '@/data/products';
 
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<import('@/data/products').Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -33,13 +19,14 @@ export const useProducts = () => {
 
       if (error) throw error;
       
-      // Transform the data to handle JSON fields and missing fields
+      // Transform the data to handle missing fields with defaults
       const transformedProducts = (data || []).map(product => ({
         ...product,
-        sizes: product.sizes ? (Array.isArray(product.sizes) ? product.sizes : JSON.parse(product.sizes as string)) : [],
-        colors: product.colors ? (Array.isArray(product.colors) ? product.colors : JSON.parse(product.colors as string)) : [],
-        featured: product.featured !== undefined ? product.featured : false
-      }));
+        sizes: product.sizes || [],
+        colors: product.colors || [],
+        featured: product.featured || false,
+        priceRange: product.price_range || undefined
+      })) as import('@/data/products').Product[];
       
       setProducts(transformedProducts);
     } catch (error) {
@@ -78,12 +65,15 @@ export const useProducts = () => {
     };
   }, []);
 
-  const createProduct = async (product: Omit<Product, 'id'>) => {
+  const createProduct = async (product: Partial<import('@/data/products').Product>) => {
     try {
       const productData = {
-        ...product,
-        sizes: JSON.stringify(product.sizes || []),
-        colors: JSON.stringify(product.colors || []),
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image,
+        category: product.category,
+        stock: product.stock || 0,
         featured: product.featured || false
       };
 
@@ -112,17 +102,11 @@ export const useProducts = () => {
     }
   };
 
-  const updateProduct = async (id: string, updates: Partial<Product>) => {
+  const updateProduct = async (id: string, updates: Partial<import('@/data/products').Product>) => {
     try {
-      const updateData = {
-        ...updates,
-        sizes: updates.sizes ? JSON.stringify(updates.sizes) : undefined,
-        colors: updates.colors ? JSON.stringify(updates.colors) : undefined,
-      };
-
       const { data, error } = await supabase
         .from('products')
-        .update(updateData)
+        .update(updates)
         .eq('id', id)
         .select()
         .single();
