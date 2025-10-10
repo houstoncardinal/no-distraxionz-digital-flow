@@ -10,6 +10,7 @@ import { useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import ColorSwatch from '@/components/ColorSwatch';
 import { ShoppingCart, Heart, Share2, Star, Truck, Shield, RotateCcw, Plus, Minus } from 'lucide-react';
 
 const ProductDetail = () => {
@@ -187,19 +188,16 @@ const ProductDetail = () => {
               {/* Color Selection */}
               {product.colors.length > 0 && (
                 <div>
-                  <Label className="text-base font-medium mb-3 block">Color</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {product.colors.map((color) => (
-                      <Button
-                        key={color}
-                        variant={selectedColor === color ? "default" : "outline"}
-                        className="px-4"
-                        onClick={() => setSelectedColor(color)}
-                      >
-                        {color}
-                      </Button>
-                    ))}
-                  </div>
+                  <Label className="text-base font-medium mb-3 block">
+                    Color {selectedColor && <span className="text-muted-foreground font-normal">- {selectedColor}</span>}
+                  </Label>
+                  <ColorSwatch
+                    colors={product.colors}
+                    selectedColor={selectedColor}
+                    onColorSelect={setSelectedColor}
+                    size="lg"
+                    showLabels={true}
+                  />
                 </div>
               )}
 
