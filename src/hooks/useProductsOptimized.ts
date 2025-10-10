@@ -84,9 +84,9 @@ export const useProductsOptimized = () => {
       // Update cache
       const newProduct: Product = {
         ...data,
-        sizes: data.sizes || [],
-        colors: data.colors || [],
-        featured: data.featured || false
+        sizes: [],  // Not stored in DB yet
+        colors: [], // Not stored in DB yet
+        featured: false // Not stored in DB yet
       };
       
       productsCache = [newProduct, ...(productsCache || [])];
@@ -113,9 +113,9 @@ export const useProductsOptimized = () => {
       // Update cache
       const updatedProduct: Product = {
         ...data,
-        sizes: data.sizes || [],
-        colors: data.colors || [],
-        featured: data.featured || false
+        sizes: [],  // Not stored in DB yet
+        colors: [], // Not stored in DB yet
+        featured: false // Not stored in DB yet
       };
       
       productsCache = (productsCache || []).map(p => p.id === id ? updatedProduct : p);

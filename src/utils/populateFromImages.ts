@@ -1,12 +1,12 @@
 import { supabase } from '@/integrations/supabase/client';
 import { populateFromImageDatabase } from '@/utils/imageDatabase';
 
-export const populateProductsFromImageDatabase = async () => {
+export const populateProductsFromImageDatabase = async (): Promise<{ success: boolean; message: string }> => {
   try {
     console.log('🚀 Starting image database population...');
     
     // Generate products from your image database
-    const products = populateFromImageDatabase();
+    const products = await populateFromImageDatabase();
     console.log(`📦 Generated ${products.length} products from image database`);
     
     // Clear existing products
@@ -47,10 +47,10 @@ export const populateProductsFromImageDatabase = async () => {
       console.log(`  ${category}: ${count} products`);
     });
     
-    return data;
+    return { success: true, message: `Successfully populated ${products.length} products` };
   } catch (error) {
     console.error('Error in populateProductsFromImageDatabase:', error);
-    throw error;
+    return { success: false, message: error instanceof Error ? error.message : 'Failed to populate products' };
   }
 };
 

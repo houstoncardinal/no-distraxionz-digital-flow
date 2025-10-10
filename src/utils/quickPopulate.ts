@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { products } from '@/data/products';
 
-export const quickPopulateProducts = async () => {
+export const quickPopulateProducts = async (): Promise<{ success: boolean; message: string }> => {
   try {
     console.log('🚀 Quick populate starting...');
     
@@ -27,14 +27,14 @@ export const quickPopulateProducts = async () => {
     
     if (error) {
       console.error('❌ Error inserting products:', error);
-      throw error;
+      return { success: false, message: error.message };
     }
     
     console.log(`🎉 Successfully populated ${transformedProducts.length} products!`);
-    return data;
+    return { success: true, message: `Successfully populated ${transformedProducts.length} products` };
   } catch (error) {
     console.error('Error in quickPopulateProducts:', error);
-    throw error;
+    return { success: false, message: error instanceof Error ? error.message : 'Failed to populate products' };
   }
 };
 
@@ -44,5 +44,3 @@ if (typeof window !== 'undefined') {
   (window as any).quickPopulateProducts = quickPopulateProducts;
   console.log('💡 Run quickPopulateProducts() in console to populate products');
 }
-
-

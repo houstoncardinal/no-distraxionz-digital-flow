@@ -50,12 +50,12 @@ const ProductCardOptimized = memo((product: ProductCardOptimizedProps) => {
     e.preventDefault();
     e.stopPropagation();
     
-    toggleItem(product.id);
+    toggleItem(product);
     toast({
       title: isInWishlist(product.id) ? "Removed from wishlist" : "Added to wishlist",
       description: `${product.name} ${isInWishlist(product.id) ? 'removed from' : 'added to'} your wishlist.`,
     });
-  }, [toggleItem, product.id, product.name, isInWishlist, toast]);
+  }, [toggleItem, product, isInWishlist, toast]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();

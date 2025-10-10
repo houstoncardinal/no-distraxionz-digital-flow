@@ -117,7 +117,7 @@ const ProductCard = (product: ProductCardProps) => {
                   </Badge>
                 </motion.div>
               )}
-              {product.originalPrice && (
+              {product.original_price && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}

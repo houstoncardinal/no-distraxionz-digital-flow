@@ -40,7 +40,7 @@ const Products = () => {
 
     const result = await populateProductsFromImageDatabase();
 
-    if (result.success) {
+    if (result && result.success) {
       toast({
         title: "Success!",
         description: result.message,
@@ -48,7 +48,7 @@ const Products = () => {
     } else {
       toast({
         title: "Error",
-        description: result.message,
+        description: result?.message || "Failed to populate products",
         variant: "destructive",
       });
     }
@@ -60,17 +60,25 @@ const Products = () => {
       description: "This may take a moment.",
     });
 
-    const result = await quickPopulateProducts();
+    try {
+      const result = await quickPopulateProducts();
 
-    if (result.success) {
-      toast({
-        title: "Success!",
-        description: result.message,
-      });
-    } else {
+      if (result && result.success) {
+        toast({
+          title: "Success!",
+          description: result.message,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: result?.message || "Failed to populate products",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
         title: "Error",
-        description: result.message,
+        description: "Failed to populate products",
         variant: "destructive",
       });
     }

@@ -23,15 +23,12 @@ export const populateProducts = async () => {
       id: product.id,
       name: product.name,
       description: product.description,
-      price: parseFloat(product.price.replace('$', '')),
+      price: typeof product.price === 'number' ? product.price : parseFloat(String(product.price).replace('$', '')),
       image: product.image,
       category: product.category,
-      stock: Math.floor(Math.random() * 100) + 10, // Random stock between 10-110
+      stock: Math.floor(Math.random() * 100) + 10,
       featured: product.featured,
-      sizes: JSON.stringify(product.sizes),
-      colors: JSON.stringify(product.colors),
-      original_price: product.originalPrice ? parseFloat(product.originalPrice.replace('$', '')) : null,
-      price_range: product.priceRange,
+      original_price: product.original_price || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }));
