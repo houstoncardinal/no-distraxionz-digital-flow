@@ -19,13 +19,13 @@ export const useProducts = () => {
 
       if (error) throw error;
       
-      // Transform the data to handle missing fields with defaults
+      // Transform data to match Product interface, using defaults for missing fields
       const transformedProducts = (data || []).map(product => ({
         ...product,
-        sizes: product.sizes || [],
-        colors: product.colors || [],
-        featured: product.featured || false,
-        priceRange: product.price_range || undefined
+        sizes: [],  // Not stored in DB yet
+        colors: [], // Not stored in DB yet
+        featured: false, // Not stored in DB yet
+        priceRange: undefined
       })) as import('@/data/products').Product[];
       
       setProducts(transformedProducts);
