@@ -8,10 +8,11 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CreditCard, Truck, Shield, ArrowLeft, Lock, CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
@@ -52,17 +53,55 @@ const Checkout = () => {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      // Create order in database
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          customer_name: `${formData.firstName} ${formData.lastName}`,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          total_amount: finalTotal,
+          status: 'pending'
+        })
+        .select()
+        .single();
 
-    toast({
-      title: "Order placed successfully!",
-      description: "Thank you for your purchase. You'll receive a confirmation email shortly.",
-    });
+      if (orderError) throw orderError;
 
-    clearCart();
-    setIsProcessing(false);
-    navigate('/order-confirmation');
+      // Create order items
+      const orderItems = state.items.map(item => ({
+        order_id: order.id,
+        product_id: item.product.id,
+        quantity: item.quantity,
+        price: typeof item.product.price === 'number' 
+          ? item.product.price 
+          : parseFloat(String(item.product.price).replace('$', ''))
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      toast({
+        title: "Order placed successfully!",
+        description: "Thank you for your purchase. You'll receive a confirmation email shortly.",
+      });
+
+      clearCart();
+      navigate('/order-confirmation', { state: { orderNumber: order.id } });
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast({
+        title: "Order failed",
+        description: "There was an error processing your order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (state.items.length === 0) {

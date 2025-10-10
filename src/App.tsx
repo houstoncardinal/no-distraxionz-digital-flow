@@ -29,7 +29,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 // Admin Pages
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin";
-import Products from "./pages/admin/ProductsNew";
+import Products from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Settings from "./pages/admin/Settings";
