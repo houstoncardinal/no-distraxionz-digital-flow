@@ -54,6 +54,9 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
+      // Get current user if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+
       // Create order in database
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -62,7 +65,15 @@ const Checkout = () => {
           customer_email: formData.email,
           customer_phone: formData.phone,
           total_amount: finalTotal,
-          status: 'pending'
+          status: 'pending',
+          user_id: user?.id || null,
+          shipping_address: {
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode
+          },
+          payment_status: 'pending'
         })
         .select()
         .single();

@@ -1,18 +1,28 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CartTrigger } from '@/components/cart/CartSidebar';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import MegaMenu from './MegaMenu';
 import MobileMegaMenu from './MobileMegaMenu';
-import { Menu, X, Search, User, Heart, ChevronDown } from 'lucide-react';
+import { Menu, X, Search, User, Heart, ChevronDown, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [isMobileMegaMenuOpen, setIsMobileMegaMenuOpen] = useState(false);
   const { state } = useCart();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const navLinks = [
     { to: '/', label: 'Home' },
@@ -113,9 +123,31 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200 relative">
               <Heart className="h-5 w-5 text-gray-600" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
-              <User className="h-5 w-5 text-gray-600" />
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
+                    <User className="h-5 w-5 text-gray-600" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/my-orders')}>
+                    My Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="icon" asChild className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
+                <Link to="/auth">
+                  <User className="h-5 w-5 text-gray-600" />
+                </Link>
+              </Button>
+            )}
             <div className="h-6 w-px bg-gray-300 mx-2" />
             <CartTrigger />
           </motion.div>
@@ -192,9 +224,20 @@ const Header = () => {
                   <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100">
                     <Heart className="h-5 w-5 text-gray-600" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100">
-                    <User className="h-5 w-5 text-gray-600" />
-                  </Button>
+                  {user ? (
+                    <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100" onClick={() => {
+                      setIsMenuOpen(false);
+                      navigate('/my-orders');
+                    }}>
+                      <User className="h-5 w-5 text-gray-600" />
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
+                      <Link to="/auth">
+                        <User className="h-5 w-5 text-gray-600" />
+                      </Link>
+                    </Button>
+                  )}
                 </motion.div>
               </div>
             </nav>
