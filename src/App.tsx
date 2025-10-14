@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
 import AIShoppingAssistant from '@/components/AIShoppingAssistant';
@@ -25,6 +26,11 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import ProductDetail from './pages/ProductDetail';
 import OrderConfirmation from './pages/OrderConfirmation';
+import Auth from './pages/Auth';
+import MyOrders from './pages/MyOrders';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Returns from './pages/Returns';
 
 // Admin Pages
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -54,47 +60,54 @@ function App() {
   }
 
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <Router>
-        <ScrollToTop />
-        <ConstructionBanner />
-        <div className="App">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+    <AuthProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <Router>
+          <ScrollToTop />
+          <ConstructionBanner />
+          <div className="App">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/my-orders" element={<MyOrders />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/returns" element={<Returns />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="reviews" element={<Reviews />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="populate" element={<PopulateProducts />} />
+              </Route>
+              
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
             
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<Products />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="reviews" element={<Reviews />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="populate" element={<PopulateProducts />} />
-            </Route>
-            
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          
-          {/* Global Components */}
-          <CartSidebar />
-          <AIShoppingAssistant />
-          <Toaster />
-        </div>
-        </Router>
-      </WishlistProvider>
-    </CartProvider>
+            {/* Global Components */}
+            <CartSidebar />
+            <AIShoppingAssistant />
+            <Toaster />
+          </div>
+          </Router>
+        </WishlistProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
