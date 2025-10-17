@@ -4,11 +4,34 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { quickPopulateProducts } from '@/utils/quickPopulate';
+import { populateAllCategories } from '@/utils/populateAllCategories';
 import { useToast } from '@/hooks/use-toast';
-import { Package, Sparkles, Upload } from 'lucide-react';
+import { Package, Sparkles, Upload, Zap } from 'lucide-react';
 
 const Products = () => {
   const { toast } = useToast();
+
+  const handlePopulateAll = async () => {
+    toast({
+      title: "Importing all products...",
+      description: "This will import products from ALL categories (shirts, ladies, hats, hoodie, onesie, toddler-shirts)",
+    });
+
+    const result = await populateAllCategories();
+
+    if (result.success) {
+      toast({
+        title: "Success! 🎉",
+        description: result.message,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const handlePopulateToddlerShirts = async () => {
     toast({
@@ -94,12 +117,38 @@ const Products = () => {
         </p>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Import - Highlighted Section */}
+      <Card className="border-2 border-primary bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-primary" />
+            Quick Import - All Categories
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Import all products from your image folders in one click. This includes:
+              <strong> Shirts, Ladies, Hats, Hoodies, Onesies, and Toddler Shirts</strong>
+            </p>
+            <Button
+              onClick={handlePopulateAll}
+              className="gap-2 w-full sm:w-auto"
+              size="lg"
+            >
+              <Sparkles className="h-4 w-4" />
+              Import All Products Now
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Additional Import Options */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            Quick Actions
+            <Upload className="h-5 w-5" />
+            Additional Import Options
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -110,7 +159,7 @@ const Products = () => {
               className="gap-2"
             >
               <Package className="h-4 w-4" />
-              Populate Toddler Shirts
+              Populate Toddler Shirts Only
             </Button>
             <Button
               onClick={handlePopulateFromImages}
@@ -118,7 +167,7 @@ const Products = () => {
               className="gap-2"
             >
               <Upload className="h-4 w-4" />
-              Populate from Images
+              Populate from Image Database
             </Button>
             <Button
               onClick={handleQuickPopulate}
@@ -126,17 +175,27 @@ const Products = () => {
               className="gap-2"
             >
               <Sparkles className="h-4 w-4" />
-              Quick Populate All
+              Quick Populate Sample
             </Button>
           </div>
           <p className="text-sm text-gray-500 mt-4">
-            Use these actions to quickly populate your database with products from various sources.
+            Use these options to populate specific categories or test with sample data.
           </p>
         </CardContent>
       </Card>
 
       {/* Enhanced Product Manager */}
-      <EnhancedProductManager />
+      <Card>
+        <CardHeader>
+          <CardTitle>Product Catalog</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            View, edit, and manage all your products. Click any product to edit pricing, images, or details.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <EnhancedProductManager />
+        </CardContent>
+      </Card>
     </div>
   );
 };
