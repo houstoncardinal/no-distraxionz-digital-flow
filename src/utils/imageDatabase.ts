@@ -14,7 +14,7 @@ export interface CategoryImages {
 
 // Discover all images in your public folder structure
 export const discoverImages = (): CategoryImages => {
-  const categories = ['shirts', 'ladies', 'hats', 'hoodie', 'lovable-uploads'];
+  const categories = ['shirts', 'ladies', 'hats', 'hoodie', 'onesie', 'toddler-shirts', 'lovable-uploads'];
   const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.svg'];
   
   const discoveredImages: CategoryImages = {};
@@ -51,6 +51,21 @@ export const discoverImages = (): CategoryImages => {
         'envato-labs-image-edit (63).png',
         'envato-labs-image-edit (64).png',
         'envato-labs-image-edit (65).png'
+      ],
+      'onesie': [
+        'envato-labs-image-edit (12).webp',
+        'envato-labs-image-edit - 2025-10-07T213233.751.png',
+        'envato-labs-image-edit - 2025-10-07T213443.609.png',
+        'envato-labs-image-edit - 2025-10-07T213736.621.png',
+        'envato-labs-image-edit - 2025-10-07T214228.011.png'
+      ],
+      'toddler-shirts': [
+        'envato-labs-image-edit (12).webp',
+        'envato-labs-image-edit (13).webp',
+        'envato-labs-image-edit (14).webp',
+        'envato-labs-image-edit - 2025-10-07T220721.938.png',
+        'envato-labs-image-edit - 2025-10-07T221052.201.png',
+        'envato-labs-image-edit - 2025-10-07T221222.032.png'
       ],
       'lovable-uploads': [
         '30a4fcab-8cc9-4f74-8a58-f4c349a4cb3c.png',
@@ -134,6 +149,21 @@ const generateProductName = (category: string, index: number): string => {
       'Legendary Status Hoodie',
       'No Distraxionz Zip-Up'
     ],
+    'onesie': [
+      'Baby Focus Mode Onesie',
+      'Little Legend Onesie',
+      'Mini Hustler Baby Onesie',
+      'No Distraxionz Baby Romper',
+      'Focus Baby Bodysuit'
+    ],
+    'toddler-shirts': [
+      'Toddler Focus Tee',
+      'Little Hustler Toddler Shirt',
+      'Mini Legend Tee',
+      'Future Focus Toddler Shirt',
+      'No Distraxionz Kids Tee',
+      'Toddler Boss Shirt'
+    ],
     'lovable-uploads': [
       'Premium Collection Tee',
       'Exclusive Design Hoodie'
@@ -149,6 +179,8 @@ const generateProductPrice = (category: string): number => {
     'ladies': [40, 55],
     'hats': [25, 40],
     'hoodie': [60, 85],
+    'onesie': [30, 45],
+    'toddler-shirts': [28, 42],
     'lovable-uploads': [45, 70]
   };
   
@@ -162,6 +194,8 @@ const generateProductDescription = (category: string, name: string): string => {
     'ladies': 'Empowering designs for strong women who refuse to be average. Premium quality construction.',
     'hats': 'Premium cap for outdoor focus sessions. Built for the grind and designed for success.',
     'hoodie': 'Comfortable hoodie for focus sessions. Premium materials with streetwear aesthetics.',
+    'onesie': 'Soft and comfortable baby onesie with motivational designs. Perfect for the little ones who are destined for greatness.',
+    'toddler-shirts': 'Adorable toddler tee with inspirational messaging. Premium quality for active little hustlers.',
     'lovable-uploads': 'Exclusive design from our premium collection. Limited edition streetwear.'
   };
   
@@ -174,6 +208,8 @@ const getSizesForCategory = (category: string): string[] => {
     'ladies': ['XS', 'S', 'M', 'L', 'XL'],
     'hats': ['One Size'],
     'hoodie': ['S', 'M', 'L', 'XL', 'XXL'],
+    'onesie': ['0-3M', '3-6M', '6-12M', '12-18M'],
+    'toddler-shirts': ['2T', '3T', '4T', '5T'],
     'lovable-uploads': ['S', 'M', 'L', 'XL', 'XXL']
   };
   
@@ -186,6 +222,8 @@ const getColorsForCategory = (category: string): string[] => {
     'ladies': ['Black', 'White', 'Pink', 'Navy'],
     'hats': ['Black', 'White', 'Navy', 'Gray'],
     'hoodie': ['Black', 'Gray', 'Navy', 'White'],
+    'onesie': ['White', 'Baby Blue', 'Pink', 'Yellow'],
+    'toddler-shirts': ['Black', 'White', 'Red', 'Blue'],
     'lovable-uploads': ['Black', 'White', 'Navy']
   };
   
@@ -198,6 +236,8 @@ const getPriceRangeForCategory = (category: string): string => {
     'ladies': '$40-55', 
     'hats': '$25-40',
     'hoodie': '$60-85',
+    'onesie': '$30-45',
+    'toddler-shirts': '$28-42',
     'lovable-uploads': '$45-70'
   };
   
