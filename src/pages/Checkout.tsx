@@ -1,18 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Elements } from '@stripe/react-stripe-js';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CreditCard, Truck, Shield, ArrowLeft, Lock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, CreditCard, Lock, Shield, Truck } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { supabase } from '@/integrations/supabase/client';
+import { stripePromise } from '@/lib/stripe';
+import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
