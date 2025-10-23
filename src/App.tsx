@@ -23,7 +23,7 @@ import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import NotFound from './pages/NotFound';
 import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
+import Checkout from './pages/CheckoutWithStripe';
 import ProductDetail from './pages/ProductDetail';
 import OrderConfirmation from './pages/OrderConfirmation';
 import Auth from './pages/Auth';
