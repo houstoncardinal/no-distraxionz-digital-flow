@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { useReviews } from '@/hooks/useReviews';
+import { useProducts } from '@/hooks/useProducts';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,85 +63,13 @@ import {
   BarChart3,
   TrendingUp,
   TrendingDown,
+  Trash2,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
-// Mock reviews data
-const mockReviews = [
-  {
-    id: '1',
-    customerName: 'Sarah Johnson',
-    customerEmail: 'sarah.j@email.com',
-    productName: 'Tunnel Vision Tee',
-    productId: '1',
-    rating: 5,
-    title: 'Amazing quality!',
-    content: 'Love this shirt! The quality is excellent and the design is exactly what I was looking for. Will definitely order again.',
-    status: 'approved',
-    createdAt: '2024-01-15T10:30:00Z',
-    helpful: 12,
-    verified: true,
-  },
-  {
-    id: '2',
-    customerName: 'Mike Chen',
-    customerEmail: 'mike.c@email.com',
-    productName: 'Legendary Heavyweight',
-    productId: '2',
-    rating: 4,
-    title: 'Great fit',
-    content: 'Good quality shirt, fits well. The material is comfortable and the print looks great.',
-    status: 'pending',
-    createdAt: '2024-01-14T15:45:00Z',
-    helpful: 8,
-    verified: true,
-  },
-  {
-    id: '3',
-    customerName: 'Emma Davis',
-    customerEmail: 'emma.d@email.com',
-    productName: 'Time Is Money Tee',
-    productId: '3',
-    rating: 2,
-    title: 'Not as expected',
-    content: 'The shirt arrived with a small defect and the sizing was off. Customer service was helpful though.',
-    status: 'pending',
-    createdAt: '2024-01-13T09:20:00Z',
-    helpful: 3,
-    verified: true,
-  },
-  {
-    id: '4',
-    customerName: 'Alex Rodriguez',
-    customerEmail: 'alex.r@email.com',
-    productName: 'No More Fake Friends T-Shirt',
-    productId: '4',
-    rating: 5,
-    title: 'Perfect!',
-    content: 'Exactly what I ordered. Fast shipping and great quality. Highly recommend!',
-    status: 'approved',
-    createdAt: '2024-01-12T14:10:00Z',
-    helpful: 15,
-    verified: true,
-  },
-  {
-    id: '5',
-    customerName: 'Lisa Wang',
-    customerEmail: 'lisa.w@email.com',
-    productName: 'Why Be Average, Be Legendary',
-    productId: '5',
-    rating: 1,
-    title: 'Poor quality',
-    content: 'The shirt faded after one wash and the print started peeling. Very disappointed.',
-    status: 'flagged',
-    createdAt: '2024-01-11T16:30:00Z',
-    helpful: 1,
-    verified: false,
-  },
-];
-
 const Reviews = () => {
-  const [reviews] = useState(mockReviews);
+  const { reviews, loading, deleteReview } = useReviews();
+  const { products } = useProducts();
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
@@ -154,15 +84,10 @@ const Reviews = () => {
     const q = query.trim().toLowerCase();
     if (q) {
       filtered = filtered.filter((r) =>
-        r.customerName.toLowerCase().includes(q) || 
-        r.productName.toLowerCase().includes(q) ||
-        r.content.toLowerCase().includes(q)
+        r.customer_name.toLowerCase().includes(q) || 
+        getProductName(r.product_id).toLowerCase().includes(q) ||
+        (r.comment || '').toLowerCase().includes(q)
       );
-    }
-    
-    // Status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter((r) => r.status === statusFilter);
     }
     
     // Rating filter
@@ -176,38 +101,42 @@ const Reviews = () => {
 
   const reviewStats = useMemo(() => {
     const totalReviews = reviews.length;
-    const approvedReviews = reviews.filter(r => r.status === 'approved').length;
-    const pendingReviews = reviews.filter(r => r.status === 'pending').length;
-    const flaggedReviews = reviews.filter(r => r.status === 'flagged').length;
-    const averageRating = reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews;
+    const verifiedReviews = reviews.filter(r => r.verified_purchase).length;
+    const averageRating = totalReviews > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews : 0;
     
     return {
       totalReviews,
-      approvedReviews,
-      pendingReviews,
-      flaggedReviews,
+      verifiedReviews,
       averageRating,
     };
   }, [reviews]);
+
+  const getProductName = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    return product?.name || 'Unknown Product';
+  };
 
   const handleViewReview = (review: any) => {
     setSelectedReview(review);
     setViewOpen(true);
   };
 
+  const handleDeleteReview = async (reviewId: string) => {
+    if (confirm('Are you sure you want to delete this review?')) {
+      await deleteReview(reviewId);
+    }
+  };
+
   const handleApproveReview = (reviewId: string) => {
-    // In a real app, this would update the review status
-    console.log('Approving review:', reviewId);
+    console.log('Approve review:', reviewId);
   };
 
   const handleRejectReview = (reviewId: string) => {
-    // In a real app, this would update the review status
-    console.log('Rejecting review:', reviewId);
+    console.log('Reject review:', reviewId);
   };
 
   const handleFlagReview = (reviewId: string) => {
-    // In a real app, this would flag the review
-    console.log('Flagging review:', reviewId);
+    console.log('Flag review:', reviewId);
   };
 
   const StatCard = ({ 
@@ -291,18 +220,11 @@ const Reviews = () => {
           color="text-blue-600"
         />
         <StatCard
-          title="Approved"
-          value={reviewStats.approvedReviews}
-          subtitle={`${Math.round((reviewStats.approvedReviews / reviewStats.totalReviews) * 100)}% of total`}
+          title="Verified Purchases"
+          value={reviewStats.verifiedReviews}
+          subtitle={`${Math.round((reviewStats.verifiedReviews / (reviewStats.totalReviews || 1)) * 100)}% of total`}
           icon={CheckCircle}
           color="text-green-600"
-        />
-        <StatCard
-          title="Pending"
-          value={reviewStats.pendingReviews}
-          subtitle="Awaiting moderation"
-          icon={Clock}
-          color="text-yellow-600"
         />
         <StatCard
           title="Average Rating"
@@ -353,17 +275,6 @@ const Reviews = () => {
             className="pl-8"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="flagged">Flagged</SelectItem>
-          </SelectContent>
-        </Select>
         <Select value={ratingFilter} onValueChange={setRatingFilter}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Rating" />
@@ -414,12 +325,12 @@ const Reviews = () => {
                         <Avatar className="h-8 w-8">
                           <AvatarImage src="" />
                           <AvatarFallback>
-                            {review.customerName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                            {review.customer_name.split(' ').map(n => n[0]).join('').toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium text-sm">{review.customerName}</div>
-                          {review.verified && (
+                          <div className="font-medium text-sm">{review.customer_name}</div>
+                          {review.verified_purchase && (
                             <Badge variant="outline" className="text-xs">
                               Verified
                             </Badge>
@@ -428,7 +339,7 @@ const Reviews = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm font-medium">{review.productName}</div>
+                      <div className="text-sm font-medium">{getProductName(review.product_id)}</div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -437,33 +348,20 @@ const Reviews = () => {
                     </TableCell>
                     <TableCell>
                       <div className="max-w-xs">
-                        <div className="font-medium text-sm">{review.title}</div>
+                        {review.title && <div className="font-medium text-sm">{review.title}</div>}
                         <div className="text-sm text-muted-foreground line-clamp-2">
-                          {review.content}
+                          {review.comment || 'No comment'}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {review.status === 'approved' ? (
-                        <Badge variant="default" className="bg-green-100 text-green-700">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Approved
-                        </Badge>
-                      ) : review.status === 'pending' ? (
-                        <Badge variant="secondary">
-                          <Clock className="h-3 w-3 mr-1" />
-                          Pending
-                        </Badge>
-                      ) : (
-                        <Badge variant="destructive">
-                          <Flag className="h-3 w-3 mr-1" />
-                          Flagged
-                        </Badge>
-                      )}
+                      <Badge variant={review.verified_purchase ? 'default' : 'outline'}>
+                        {review.verified_purchase ? 'Verified' : 'Unverified'}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        {format(new Date(review.createdAt), 'MMM dd, yyyy')}
+                        {format(new Date(review.created_at), 'MMM dd, yyyy')}
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
@@ -476,57 +374,14 @@ const Reviews = () => {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        {review.status === 'pending' && (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-green-600"
-                              onClick={() => handleApproveReview(review.id)}
-                            >
-                              <Check className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-red-600"
-                              onClick={() => handleRejectReview(review.id)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleViewReview(review)}>
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Details
-                            </DropdownMenuItem>
-                            {review.status === 'pending' && (
-                              <DropdownMenuItem onClick={() => handleApproveReview(review.id)}>
-                                <Check className="h-4 w-4 mr-2" />
-                                Approve
-                              </DropdownMenuItem>
-                            )}
-                            {review.status === 'pending' && (
-                              <DropdownMenuItem onClick={() => handleRejectReview(review.id)}>
-                                <X className="h-4 w-4 mr-2" />
-                                Reject
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem onClick={() => handleFlagReview(review.id)}>
-                              <Flag className="h-4 w-4 mr-2" />
-                              Flag
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-600"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
