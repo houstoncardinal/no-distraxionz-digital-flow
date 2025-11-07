@@ -14,6 +14,245 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          abandoned_at: string | null
+          cart_data: Json
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          recovered: boolean | null
+          recovered_at: string | null
+          recovery_email_sent: boolean | null
+          total_value: number
+          user_id: string | null
+        }
+        Insert: {
+          abandoned_at?: string | null
+          cart_data: Json
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          recovered?: boolean | null
+          recovered_at?: string | null
+          recovery_email_sent?: boolean | null
+          total_value: number
+          user_id?: string | null
+        }
+        Update: {
+          abandoned_at?: string | null
+          cart_data?: Json
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          recovered?: boolean | null
+          recovered_at?: string | null
+          recovery_email_sent?: boolean | null
+          total_value?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      collection_products: {
+        Row: {
+          collection_id: string
+          created_at: string | null
+          product_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          collection_id: string
+          created_at?: string | null
+          product_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          collection_id?: string
+          created_at?: string | null
+          product_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_products_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      customer_segments: {
+        Row: {
+          conditions: Json | null
+          created_at: string | null
+          customer_count: number | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          conditions?: Json | null
+          created_at?: string | null
+          customer_count?: number | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          conditions?: Json | null
+          created_at?: string | null
+          customer_count?: number | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      discount_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          current_uses: number | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          min_purchase_amount: number | null
+          starts_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_purchase_amount?: number | null
+          starts_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_purchase_amount?: number | null
+          starts_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      marketing_campaigns: {
+        Row: {
+          campaign_type: string
+          content: Json | null
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          metrics: Json | null
+          name: string
+          starts_at: string | null
+          status: string
+          target_segment_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          campaign_type: string
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          metrics?: Json | null
+          name: string
+          starts_at?: string | null
+          status?: string
+          target_segment_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          campaign_type?: string
+          content?: Json | null
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          metrics?: Json | null
+          name?: string
+          starts_at?: string | null
+          status?: string
+          target_segment_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_campaigns_target_segment_id_fkey"
+            columns: ["target_segment_id"]
+            isOneToOne: false
+            referencedRelation: "customer_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string | null
@@ -304,6 +543,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shipping_zones: {
+        Row: {
+          countries: Json
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rates: Json
+          updated_at: string | null
+        }
+        Insert: {
+          countries: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rates: Json
+          updated_at?: string | null
+        }
+        Update: {
+          countries?: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rates?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tax_rates: {
+        Row: {
+          country: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rate: number
+          state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rate: number
+          state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rate?: number
+          state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
