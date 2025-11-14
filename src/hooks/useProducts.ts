@@ -14,7 +14,7 @@ export const useProducts = () => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select('*, product_variations(*)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -24,9 +24,10 @@ export const useProducts = () => {
         ...product,
         sizes: [],  // Not stored in DB yet
         colors: [], // Not stored in DB yet
-        featured: false, // Not stored in DB yet
-        priceRange: undefined
-      })) as import('@/data/products').Product[];
+        featured: false,
+        priceRange: undefined,
+        variations: product.product_variations || []
+      })) as any[];
       
       setProducts(transformedProducts);
     } catch (error) {
@@ -65,7 +66,7 @@ export const useProducts = () => {
     };
   }, []);
 
-  const createProduct = async (product: Partial<import('@/data/products').Product>) => {
+  const createProduct = async (product: Partial<import('@/data/products').Product> & { variations?: any[] }) => {
     try {
       const productData = {
         name: product.name,
@@ -74,7 +75,10 @@ export const useProducts = () => {
         image: product.image,
         category: product.category,
         stock: product.stock || 0,
-        featured: product.featured || false
+        featured: product.featured || false,
+        meta_title: product.meta_title,
+        meta_description: product.meta_description,
+        meta_keywords: product.meta_keywords,
       };
 
       const { data, error } = await supabase
@@ -84,6 +88,24 @@ export const useProducts = () => {
         .single();
 
       if (error) throw error;
+
+      // Create variations if provided
+      if (product.variations && product.variations.length > 0 && data) {
+        const variationsData = product.variations.map(v => ({
+          product_id: data.id,
+          name: v.name,
+          sku: v.sku,
+          price: parseFloat(v.price),
+          stock: v.stock,
+          attributes: v.attributes || {},
+        }));
+
+        const { error: variationsError } = await supabase
+          .from('product_variations')
+          .insert(variationsData);
+
+        if (variationsError) throw variationsError;
+      }
 
       toast({
         title: 'Success',
@@ -102,16 +124,54 @@ export const useProducts = () => {
     }
   };
 
-  const updateProduct = async (id: string, updates: Partial<import('@/data/products').Product>) => {
+  const updateProduct = async (id: string, updates: Partial<import('@/data/products').Product> & { variations?: any[] }) => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .update(updates)
+        .update({
+          name: updates.name,
+          description: updates.description,
+          price: updates.price,
+          image: updates.image,
+          category: updates.category,
+          stock: updates.stock,
+          featured: updates.featured,
+          meta_title: updates.meta_title,
+          meta_description: updates.meta_description,
+          meta_keywords: updates.meta_keywords,
+        })
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
+
+      // Update variations if provided
+      if (updates.variations !== undefined) {
+        // Delete existing variations
+        await supabase
+          .from('product_variations')
+          .delete()
+          .eq('product_id', id);
+
+        // Insert new variations
+        if (updates.variations.length > 0) {
+          const variationsData = updates.variations.map(v => ({
+            product_id: id,
+            name: v.name,
+            sku: v.sku,
+            price: parseFloat(v.price),
+            stock: v.stock,
+            attributes: v.attributes || {},
+          }));
+
+          const { error: variationsError } = await supabase
+            .from('product_variations')
+            .insert(variationsData);
+
+          if (variationsError) throw variationsError;
+        }
+      }
 
       toast({
         title: 'Success',

@@ -21,6 +21,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ImageUpload } from './ImageUpload';
+import { ProductVariations, ProductVariation } from './ProductVariations';
 import { X, Plus } from 'lucide-react';
 import { Product } from '@/data/products';
 
@@ -53,6 +54,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
     meta_description: '',
     meta_keywords: [] as string[],
     sku: '',
+    variations: [] as ProductVariation[],
   });
 
   const [newKeyword, setNewKeyword] = useState('');
@@ -74,6 +76,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
         meta_description: product.meta_description || '',
         meta_keywords: product.meta_keywords || [],
         sku: '',
+        variations: (product as any).variations || [],
       });
     } else {
       // Reset form for create mode
@@ -92,6 +95,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
         meta_description: '',
         meta_keywords: [],
         sku: '',
+        variations: [],
       });
     }
   }, [product, mode, open]);
@@ -299,6 +303,12 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
               </div>
             </div>
           </div>
+
+          {/* Variation Pricing */}
+          <ProductVariations
+            variations={formData.variations}
+            onChange={(variations) => setFormData(prev => ({ ...prev, variations }))}
+          />
 
           {/* SEO Settings */}
           <div className="space-y-4">
