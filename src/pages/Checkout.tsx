@@ -41,6 +41,7 @@ const Checkout = () => {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
   const shipping = state.total > 75 ? 0 : 9.99;
@@ -52,10 +53,41 @@ const Checkout = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
+  // Create payment intent when component mounts
+  useEffect(() => {
+    if (finalTotal > 0) {
+      createPaymentIntent();
+    }
+  }, [finalTotal]);
 
+  const createPaymentIntent = async () => {
+    try {
+      const response = await supabase.functions.invoke('create-payment-intent', {
+        body: {
+          amount: Math.round(finalTotal * 100), // Convert to cents
+          currency: 'usd',
+          metadata: {
+            customer_email: formData.email,
+          },
+        },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      setClientSecret(response.data.clientSecret);
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      toast({
+        title: "Payment setup failed",
+        description: "Unable to initialize payment. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
     try {
       // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
@@ -69,14 +101,15 @@ const Checkout = () => {
           customer_phone: formData.phone,
           total_amount: finalTotal,
           status: 'pending',
+          payment_status: 'paid',
+          payment_intent_id: paymentIntentId,
           user_id: user?.id || null,
           shipping_address: {
             address: formData.address,
             city: formData.city,
             state: formData.state,
             zipCode: formData.zipCode
-          },
-          payment_status: 'pending'
+          }
         })
         .select()
         .single();
@@ -99,6 +132,37 @@ const Checkout = () => {
 
       if (itemsError) throw itemsError;
 
+      // Send confirmation email
+      try {
+        await supabase.functions.invoke('send-order-confirmation', {
+          body: {
+            orderNumber: order.id,
+            customerName: `${formData.firstName} ${formData.lastName}`,
+            customerEmail: formData.email,
+            items: state.items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: typeof item.product.price === 'number' 
+                ? item.product.price 
+                : parseFloat(String(item.product.price).replace('$', ''))
+            })),
+            subtotal: state.total,
+            shipping,
+            tax,
+            total: finalTotal,
+            shippingAddress: {
+              address: formData.address,
+              city: formData.city,
+              state: formData.state,
+              zipCode: formData.zipCode
+            }
+          },
+        });
+      } catch (emailError) {
+        console.error('Error sending confirmation email:', emailError);
+        // Don't fail the order if email fails
+      }
+
       toast({
         title: "Order placed successfully!",
         description: "Thank you for your purchase. You'll receive a confirmation email shortly.",
@@ -113,8 +177,6 @@ const Checkout = () => {
         description: "There was an error processing your order. Please try again.",
         variant: "destructive"
       });
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -156,7 +218,7 @@ const Checkout = () => {
             </Button>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Checkout Form */}
               <div className="space-y-6">
@@ -445,7 +507,7 @@ const Checkout = () => {
                 </Card>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
 
