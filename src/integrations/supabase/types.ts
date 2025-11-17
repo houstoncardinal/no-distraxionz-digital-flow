@@ -633,6 +633,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_admin_user: {
+        Args: { user_email: string; user_name: string; user_password: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -640,6 +644,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      make_user_admin: { Args: { target_user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "customer"

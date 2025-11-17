@@ -55,6 +55,7 @@ import Shipping from "./pages/admin/Shipping";
 import Taxes from "./pages/admin/Taxes";
 import Payments from "./pages/admin/Payments";
 import Integrations from "./pages/admin/Integrations";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 import './App.css';
 
@@ -98,8 +99,12 @@ function App() {
               <Route path="/terms" element={<Terms />} />
               <Route path="/returns" element={<Returns />} />
               
-              {/* Admin Routes */}
-              <Route path="/admin" element={<AdminLayout />}>
+              {/* Admin Routes - Protected */}
+              <Route path="/admin" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }>
                 <Route index element={<AdminDashboard />} />
                 <Route path="products" element={<Products />} />
                 <Route path="orders" element={<Orders />} />
