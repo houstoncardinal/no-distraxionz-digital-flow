@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Lock, Mail, User, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,8 +18,19 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isAdmin, checkingAdmin, user } = useAuth();
+
+  // Handle redirect after successful login and admin check completes
+  useEffect(() => {
+    if (justLoggedIn && user && !checkingAdmin) {
+      const redirectTo = isAdmin ? '/admin' : '/';
+      navigate(redirectTo);
+      setJustLoggedIn(false);
+    }
+  }, [justLoggedIn, user, checkingAdmin, isAdmin, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +49,8 @@ export default function Auth() {
         description: 'You have successfully logged in.',
       });
 
-      navigate('/');
+      // Set flag to trigger admin-based redirect after auth context updates
+      setJustLoggedIn(true);
     } catch (error: any) {
       toast({
         title: 'Login failed',

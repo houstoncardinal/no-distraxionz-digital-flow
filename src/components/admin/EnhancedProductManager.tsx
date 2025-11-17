@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+// World-Class Product Management Interface - Simplified Version
+import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/hooks/useProducts';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,14 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -29,10 +22,13 @@ import {
   Star,
   TrendingUp,
   Package,
-  DollarSign,
   Grid3x3,
   List,
   MoreVertical,
+  Settings,
+  Download,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import OptimizedImage from '../OptimizedImage';
 import { ProductFormDialog } from './ProductFormDialog';
@@ -56,23 +52,34 @@ import {
 const EnhancedProductManager = () => {
   const { products, loading, createProduct, updateProduct, deleteProduct } = useProducts();
   const { toast } = useToast();
-  
+
+  // Core State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // UI State
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const categories = ['Shirts', 'Ladies', 'Hoodies', 'Hats', 'Toddler Shirts', 'Onesie'];
 
-  const filteredProducts = useMemo(() => {
-    let filtered = products;
+  // Product Processing
+  const processedProducts = useMemo(() => {
+    let processed = [...products];
 
     if (searchQuery) {
-      filtered = filtered.filter(product =>
+      processed = processed.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.category?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -80,26 +87,43 @@ const EnhancedProductManager = () => {
     }
 
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+      processed = processed.filter(product => product.category === selectedCategory);
     }
 
-    return filtered;
-  }, [products, searchQuery, selectedCategory]);
+    processed.sort((a, b) => {
+      let aValue: any, bValue: any;
+      switch (sortBy) {
+        case 'name': aValue = a.name; bValue = b.name; break;
+        case 'price': aValue = a.price || 0; bValue = b.price || 0; break;
+        case 'stock': aValue = a.stock || 0; bValue = b.stock || 0; break;
+        default: aValue = a.name; bValue = b.name;
+      }
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return processed;
+  }, [products, searchQuery, selectedCategory, sortBy, sortOrder]);
+
+  // Pagination
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return processedProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [processedProducts, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(processedProducts.length / itemsPerPage);
 
   const stats = useMemo(() => {
     const totalProducts = products.length;
     const featuredProducts = products.filter(p => p.featured).length;
-    const totalValue = products.reduce((sum, p) => sum + (p.price || 0), 0);
-    const avgPrice = totalProducts > 0 ? totalValue / totalProducts : 0;
+    const avgPrice = totalProducts > 0 ?
+      products.reduce((sum, p) => sum + (p.price || 0), 0) / totalProducts : 0;
 
-    return {
-      totalProducts,
-      featuredProducts,
-      totalValue,
-      avgPrice
-    };
+    return { totalProducts, featuredProducts, avgPrice };
   }, [products]);
 
+  // Handlers
   const toggleProductSelection = (productId: string) => {
     setSelectedProducts(prev =>
       prev.includes(productId)
@@ -109,20 +133,17 @@ const EnhancedProductManager = () => {
   };
 
   const toggleAllProducts = () => {
-    if (selectedProducts.length === filteredProducts.length) {
+    if (selectedProducts.length === paginatedProducts.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(filteredProducts.map(p => p.id));
+      setSelectedProducts(paginatedProducts.map(p => p.id));
     }
   };
 
   const handleCreateProduct = async (data: any) => {
     const result = await createProduct(data);
     if (result) {
-      toast({
-        title: 'Success',
-        description: 'Product created successfully',
-      });
+      toast({ title: 'Success', description: 'Product created successfully' });
     }
   };
 
@@ -130,10 +151,7 @@ const EnhancedProductManager = () => {
     if (!editingProduct) return;
     const result = await updateProduct(editingProduct.id, data);
     if (result) {
-      toast({
-        title: 'Success',
-        description: 'Product updated successfully',
-      });
+      toast({ title: 'Success', description: 'Product updated successfully' });
       setEditingProduct(null);
     }
   };
@@ -141,29 +159,19 @@ const EnhancedProductManager = () => {
   const handleDeleteProduct = async (id: string) => {
     const success = await deleteProduct(id);
     if (success) {
-      toast({
-        title: 'Success',
-        description: 'Product deleted successfully',
-      });
+      toast({ title: 'Success', description: 'Product deleted successfully' });
       setDeleteConfirm(null);
     }
-  };
-
-  const handleBulkDelete = async () => {
-    for (const id of selectedProducts) {
-      await deleteProduct(id);
-    }
-    setSelectedProducts([]);
-    toast({
-      title: 'Success',
-      description: `${selectedProducts.length} products deleted`,
-    });
   };
 
   const openEditDialog = (product: any) => {
     setEditingProduct(product);
     setIsEditDialogOpen(true);
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
 
   if (loading) {
     return (
@@ -175,8 +183,8 @@ const EnhancedProductManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -188,7 +196,6 @@ const EnhancedProductManager = () => {
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -200,19 +207,6 @@ const EnhancedProductManager = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Value</p>
-                <p className="text-2xl font-bold">${stats.totalValue.toFixed(0)}</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -220,7 +214,7 @@ const EnhancedProductManager = () => {
                 <p className="text-sm text-muted-foreground">Avg. Price</p>
                 <p className="text-2xl font-bold">${stats.avgPrice.toFixed(2)}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-blue-600" />
+              <TrendingUp className="h-8 w-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -229,9 +223,9 @@ const EnhancedProductManager = () => {
       {/* Toolbar */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="flex gap-2 flex-1 w-full md:w-auto">
-              <div className="relative flex-1">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-wrap gap-2 flex-1">
+              <div className="relative min-w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search products..."
@@ -241,7 +235,7 @@ const EnhancedProductManager = () => {
                 />
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-40">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,7 +247,7 @@ const EnhancedProductManager = () => {
               </Select>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button
                 variant="outline"
                 size="icon"
@@ -261,157 +255,152 @@ const EnhancedProductManager = () => {
               >
                 {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid3x3 className="h-4 w-4" />}
               </Button>
-              {selectedProducts.length > 0 && (
-                <Button variant="destructive" onClick={handleBulkDelete}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete ({selectedProducts.length})
-                </Button>
-              )}
-              <Button onClick={() => setIsCreateDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setShowSettings(!showSettings)}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+              <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
                 Add Product
               </Button>
             </div>
           </div>
+
+          {showSettings && (
+            <div className="mt-4 p-4 border-t">
+              <div className="flex gap-4 items-center">
+                <span className="text-sm">Items per page:</span>
+                <Select value={itemsPerPage.toString()} onValueChange={(value) => setItemsPerPage(Number(value))}>
+                  <SelectTrigger className="w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="6">6</SelectItem>
+                    <SelectItem value="12">12</SelectItem>
+                    <SelectItem value="24">24</SelectItem>
+                    <SelectItem value="48">48</SelectItem>
+                    <SelectItem value="96">96</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-muted-foreground">
+                  Showing {paginatedProducts.length} of {processedProducts.length}
+                </span>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Products Display */}
-      {viewMode === 'table' ? (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
-                      onCheckedChange={toggleAllProducts}
-                    />
-                  </TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredProducts.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedProducts.includes(product.id)}
-                        onCheckedChange={() => toggleProductSelection(product.id)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <OptimizedImage
-                          src={product.image || ''}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded"
-                        />
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground line-clamp-1">
-                            {product.description}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{product.category}</Badge>
-                    </TableCell>
-                    <TableCell>${product.price}</TableCell>
-                    <TableCell>
-                      <Badge variant={product.stock && product.stock > 0 ? "default" : "destructive"}>
-                        {product.stock || 0} in stock
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {product.featured && <Star className="h-4 w-4 text-yellow-500" />}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEditDialog(product)}>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setDeleteConfirm(product.id)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden">
-              <div className="relative">
-                <OptimizedImage
-                  src={product.image || ''}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="absolute top-2 left-2">
-                  <Checkbox
-                    checked={selectedProducts.includes(product.id)}
-                    onCheckedChange={() => toggleProductSelection(product.id)}
-                  />
-                </div>
-                {product.featured && (
-                  <div className="absolute top-2 right-2">
-                    <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                  </div>
-                )}
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-1">{product.name}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                  {product.description}
-                </p>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-lg font-bold">${product.price}</p>
-                  <Badge variant="outline">{product.category}</Badge>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1" onClick={() => openEditDialog(product)}>
-                    <Edit className="h-3 w-3 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => setDeleteConfirm(product.id)}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span className="text-sm px-2">Page {currentPage} of {totalPages}</span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       )}
 
-      {filteredProducts.length === 0 && (
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {paginatedProducts.map((product) => (
+          <Card
+            key={product.id}
+            className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => openEditDialog(product)}
+          >
+            <div className="relative">
+              <OptimizedImage
+                src={product.image || ''}
+                alt={product.name}
+                className="w-full h-48 object-cover"
+              />
+              {product.featured && (
+                <Star className="absolute top-2 right-2 h-5 w-5 text-yellow-500 fill-yellow-500" />
+              )}
+            </div>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h3 className="font-semibold text-sm line-clamp-2 flex-1 mr-2">{product.name}</h3>
+                <Badge variant="outline" className="text-xs shrink-0">{product.category}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                {product.description}
+              </p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-lg font-bold text-primary">${product.price}</p>
+                <Badge variant={product.stock && product.stock > 0 ? "default" : "destructive"} className="text-xs">
+                  {product.stock || 0} in stock
+                </Badge>
+              </div>
+              <div className="flex gap-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditDialog(product);
+                  }}
+                >
+                  <Edit className="h-3 w-3 mr-1" />
+                  Edit
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreVertical className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Handle duplicate logic here
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteConfirm(product.id);
+                      }}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {processedProducts.length === 0 && (
         <Card className="p-8 text-center">
           <p className="text-muted-foreground">
             {searchQuery || selectedCategory !== 'all'
@@ -421,6 +410,7 @@ const EnhancedProductManager = () => {
         </Card>
       )}
 
+      {/* Dialogs */}
       <ProductFormDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}

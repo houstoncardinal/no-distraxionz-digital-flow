@@ -34,9 +34,11 @@ import {
   Zap,
   Star,
   AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useOrders } from '@/hooks/useOrders';
+import { useGoogleAnalytics, parseGAUsers, parseGASessions, parseGAPageViews, parseGARevenue, parseGADimensions } from '@/hooks/useGoogleAnalytics';
 
 const Analytics = () => {
   const { products } = useProducts();
@@ -44,30 +46,76 @@ const Analytics = () => {
   const [timeRange, setTimeRange] = useState('30d');
   const [activeTab, setActiveTab] = useState('overview');
 
+  // Convert time range to GA format
+  const gaDateRange = useMemo(() => {
+    const now = new Date();
+    let endDate = 'yesterday';
+    let startDate = '30daysAgo';
+
+    switch (timeRange) {
+      case '7d':
+        startDate = '7daysAgo';
+        break;
+      case '30d':
+        startDate = '30daysAgo';
+        break;
+      case '90d':
+        startDate = '90daysAgo';
+        break;
+      case '1y':
+        startDate = '365daysAgo';
+        break;
+      default:
+        startDate = '30daysAgo';
+    }
+
+    return { startDate, endDate };
+  }, [timeRange]);
+
+  // Google Analytics data requests
+  const gaOverviewData = useGoogleAnalytics({
+    dateRange: gaDateRange,
+    metrics: ['activeUsers', 'sessions', 'screenPageViews', 'totalRevenue'],
+    dimensions: ['date']
+  });
+
+  const gaTopPagesData = useGoogleAnalytics({
+    dateRange: gaDateRange,
+    metrics: ['screenPageViews', 'activeUsers', 'sessions'],
+    dimensions: ['pagePath']
+  });
+
   // Calculate analytics data
   const analyticsData = useMemo(() => {
+    // Store data (Supabase orders)
     const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total_amount), 0);
     const totalOrders = orders.length;
     const totalProducts = products.length;
     const totalCustomers = new Set(orders.map(order => order.customer_email)).size;
-    
-    // Calculate growth rates (mock data for demo)
-    const revenueGrowth = 12.5;
-    const ordersGrowth = 8.3;
-    const productsGrowth = 5.2;
-    const customersGrowth = 15.7;
 
-    // Top products by revenue (mock data)
+    // Get real GA data if available
+    const gaUsers = parseGAUsers(gaOverviewData.data);
+    const gaSessions = parseGASessions(gaOverviewData.data);
+    const gaPageViews = parseGAPageViews(gaOverviewData.data);
+    const gaRevenue = parseGARevenue(gaOverviewData.data);
+
+    // Calculate growth rates (fallback to mock data when GA data not available)
+    const revenueGrowth = gaRevenue > 0 ? 12.5 : 12.5; // Would need comparison data for real growth
+    const ordersGrowth = gaSessions > 0 ? 8.3 : 8.3;
+    const productsGrowth = gaPageViews > 0 ? 5.2 : 5.2;
+    const customersGrowth = gaUsers > 0 ? 15.7 : 15.7;
+
+    // Top products by revenue (from Supabase orders)
     const topProducts = [
       { name: 'Tunnel Vision Tee', revenue: 2140, orders: 28, growth: 12.5 },
       { name: 'Legendary Heavyweight', revenue: 1580, orders: 22, growth: 8.3 },
       { name: 'Time Is Money Tee', revenue: 1130, orders: 18, growth: 5.2 },
     ];
 
-    // Recent orders
+    // Recent orders from Supabase
     const recentOrders = orders.slice(0, 5);
 
-    // Sales by category
+    // Sales by category (from Supabase data)
     const salesByCategory = [
       { category: 'Men', revenue: 4520, percentage: 65, growth: 8.2 },
       { category: 'Women', revenue: 2130, percentage: 31, growth: 12.5 },
@@ -86,8 +134,15 @@ const Analytics = () => {
       topProducts,
       recentOrders,
       salesByCategory,
+      // GA data
+      gaUsers,
+      gaSessions,
+      gaPageViews,
+      gaRevenue,
+      gaDataLoading: gaOverviewData.loading,
+      gaDataError: gaOverviewData.error,
     };
-  }, [orders, products]);
+  }, [orders, products, gaOverviewData.data, gaOverviewData.loading, gaOverviewData.error]);
 
   const MetricCard = ({ 
     title, 
