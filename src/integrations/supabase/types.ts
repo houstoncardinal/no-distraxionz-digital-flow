@@ -496,6 +496,8 @@ export type Database = {
       }
       reviews: {
         Row: {
+          admin_likes: number | null
+          admin_response: string | null
           comment: string | null
           created_at: string | null
           customer_email: string
@@ -509,6 +511,8 @@ export type Database = {
           verified_purchase: boolean | null
         }
         Insert: {
+          admin_likes?: number | null
+          admin_response?: string | null
           comment?: string | null
           created_at?: string | null
           customer_email: string
@@ -522,6 +526,8 @@ export type Database = {
           verified_purchase?: boolean | null
         }
         Update: {
+          admin_likes?: number | null
+          admin_response?: string | null
           comment?: string | null
           created_at?: string | null
           customer_email?: string

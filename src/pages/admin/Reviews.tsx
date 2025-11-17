@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useReviews } from '@/hooks/useReviews';
+import type { Review } from '@/hooks/useReviews';
 import { useProducts } from '@/hooks/useProducts';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -68,12 +69,12 @@ import {
 import { format } from 'date-fns';
 
 const Reviews = () => {
-  const { reviews, loading, deleteReview } = useReviews();
+  const { reviews, loading, deleteReview, likeReview, respondToReview } = useReviews();
   const { products } = useProducts();
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
-  const [selectedReview, setSelectedReview] = useState<any>(null);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
   const [replyText, setReplyText] = useState('');
 
@@ -116,8 +117,9 @@ const Reviews = () => {
     return product?.name || 'Unknown Product';
   };
 
-  const handleViewReview = (review: any) => {
+  const handleViewReview = (review: Review) => {
     setSelectedReview(review);
+    setReplyText(review.admin_response ?? '');
     setViewOpen(true);
   };
 
@@ -137,6 +139,12 @@ const Reviews = () => {
 
   const handleFlagReview = (reviewId: string) => {
     console.log('Flag review:', reviewId);
+  };
+
+  const handleSendResponse = async () => {
+    if (!selectedReview) return;
+    await respondToReview(selectedReview.id, replyText);
+    setViewOpen(false);
   };
 
   const StatCard = ({ 
@@ -352,6 +360,21 @@ const Reviews = () => {
                         <div className="text-sm text-muted-foreground line-clamp-2">
                           {review.comment || 'No comment'}
                         </div>
+                        {review.admin_response && (
+                          <div className="mt-3 rounded-2xl border-l-4 border-primary/50 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <MessageSquare className="h-4 w-4 text-primary" />
+                              Brand response
+                            </div>
+                            <p className="text-sm text-foreground">{review.admin_response}</p>
+                          </div>
+                        )}
+                        {review.admin_likes ? (
+                          <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <ThumbsUp className="h-4 w-4 text-primary" />
+                            {review.admin_likes} likes from the team
+                          </div>
+                        ) : null}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -377,6 +400,14 @@ const Reviews = () => {
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="h-8 w-8 text-primary"
+                          onClick={() => likeReview(review.id)}
+                        >
+                          <ThumbsUp className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="h-8 w-8 text-red-600"
                           onClick={() => handleDeleteReview(review.id)}
                         >
@@ -394,133 +425,83 @@ const Reviews = () => {
 
       {/* Review Details Dialog */}
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Review Details
-            </DialogTitle>
-          </DialogHeader>
-          {selectedReview && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-4">
-                  <h3 className="font-semibold mb-3">Customer Information</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Name:</span>
-                      <span className="text-sm font-medium">{selectedReview.customerName}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Email:</span>
-                      <span className="text-sm">{selectedReview.customerEmail}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Verified:</span>
-                      <Badge variant={selectedReview.verified ? "default" : "outline"}>
-                        {selectedReview.verified ? 'Yes' : 'No'}
-                      </Badge>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="p-4">
-                  <h3 className="font-semibold mb-3">Review Information</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Product:</span>
-                      <span className="text-sm font-medium">{selectedReview.productName}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Rating:</span>
-                      <div className="flex items-center gap-1">
-                        {renderStars(selectedReview.rating)}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Date:</span>
-                      <span className="text-sm">
-                        {format(new Date(selectedReview.createdAt), 'MMM dd, yyyy')}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Helpful:</span>
-                      <span className="text-sm">{selectedReview.helpful} votes</span>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-3">Review Content</h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="font-medium">{selectedReview.title}</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {selectedReview.content}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-3">Moderation Actions</h3>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Review Details
+          </DialogTitle>
+        </DialogHeader>
+        {selectedReview && (
+          <div className="space-y-6">
+            <Card className="p-4">
+              <h3 className="font-semibold mb-3">Review Information</h3>
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  {selectedReview.status === 'pending' && (
-                    <>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleApproveReview(selectedReview.id)}
-                        className="gap-2"
-                      >
-                        <Check className="h-4 w-4" />
-                        Approve
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleRejectReview(selectedReview.id)}
-                        className="gap-2"
-                      >
-                        <X className="h-4 w-4" />
-                        Reject
-                      </Button>
-                    </>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleFlagReview(selectedReview.id)}
-                    className="gap-2"
-                  >
-                    <Flag className="h-4 w-4" />
-                    Flag
+                  <span className="text-sm text-muted-foreground">Product:</span>
+                  <span className="text-sm font-medium">{getProductName(selectedReview.product_id || '')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Rating:</span>
+                  <div className="flex items-center gap-1">{renderStars(selectedReview.rating)}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Date:</span>
+                  <span className="text-sm">
+                    {selectedReview.created_at
+                      ? format(new Date(selectedReview.created_at), 'MMM dd, yyyy')
+                      : 'Recent'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Helpful:</span>
+                  <span className="text-sm">{selectedReview.helpful_count ?? 0} votes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Verified:</span>
+                  <Badge variant={selectedReview.verified_purchase ? 'default' : 'outline'}>
+                    {selectedReview.verified_purchase ? 'Yes' : 'No'}
+                  </Badge>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4">
+              <h3 className="font-semibold mb-3">Review Content</h3>
+              <div className="space-y-3">
+                {selectedReview.title && (
+                  <div className="font-medium text-foreground">{selectedReview.title}</div>
+                )}
+                <p className="text-sm text-muted-foreground leading-relaxed">{selectedReview.comment}</p>
+              </div>
+            </Card>
+
+            <Card className="p-4 space-y-3">
+              <h3 className="font-semibold mb-3">Reply to Review</h3>
+              {selectedReview.admin_response && (
+                <div className="text-xs text-muted-foreground">
+                  Existing response: {selectedReview.admin_response}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="reply">Your Reply</Label>
+                <Textarea
+                  id="reply"
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder="Write a response to this review..."
+                  rows={3}
+                />
+                <div className="flex justify-end">
+                  <Button size="sm" disabled={!replyText.trim()} onClick={handleSendResponse}>
+                    Send Reply
                   </Button>
                 </div>
-              </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-3">Reply to Review</h3>
-                <div className="space-y-3">
-                  <div>
-                    <Label htmlFor="reply">Your Reply</Label>
-                    <Textarea
-                      id="reply"
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      placeholder="Write a response to this review..."
-                      rows={3}
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <Button size="sm">Send Reply</Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          )}
-        </DialogContent>
+              </div>
+            </Card>
+          </div>
+        )}
+      </DialogContent>
       </Dialog>
     </div>
   );

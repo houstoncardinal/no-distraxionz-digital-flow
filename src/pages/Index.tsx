@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import { Hero } from '@/components/ui/animated-hero';
 import ProductCard from '@/components/ProductCard';
 import CategoryShowcase from '@/components/CategoryShowcase';
-import VideoShowcase from '@/components/VideoShowcase';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,8 +25,8 @@ const Index = () => {
   const [showQuickView, setShowQuickView] = useState(false);
   
   // Show featured products, or if none are marked as featured, just show first 3 products
-  const featuredProducts = products.filter(product => product.featured).slice(0, 3);
-  const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 3);
+  const featuredProducts = products.filter(product => product.featured).slice(0, 4);
+  const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 4);
 
   const handleBuyNow = () => {
     if (displayProducts.length > 0) {
@@ -67,8 +66,8 @@ const Index = () => {
       <Hero />
 
       {/* Floating Benefits Bar over Hero */}
-      <motion.div 
-        className="relative -mt-20 md:-mt-28 z-20 container-padding-modern"
+      <motion.div
+        className="relative -mt-12 md:-mt-28 z-20 container-padding-modern"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
@@ -241,7 +240,7 @@ const Index = () => {
 
             {/* Enhanced Products Grid */}
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-20"
+              className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 mb-20"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -249,13 +248,13 @@ const Index = () => {
             >
               {loading ? (
                 // Loading state
-                <div className="col-span-3 text-center py-20">
+                <div className="col-span-4 text-center py-20">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
                   <p className="mt-4 text-gray-600">Loading products...</p>
                 </div>
               ) : displayProducts.length === 0 ? (
                 // No products state
-                <div className="col-span-3 text-center py-20">
+                <div className="col-span-4 text-center py-20">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <ShoppingBag className="h-8 w-8 text-gray-400" />
                   </div>
@@ -311,44 +310,6 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              {/* Quick Purchase Options - Only show if products exist */}
-              {displayProducts.length > 0 && (
-                <div className="bg-gray-50 rounded-3xl p-8 max-w-4xl mx-auto">
-                  <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Quick Checkout</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        onClick={handleBuyNow}
-                        className="w-full h-16 bg-black hover:bg-gray-800 text-white font-bold text-lg rounded-2xl shadow-xl"
-                      >
-                        <ShoppingBag className="mr-3 h-6 w-6" />
-                        Buy Now
-                      </Button>
-                    </motion.div>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        onClick={handleAddToWishlist}
-                        variant="outline" 
-                        className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
-                      >
-                        <Heart className={`mr-3 h-6 w-6 ${displayProducts.length > 0 && isInWishlist(displayProducts[0].id) ? 'fill-red-500 text-red-500' : ''}`} />
-                        Add to Wishlist
-                      </Button>
-                    </motion.div>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button 
-                        onClick={handleQuickView}
-                        variant="outline" 
-                        className="w-full h-16 border-2 border-gray-300 hover:bg-gray-100 text-gray-900 font-bold text-lg rounded-2xl"
-                      >
-                        <Eye className="mr-3 h-6 w-6" />
-                        Quick View
-                      </Button>
-                    </motion.div>
-                  </div>
-                </div>
-              )}
-
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Button asChild size="lg" className="bg-black text-white hover:bg-gray-800 font-bold px-16 py-6 text-xl rounded-full shadow-2xl group">
                   <Link to="/shop">
@@ -367,11 +328,7 @@ const Index = () => {
               </div>
 
               {/* Trust Indicators */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                <div className="flex items-center justify-center gap-3 text-gray-600">
-                  <Truck className="h-6 w-6" />
-                  <span className="font-medium">Free shipping over $75</span>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
                 <div className="flex items-center justify-center gap-3 text-gray-600">
                   <Shield className="h-6 w-6" />
                   <span className="font-medium">30-day easy returns</span>
@@ -388,9 +345,6 @@ const Index = () => {
 
       {/* Category Showcase */}
       <CategoryShowcase />
-
-      {/* Video Showcase */}
-      <VideoShowcase />
 
       {/* Ultra Sleek Brand Section */}
       <section className="relative w-full bg-black overflow-hidden py-32">
@@ -559,12 +513,6 @@ const Index = () => {
                       <p className="text-white/80 leading-relaxed text-base lg:text-lg">
                         24-48 hour express shipping. Your focus can't wait, neither should your gear.
                       </p>
-                      
-                      {/* Feature Tags */}
-                      <div className="flex flex-wrap gap-2 justify-center pt-2">
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Free Over $75</span>
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Same Day NYC</span>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -638,12 +586,6 @@ const Index = () => {
                       <p className="text-white/80 leading-relaxed text-base lg:text-lg">
                         100% premium cotton blends. Comfort that moves with your hustle, durability that lasts.
                       </p>
-                      
-                      {/* Feature Tags */}
-                      <div className="flex flex-wrap gap-2 justify-center pt-2">
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Lifetime Quality</span>
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Eco-Friendly</span>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -717,12 +659,6 @@ const Index = () => {
                       <p className="text-white/80 leading-relaxed text-base lg:text-lg">
                         Make it yours. Custom prints, embroidery, and exclusive colorways for the focused few.
                       </p>
-                      
-                      {/* Feature Tags */}
-                      <div className="flex flex-wrap gap-2 justify-center pt-2">
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Personal Touch</span>
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white/90">Limited Runs</span>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>

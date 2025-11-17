@@ -167,14 +167,6 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  {shipping > 0 && (
-                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-700">
-                        Add {formatPrice(75 - state.total)} more for free shipping!
-                      </p>
-                    </div>
-                  )}
-
                   <div className="space-y-3">
                     <Button asChild size="lg" className="w-full">
                       <Link to="/checkout">Proceed to Checkout</Link>
@@ -192,13 +184,6 @@ const Cart = () => {
               {/* Benefits */}
               <Card>
                 <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <Truck className="h-5 w-5 text-blue-600" />
-                    <div>
-                      <p className="font-medium text-sm">Free Shipping</p>
-                      <p className="text-xs text-muted-foreground">On orders over $75</p>
-                    </div>
-                  </div>
                   <div className="flex items-center space-x-3">
                     <Shield className="h-5 w-5 text-green-600" />
                     <div>

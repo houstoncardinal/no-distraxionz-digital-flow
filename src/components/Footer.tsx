@@ -230,15 +230,15 @@ const Footer = () => {
                 >
                   Created by
                 </motion.span>
-                <motion.a 
-                  href="https://www.cardinalhtx.com" 
-                  target="_blank" 
+                <motion.a
+                  href="https://www.visitcardinal.com"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="font-bold text-gray-700 hover:text-green-600 transition-all duration-500 hover:underline decoration-green-500 underline-offset-2 hover:shadow-lg hover:scale-110 relative group overflow-hidden"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.1,
                     textShadow: "0 0 8px rgba(34, 197, 94, 0.3)"
                   }}

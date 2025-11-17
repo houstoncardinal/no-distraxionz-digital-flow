@@ -1,3 +1,5 @@
+import type { Database } from '@/integrations/supabase/types';
+
 // Image Database Integration
 // This utility discovers and maps all images in your public folder to products
 
@@ -91,31 +93,62 @@ export const discoverImages = (): CategoryImages => {
 };
 
 // Generate products from discovered images
+type ProductInsert = Database['public']['Tables']['products']['Insert'];
+
+const generateProductId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `prod-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
+};
+
+const getMetaTitle = (category: string, name: string) =>
+  `${name} | NO DISTRAXIONZ ${category.charAt(0).toUpperCase() + category.slice(1)}`;
+
+const getMetaDescription = (category: string) =>
+  `Premium ${category} from NO DISTRAXIONZ — engineered for focus and crafted for purpose.`;
+
+const getSchemaData = (name: string, price: number) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name,
+  brand: 'NO DISTRAXIONZ',
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: price.toFixed(2),
+    availability: 'https://schema.org/InStock',
+  },
+});
+
 export const generateProductsFromImages = () => {
   const images = discoverImages();
-  const products: any[] = [];
-  
+  const products: ProductInsert[] = [];
+
   Object.entries(images).forEach(([category, categoryImages]) => {
     categoryImages.forEach((image, index) => {
       const productName = generateProductName(category, index);
       const productPrice = generateProductPrice(category);
       
-      products.push({
-        id: `${category}-${index + 1}`,
+      const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
+      const product: ProductInsert = {
+        id: generateProductId(),
         name: productName,
         description: generateProductDescription(category, productName),
         price: productPrice,
         image: image.fullPath,
-        category: category.charAt(0).toUpperCase() + category.slice(1),
-        stock: Math.floor(Math.random() * 100) + 10,
-        featured: index < 2, // First 2 items in each category are featured
-        sizes: getSizesForCategory(category),
-        colors: getColorsForCategory(category),
-        original_price: Math.random() > 0.7 ? productPrice * 1.3 : null,
-        price_range: getPriceRangeForCategory(category),
+        category: categoryLabel,
+        stock: Math.floor(Math.random() * 100) + 20,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
+        updated_at: new Date().toISOString(),
+        meta_title: getMetaTitle(categoryLabel, productName),
+        meta_description: getMetaDescription(categoryLabel),
+        meta_keywords: [categoryLabel, 'premium streetwear', 'No Distraxionz'],
+        schema_data: getSchemaData(productName, productPrice),
+      };
+
+      products.push(product);
     });
   });
   
@@ -249,5 +282,3 @@ export const populateFromImageDatabase = async () => {
   const products = generateProductsFromImages();
   return products;
 };
-
-

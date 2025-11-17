@@ -249,13 +249,6 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
             <Card>
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-center space-x-3">
-                  <Truck className="h-5 w-5 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-sm">Free Shipping</p>
-                    <p className="text-xs text-muted-foreground">On orders over $75</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
                   <Shield className="h-5 w-5 text-green-600" />
                   <div>
                     <p className="font-medium text-sm">Secure Payment</p>

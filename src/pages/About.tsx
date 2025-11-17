@@ -61,21 +61,6 @@ const About = () => {
                 Explore Our Collection
               </Button>
             </div>
-            <div className="relative">
-              <Card className="aspect-[4/5] card-modern shadow-modern-lg overflow-hidden">
-                <div className="h-full bg-gradient-brand flex items-center justify-center text-white">
-                  <div className="text-center space-y-6">
-                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm">
-                      <Globe className="h-10 w-10 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-playfair text-3xl font-medium mb-2">Global Excellence</div>
-                      <div className="text-white/90">Serving customers worldwide</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
           </div>
         </div>
       </section>

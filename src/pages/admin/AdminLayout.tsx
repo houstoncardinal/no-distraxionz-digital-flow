@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
 import {
   SidebarProvider,
@@ -356,9 +357,9 @@ const AdminLayout = () => {
                     const href = '/' + segments.slice(0, idx + 2).join('/');
                     const isLast = idx === segments.slice(1).length - 1;
                     return (
-                      <>
+                      <Fragment key={href}>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem key={href}>
+                        <BreadcrumbItem>
                           {isLast ? (
                             <BreadcrumbPage className="capitalize text-sm font-medium">{seg.replace(/-/g, ' ')}</BreadcrumbPage>
                           ) : (
@@ -367,7 +368,7 @@ const AdminLayout = () => {
                             </BreadcrumbLink>
                           )}
                         </BreadcrumbItem>
-                      </>
+                      </Fragment>
                     );
                   })}
                 </BreadcrumbList>
@@ -410,7 +411,7 @@ const AdminLayout = () => {
             />
           </div>
           
-          <div className="p-4 w-full">
+          <div className="p-4 w-full pl-6 md:pl-10 lg:pl-12">
             <Outlet />
           </div>
         </SidebarInset>

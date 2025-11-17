@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CartTrigger } from '@/components/cart/CartSidebar';
@@ -23,6 +23,20 @@ const Header = () => {
   const { state } = useCart();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const megaMenuTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMegaMenuOpen = () => {
+    if (megaMenuTimerRef.current) {
+      clearTimeout(megaMenuTimerRef.current);
+    }
+    setIsMegaMenuOpen(true);
+  };
+
+  const handleMegaMenuClose = () => {
+    megaMenuTimerRef.current = setTimeout(() => {
+      setIsMegaMenuOpen(false);
+    }, 200);
+  };
 
   const navLinks = [
     { to: '/', label: 'Home' },
@@ -37,8 +51,8 @@ const Header = () => {
   ];
 
   return (
-    <motion.header 
-      className="sticky top-0 z-50 w-full border-b border-gray-200/50 bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 shadow-sm mt-14"
+    <motion.header
+      className="sticky top-0 z-50 w-full border-b border-gray-200/50 bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 shadow-sm"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -56,7 +70,7 @@ const Header = () => {
                 <img
                   src="/lovable-uploads/30a4fcab-8cc9-4f74-8a58-f4c349a4cb3c.png"
                   alt="NO DISTRAXIONZ"
-                  className="h-16 w-auto transition-transform duration-300 group-hover:scale-105"
+                  className="h-20 w-auto transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
               </div>
@@ -64,12 +78,11 @@ const Header = () => {
           </motion.div>
 
           {/* Professional Desktop Navigation */}
-          <motion.nav 
+          <motion.nav
             className="hidden lg:flex items-center space-x-10"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            onMouseLeave={() => setIsMegaMenuOpen(false)}
           >
             {navLinks.map((link, index) => (
               <motion.div
@@ -80,11 +93,14 @@ const Header = () => {
                 className="relative"
               >
                 {link.hasMegaMenu ? (
-                  <div className="relative group">
+                  <div
+                    className="relative group"
+                    onMouseEnter={handleMegaMenuOpen}
+                    onMouseLeave={handleMegaMenuClose}
+                  >
                     <Link
                       to={link.to}
                       className="relative text-sm font-semibold transition-all duration-300 hover:text-black flex items-center gap-1"
-                      onMouseEnter={() => setIsMegaMenuOpen(true)}
                     >
                       {link.label}
                       <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
@@ -117,11 +133,15 @@ const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
-              <Search className="h-5 w-5 text-gray-600" />
+            <Button variant="ghost" size="icon" asChild className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
+              <Link to="/shop">
+                <Search className="h-5 w-5 text-gray-600" />
+              </Link>
             </Button>
-            <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200 relative">
-              <Heart className="h-5 w-5 text-gray-600" />
+            <Button variant="ghost" size="icon" asChild className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200 relative">
+              <Link to="/shop">
+                <Heart className="h-5 w-5 text-gray-600" />
+              </Link>
             </Button>
             {user ? (
               <DropdownMenu>
@@ -131,6 +151,10 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/account')}>
+                    <User className="h-4 w-4 mr-2" />
+                    My Account
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/my-orders')}>
                     My Orders
                   </DropdownMenuItem>
@@ -218,16 +242,20 @@ const Header = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.5 }}
                 >
-                  <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100">
-                    <Search className="h-5 w-5 text-gray-600" />
+                  <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
+                    <Link to="/shop">
+                      <Search className="h-5 w-5 text-gray-600" />
+                    </Link>
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100">
-                    <Heart className="h-5 w-5 text-gray-600" />
+                  <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
+                    <Link to="/shop">
+                      <Heart className="h-5 w-5 text-gray-600" />
+                    </Link>
                   </Button>
                   {user ? (
                     <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100" onClick={() => {
                       setIsMenuOpen(false);
-                      navigate('/my-orders');
+                      navigate('/account');
                     }}>
                       <User className="h-5 w-5 text-gray-600" />
                     </Button>
@@ -246,10 +274,15 @@ const Header = () => {
       </AnimatePresence>
 
       {/* Mega Menu */}
-      <MegaMenu 
-        isOpen={isMegaMenuOpen} 
-        onClose={() => setIsMegaMenuOpen(false)} 
-      />
+      <div
+        onMouseEnter={handleMegaMenuOpen}
+        onMouseLeave={handleMegaMenuClose}
+      >
+        <MegaMenu
+          isOpen={isMegaMenuOpen}
+          onClose={() => setIsMegaMenuOpen(false)}
+        />
+      </div>
 
       {/* Mobile Mega Menu */}
       <MobileMegaMenu 

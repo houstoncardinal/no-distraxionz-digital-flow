@@ -5,9 +5,7 @@ import { WishlistProvider } from '@/contexts/WishlistContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartSidebar } from '@/components/cart/CartSidebar';
 import { Toaster } from '@/components/ui/toaster';
-import AIShoppingAssistant from '@/components/AIShoppingAssistant';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { ConstructionBanner } from '@/components/ConstructionBanner';
 import { quickPopulateProducts } from '@/utils/quickPopulate';
 import { populateProductsFromImageDatabase } from '@/utils/populateFromImages';
 import { populateToddlerShirts } from '@/utils/populateToddlerShirts';
@@ -28,6 +26,8 @@ import ProductDetail from './pages/ProductDetail';
 import OrderConfirmation from './pages/OrderConfirmation';
 import Auth from './pages/Auth';
 import MyOrders from './pages/MyOrders';
+import OrderDetails from './pages/OrderDetails';
+import Account from './pages/Account';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Returns from './pages/Returns';
@@ -80,7 +80,6 @@ function App() {
         <WishlistProvider>
           <Router>
           <ScrollToTop />
-          <ConstructionBanner />
           <div className="App">
             <Routes>
               {/* Public Routes */}
@@ -95,6 +94,8 @@ function App() {
               <Route path="/order-confirmation" element={<OrderConfirmation />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-orders" element={<MyOrders />} />
+              <Route path="/order/:id" element={<OrderDetails />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/returns" element={<Returns />} />
@@ -134,7 +135,6 @@ function App() {
             
             {/* Global Components */}
             <CartSidebar />
-            <AIShoppingAssistant />
             <Toaster />
           </div>
           </Router>

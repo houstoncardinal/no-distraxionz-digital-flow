@@ -130,44 +130,46 @@ export default function MyOrders() {
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
-                <Card key={order.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">
-                          Order #{order.id.slice(0, 8)}...
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Placed on {format(new Date(order.created_at), 'MMMM dd, yyyy')}
-                        </p>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className={statusColors[order.status] || ''}
-                      >
-                        {order.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center pt-3 border-t">
+                <Link key={order.id} to={`/order/${order.id}`}>
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-sm text-muted-foreground">Total Items</p>
-                          <p className="font-medium">
-                            {order.order_items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
+                          <CardTitle className="text-lg">
+                            Order #{order.id.slice(0, 8)}...
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Placed on {format(new Date(order.created_at), 'MMMM dd, yyyy')}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm text-muted-foreground">Total Amount</p>
-                          <p className="text-xl font-bold">
-                            ${Number(order.total_amount).toFixed(2)}
-                          </p>
+                        <Badge
+                          variant="outline"
+                          className={statusColors[order.status] || ''}
+                        >
+                          {order.status}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pt-3 border-t">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Total Items</p>
+                            <p className="font-medium">
+                              {order.order_items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-muted-foreground">Total Amount</p>
+                            <p className="text-xl font-bold">
+                              ${Number(order.total_amount).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}

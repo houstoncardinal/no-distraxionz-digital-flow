@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Play, Pause, Volume2, VolumeX, Maximize2, ArrowRight, Sparkles } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize2 } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 const VideoShowcase = () => {
@@ -47,88 +45,14 @@ const VideoShowcase = () => {
         />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Side - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-              <Sparkles className="h-4 w-4 text-yellow-400" />
-              <span className="text-sm font-semibold text-white">Experience the Movement</span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Built for the
-              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Focused & Fearless
-              </span>
-            </h2>
-
-            <p className="text-lg text-gray-300 leading-relaxed">
-              Every piece is designed with intention. Premium materials meet precision craftsmanship 
-              to create streetwear that moves with you, not against you. No distractions, just pure focus.
-            </p>
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">✓</span>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold">Premium Quality</h4>
-                  <p className="text-gray-400 text-sm">Handpicked materials, built to last</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">✓</span>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold">Limited Editions</h4>
-                  <p className="text-gray-400 text-sm">Exclusive drops, never mass-produced</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">✓</span>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold">Comfort First</h4>
-                  <p className="text-gray-400 text-sm">Designed for all-day wear</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              <Link to="/shop">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-xl">
-                  Shop Collection
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </Button>
-              </Link>
-              <Link to="/about">
-                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white hover:text-black">
-                  Our Story
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-
-          {/* Right Side - Video */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
+      <div className="container mx-auto px-4 relative z-10 max-w-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="relative"
+        >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 backdrop-blur-sm">
               {/* Video */}
               <video
@@ -186,10 +110,9 @@ const VideoShowcase = () => {
 
             </div>
 
-            {/* Decorative Glow */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl -z-10" />
-          </motion.div>
-        </div>
+          {/* Decorative Glow */}
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl -z-10" />
+        </motion.div>
       </div>
 
     </section>

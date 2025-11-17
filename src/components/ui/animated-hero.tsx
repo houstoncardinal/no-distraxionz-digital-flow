@@ -39,7 +39,7 @@ function Hero() {
       </div>
 
       {/* Enhanced Dark Overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
       
       {/* Ultra sleek dark vignette */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.8)_100%)]" />
@@ -111,10 +111,6 @@ function Hero() {
             {/* Benefits strip */}
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/70">
               <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4" />
-                Free shipping $75+
-              </div>
-              <div className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
                 Limited releases
               </div>
@@ -137,7 +133,6 @@ function Hero() {
               </Link>
             </Button>
           </div>
-          <div className="text-white/60">Starting at $45</div>
         </div>
       </div>
     </div>
