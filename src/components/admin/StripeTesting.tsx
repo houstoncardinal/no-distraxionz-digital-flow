@@ -47,46 +47,69 @@ export const StripeTesting = () => {
     setLastResult(null);
 
     try {
-      // Create payment intent via Netlify function
-      const response = await fetch('/.netlify/functions/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: Math.round(parseFloat(testAmount) * 100), // Convert to cents
-          currency: 'usd',
-          metadata: {
-            test_payment: 'true',
-            test_card: testCard,
-            test_amount: testAmount
-          }
-        }),
-      });
+      // Check if we're in development mode
+      const isDevelopment = import.meta.env.DEV;
 
-      const data = await response.json();
+      if (isDevelopment) {
+        // In development, simulate a successful payment for testing UI
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create payment intent');
+        // Simulate different outcomes based on test card
+        const shouldSucceed = testCard === '4242424242424242';
+
+        if (shouldSucceed) {
+          setLastResult({
+            success: true,
+            paymentIntentId: `pi_test_${Date.now()}`,
+            amount: parseFloat(testAmount),
+            status: 'succeeded'
+          });
+
+          toast({
+            title: "Test payment successful!",
+            description: `$${testAmount} processed successfully with test card (simulated).`,
+          });
+        } else {
+          throw new Error('Your card was declined. This is a test decline for card ending in ' + testCard.slice(-4));
+        }
+      } else {
+        // In production, use the actual Netlify function
+        const response = await fetch('/.netlify/functions/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: Math.round(parseFloat(testAmount) * 100), // Convert to cents
+            currency: 'usd',
+            metadata: {
+              test_payment: 'true',
+              test_card: testCard,
+              test_amount: testAmount
+            }
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create payment intent');
+        }
+
+        if (!data.clientSecret) {
+          throw new Error('No client secret returned');
+        }
+
+        setLastResult({
+          success: true,
+          paymentIntentId: data.paymentIntentId,
+          amount: parseFloat(testAmount),
+          status: 'succeeded'
+        });
+
+        toast({
+          title: "Test payment successful!",
+          description: `$${testAmount} processed successfully with test card.`,
+        });
       }
-
-      if (!data.clientSecret) {
-        throw new Error('No client secret returned');
-      }
-
-      // Simulate payment confirmation with test card
-      // In a real implementation, you'd use Stripe Elements here
-      // For testing purposes, we'll simulate the payment flow
-
-      setLastResult({
-        success: true,
-        paymentIntentId: data.paymentIntentId,
-        amount: parseFloat(testAmount),
-        status: 'succeeded'
-      });
-
-      toast({
-        title: "Test payment successful!",
-        description: `$${testAmount} processed successfully with test card.`,
-      });
 
     } catch (error: any) {
       console.error('Test payment failed:', error);
@@ -148,16 +171,23 @@ export const StripeTesting = () => {
 
   const getStripeStatus = () => {
     const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-    if (!publishableKey || publishableKey.includes('your_publishable_key_here')) {
-      return { status: 'not_configured', message: 'Stripe publishable key not set' };
+
+    // In development, check local .env
+    if (import.meta.env.DEV) {
+      if (!publishableKey || publishableKey.includes('your_publishable_key_here')) {
+        return { status: 'not_configured', message: 'Stripe publishable key not set in .env' };
+      }
+      if (publishableKey.startsWith('pk_test_')) {
+        return { status: 'sandbox', message: 'Sandbox mode active' };
+      }
+      if (publishableKey.startsWith('pk_live_')) {
+        return { status: 'live', message: 'Live mode active ⚠️' };
+      }
+      return { status: 'invalid', message: 'Invalid key format' };
     }
-    if (publishableKey.startsWith('pk_test_')) {
-      return { status: 'sandbox', message: 'Sandbox mode active' };
-    }
-    if (publishableKey.startsWith('pk_live_')) {
-      return { status: 'live', message: 'Live mode active ⚠️' };
-    }
-    return { status: 'invalid', message: 'Invalid key format' };
+
+    // In production (Netlify), assume it's configured via environment variables
+    return { status: 'configured', message: 'Configured via Netlify environment' };
   };
 
   const stripeStatus = getStripeStatus();
@@ -203,7 +233,9 @@ export const StripeTesting = () => {
             </div>
             <div className="flex items-center justify-between">
               <span>Payment Functions</span>
-              <Badge variant="secondary">Netlify Functions</Badge>
+              <Badge variant="secondary">
+                {import.meta.env.DEV ? 'Development Mode (Simulated)' : 'Netlify Functions'}
+              </Badge>
             </div>
           </div>
         </CardContent>
@@ -267,7 +299,7 @@ export const StripeTesting = () => {
           <div className="flex gap-3">
             <Button
               onClick={testPayment}
-              disabled={isProcessing || stripeStatus.status === 'not_configured'}
+              disabled={isProcessing || (import.meta.env.DEV && stripeStatus.status === 'not_configured')}
               className="flex-1"
             >
               {isProcessing ? 'Processing...' : 'Test Payment'}
@@ -336,11 +368,19 @@ export const StripeTesting = () => {
             <div>
               <h4 className="font-semibold mb-2">How to Test Payments:</h4>
               <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-                <li>Ensure your Stripe publishable key is set in `.env`</li>
+                {import.meta.env.DEV ? (
+                  <li>Ensure your Stripe publishable key is set in `.env` for development testing</li>
+                ) : (
+                  <li>Stripe keys are configured via Netlify environment variables</li>
+                )}
                 <li>Use test card numbers from the list above</li>
                 <li>Enter any amount $0.50 or greater</li>
                 <li>Click "Test Payment" to simulate a transaction</li>
-                <li>Check Stripe Dashboard for payment records</li>
+                {import.meta.env.DEV ? (
+                  <li><strong>Development:</strong> Payments are simulated - check the results below</li>
+                ) : (
+                  <li><strong>Production:</strong> Check Stripe Dashboard for actual payment records</li>
+                )}
               </ol>
             </div>
 
