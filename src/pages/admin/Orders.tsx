@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -33,9 +35,35 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Search, Eye, Trash2, Loader2 } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import {
+  Search,
+  Eye,
+  Trash2,
+  Loader2,
+  Package,
+  Truck,
+  MessageSquare,
+  CheckCircle,
+  Clock,
+  MapPin,
+  Phone,
+  Mail,
+  FileText,
+  Send,
+  Edit,
+  Save,
+  X,
+} from 'lucide-react';
 import { useOrders, Order } from '@/hooks/useOrders';
 import { format } from 'date-fns';
 
@@ -48,17 +76,31 @@ const statusColors: Record<string, string> = {
 };
 
 const Orders = () => {
-  const { orders, loading, updateOrderStatus, deleteOrder } = useOrders();
+  const {
+    orders,
+    loading,
+    updateOrderStatus,
+    deleteOrder,
+    updateFulfillment,
+    sendCustomerEmail,
+    addOrderNote
+  } = useOrders();
   const [query, setQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  // Fulfillment state
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [carrier, setCarrier] = useState('');
+  const [newNote, setNewNote] = useState('');
+  const [customEmailMessage, setCustomEmailMessage] = useState('');
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return orders;
     return orders.filter((order) =>
       [order.customer_name, order.customer_email, order.id, order.status].some(
-        (field) => field.toLowerCase().includes(q)
+        (field) => field?.toLowerCase().includes(q)
       )
     );
   }, [orders, query]);
@@ -73,7 +115,53 @@ const Orders = () => {
 
   const viewOrderDetails = (order: Order) => {
     setSelectedOrder(order);
+    setTrackingNumber(order.tracking_number || '');
+    setCarrier(order.carrier || '');
+    setNewNote('');
+    setCustomEmailMessage('');
     setDetailsOpen(true);
+  };
+
+  const handleFulfillmentUpdate = async () => {
+    if (!selectedOrder) return;
+
+    await updateFulfillment(selectedOrder.id, {
+      tracking_number: trackingNumber,
+      carrier: carrier,
+    });
+
+    // Update local state
+    setSelectedOrder({
+      ...selectedOrder,
+      tracking_number: trackingNumber,
+      carrier: carrier,
+    });
+  };
+
+  const handleAddNote = async () => {
+    if (!selectedOrder || !newNote.trim()) return;
+    await addOrderNote(selectedOrder.id, newNote);
+    setNewNote('');
+
+    // Update local state
+    setSelectedOrder({
+      ...selectedOrder,
+      notes: selectedOrder.notes ? `${selectedOrder.notes}\n\n[${new Date().toLocaleString()}] ${newNote}` : `[${new Date().toLocaleString()}] ${newNote}`,
+    });
+  };
+
+  const handleSendEmail = async (emailType: 'shipped' | 'delivered' | 'custom') => {
+    if (!selectedOrder) return;
+
+    const message = emailType === 'custom' ? customEmailMessage : undefined;
+    await sendCustomerEmail(selectedOrder.id, emailType, message);
+
+    // Update local state
+    setSelectedOrder({
+      ...selectedOrder,
+      customer_notified: true,
+      last_email_sent: new Date().toISOString(),
+    });
   };
 
   if (loading) {
@@ -238,90 +326,336 @@ const Orders = () => {
         </div>
       </Card>
 
-      {/* Order Details Dialog */}
+      {/* Enhanced Order Management Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Order {selectedOrder?.id.slice(0, 8)}...
+            </DialogTitle>
           </DialogHeader>
+
           {selectedOrder && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-muted-foreground">Order ID</div>
-                  <div className="font-mono text-sm">{selectedOrder.id}</div>
+            <Tabs defaultValue="details" className="flex-1 overflow-hidden">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="details" className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Details
+                </TabsTrigger>
+                <TabsTrigger value="fulfillment" className="gap-2">
+                  <Truck className="h-4 w-4" />
+                  Fulfillment
+                </TabsTrigger>
+                <TabsTrigger value="communication" className="gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  Communication
+                </TabsTrigger>
+                <TabsTrigger value="notes" className="gap-2">
+                  <Edit className="h-4 w-4" />
+                  Notes
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Order Details Tab */}
+              <TabsContent value="details" className="flex-1 overflow-y-auto max-h-[60vh] mt-4">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Order Information</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Order ID</Label>
+                          <div className="font-mono text-sm">{selectedOrder.id}</div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Status</Label>
+                          <div className="mt-1">
+                            <Badge variant="outline" className={statusColors[selectedOrder.status] || ''}>
+                              {selectedOrder.status}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Order Date</Label>
+                          <div className="text-sm">
+                            {selectedOrder.created_at
+                              ? format(new Date(selectedOrder.created_at), 'PPpp')
+                              : 'N/A'}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Total Amount</Label>
+                          <div className="text-xl font-bold">
+                            ${Number(selectedOrder.total_amount).toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Customer Information</h3>
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Name</Label>
+                          <div className="flex items-center gap-2">
+                            <div className="text-sm">{selectedOrder.customer_name}</div>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Email</Label>
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-3 w-3 text-muted-foreground" />
+                            <div className="text-sm">{selectedOrder.customer_email}</div>
+                          </div>
+                        </div>
+                        {selectedOrder.customer_phone && (
+                          <div>
+                            <Label className="text-xs text-muted-foreground">Phone</Label>
+                            <div className="flex items-center gap-2">
+                              <Phone className="h-3 w-3 text-muted-foreground" />
+                              <div className="text-sm">{selectedOrder.customer_phone}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedOrder.shipping_address && (
+                    <div>
+                      <h3 className="font-medium mb-3">Shipping Address</h3>
+                      <Card className="p-4">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <div>
+                            <div>{selectedOrder.shipping_address.address}</div>
+                            <div>
+                              {selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} {selectedOrder.shipping_address.zipCode}
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    </div>
+                  )}
+
+                  {selectedOrder.order_items && selectedOrder.order_items.length > 0 && (
+                    <div>
+                      <h3 className="font-medium mb-3">Order Items</h3>
+                      <Card className="p-0 overflow-hidden">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="text-xs">Product ID</TableHead>
+                              <TableHead className="text-xs">Quantity</TableHead>
+                              <TableHead className="text-xs text-right">Price</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {selectedOrder.order_items.map((item) => (
+                              <TableRow key={item.id}>
+                                <TableCell className="text-sm font-mono">
+                                  {item.product_id?.slice(0, 8) || 'N/A'}
+                                </TableCell>
+                                <TableCell className="text-sm">{item.quantity}</TableCell>
+                                <TableCell className="text-sm text-right">
+                                  ${Number(item.price).toFixed(2)}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </Card>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Status</div>
-                  <Badge
-                    variant="outline"
-                    className={statusColors[selectedOrder.status] || ''}
-                  >
-                    {selectedOrder.status}
-                  </Badge>
+              </TabsContent>
+
+              {/* Fulfillment & Shipping Tab */}
+              <TabsContent value="fulfillment" className="flex-1 overflow-y-auto max-h-[60vh] mt-4">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="font-medium">Shipping & Tracking</h3>
+                    <Card className="p-4 space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="tracking">Tracking Number</Label>
+                          <Input
+                            id="tracking"
+                            value={trackingNumber}
+                            onChange={(e) => setTrackingNumber(e.target.value)}
+                            placeholder="Enter tracking number"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="carrier">Carrier</Label>
+                          <Select value={carrier} onValueChange={setCarrier}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select carrier" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="USPS">USPS</SelectItem>
+                              <SelectItem value="UPS">UPS</SelectItem>
+                              <SelectItem value="FedEx">FedEx</SelectItem>
+                              <SelectItem value="DHL">DHL</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <Button onClick={handleFulfillmentUpdate} className="w-full">
+                        <Save className="h-4 w-4 mr-2" />
+                        Update Fulfillment
+                      </Button>
+                    </Card>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="font-medium">Fulfillment Status</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                      <Card className="p-4 text-center">
+                        <Package className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                        <div className="text-xs text-muted-foreground">Ordered</div>
+                        <div className="text-sm font-medium">
+                          {selectedOrder.created_at ? format(new Date(selectedOrder.created_at), 'MMM dd') : 'N/A'}
+                        </div>
+                      </Card>
+                      <Card className="p-4 text-center">
+                        <Truck className={`h-8 w-8 mx-auto mb-2 ${selectedOrder.fulfilled_at ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <div className="text-xs text-muted-foreground">Shipped</div>
+                        <div className="text-sm font-medium">
+                          {selectedOrder.fulfilled_at ? format(new Date(selectedOrder.fulfilled_at), 'MMM dd') : 'Pending'}
+                        </div>
+                      </Card>
+                      <Card className="p-4 text-center">
+                        <CheckCircle className={`h-8 w-8 mx-auto mb-2 ${selectedOrder.status === 'delivered' ? 'text-green-600' : 'text-muted-foreground'}`} />
+                        <div className="text-xs text-muted-foreground">Delivered</div>
+                        <div className="text-sm font-medium">
+                          {selectedOrder.status === 'delivered' ? 'Complete' : 'Pending'}
+                        </div>
+                      </Card>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Customer Name</div>
-                  <div className="text-sm">{selectedOrder.customer_name}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Email</div>
-                  <div className="text-sm">{selectedOrder.customer_email}</div>
-                </div>
-                {selectedOrder.customer_phone && (
+              </TabsContent>
+
+              {/* Customer Communication Tab */}
+              <TabsContent value="communication" className="flex-1 overflow-y-auto max-h-[60vh] mt-4">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="font-medium">Customer Communication</h3>
+
+                    <div className="space-y-3">
+                      <Button
+                        onClick={() => handleSendEmail('shipped')}
+                        disabled={selectedOrder.status !== 'shipped'}
+                        className="w-full"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Send Shipped Notification
+                      </Button>
+
+                      <Button
+                        onClick={() => handleSendEmail('delivered')}
+                        disabled={selectedOrder.status !== 'delivered'}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Send Delivered Notification
+                      </Button>
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                      <Label htmlFor="customEmail">Custom Email Message</Label>
+                      <Textarea
+                        id="customEmail"
+                        value={customEmailMessage}
+                        onChange={(e) => setCustomEmailMessage(e.target.value)}
+                        placeholder="Enter custom message to send to customer..."
+                        rows={4}
+                        className="mt-1"
+                      />
+                      <Button
+                        onClick={() => handleSendEmail('custom')}
+                        disabled={!customEmailMessage.trim()}
+                        className="w-full mt-2"
+                        variant="outline"
+                      >
+                        <Mail className="h-4 w-4 mr-2" />
+                        Send Custom Email
+                      </Button>
+                    </div>
+                  </div>
+
                   <div>
-                    <div className="text-sm text-muted-foreground">Phone</div>
-                    <div className="text-sm">{selectedOrder.customer_phone}</div>
-                  </div>
-                )}
-                <div>
-                  <div className="text-sm text-muted-foreground">Order Date</div>
-                  <div className="text-sm">
-                    {selectedOrder.created_at
-                      ? format(new Date(selectedOrder.created_at), 'PPpp')
-                      : 'N/A'}
+                    <h4 className="font-medium mb-2">Communication History</h4>
+                    <Card className="p-4">
+                      {selectedOrder.customer_notified ? (
+                        <div className="text-sm text-green-600 flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4" />
+                          Customer notified via email
+                          {selectedOrder.last_email_sent && (
+                            <span className="text-muted-foreground">
+                              {format(new Date(selectedOrder.last_email_sent), 'MMM dd, yyyy HH:mm')}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-muted-foreground">
+                          No email notifications sent yet
+                        </div>
+                      )}
+                    </Card>
                   </div>
                 </div>
-              </div>
+              </TabsContent>
 
-              {selectedOrder.order_items && selectedOrder.order_items.length > 0 && (
-                <div>
-                  <div className="text-sm font-medium mb-2">Order Items</div>
-                  <div className="border rounded-md">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="text-xs">Product</TableHead>
-                          <TableHead className="text-xs">Quantity</TableHead>
-                          <TableHead className="text-xs text-right">Price</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {selectedOrder.order_items.map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell className="text-sm">
-                              {item.product_id || 'Product'}
-                            </TableCell>
-                            <TableCell className="text-sm">{item.quantity}</TableCell>
-                            <TableCell className="text-sm text-right">
-                              ${Number(item.price).toFixed(2)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+              {/* Order Notes Tab */}
+              <TabsContent value="notes" className="flex-1 overflow-y-auto max-h-[60vh] mt-4">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="font-medium">Add Order Note</h3>
+                    <div className="space-y-3">
+                      <Textarea
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
+                        placeholder="Add an internal note about this order..."
+                        rows={3}
+                      />
+                      <Button onClick={handleAddNote} disabled={!newNote.trim()}>
+                        <Save className="h-4 w-4 mr-2" />
+                        Add Note
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium mb-2">Order Notes History</h4>
+                    <Card className="p-4">
+                      {selectedOrder.notes ? (
+                        <div className="text-sm whitespace-pre-line bg-muted/30 p-3 rounded">
+                          {selectedOrder.notes}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-muted-foreground italic">
+                          No notes added yet
+                        </div>
+                      )}
+                    </Card>
                   </div>
                 </div>
-              )}
-
-              <div className="flex justify-between items-center pt-4 border-t">
-                <div className="text-sm font-medium">Total Amount</div>
-                <div className="text-xl font-bold">
-                  ${Number(selectedOrder.total_amount).toFixed(2)}
-                </div>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           )}
+
+          <DialogFooter className="mt-6">
+            <Button variant="outline" onClick={() => setDetailsOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

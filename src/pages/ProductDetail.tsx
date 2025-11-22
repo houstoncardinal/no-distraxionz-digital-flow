@@ -117,7 +117,7 @@ const ProductDetail = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {images.map((image, index) => (
                   <button
                     key={index}

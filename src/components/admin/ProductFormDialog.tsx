@@ -285,7 +285,8 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col h-full max-h-[calc(95vh-180px)]">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full max-h-[calc(95vh-180px)]" data-netlify="true" name="product">
+          <input type="hidden" name="form-name" value="product" />
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
             <TabsList className="grid w-full grid-cols-4 mb-6">
               <TabsTrigger value="basic" className="gap-2">

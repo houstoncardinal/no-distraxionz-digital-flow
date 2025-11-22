@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import ProductPopulator from '@/components/ProductPopulator';
+import { SystemStatus } from '@/components/admin/SystemStatus';
+import { StripeTesting } from '@/components/admin/StripeTesting';
 import { supabase } from '@/integrations/supabase/client';
 import { autoTuneFeaturedProducts } from '@/utils/selfHealing';
 import { generateProductListingFromFiles } from '@/utils/aiProductComposer';
@@ -365,7 +367,7 @@ const AdminDashboard = () => {
             <Button
               variant="outline"
               size="sm"
-              className="border-white/40 text-white"
+              className="border-slate-600 bg-slate-800/50 text-slate-200 hover:bg-slate-700 hover:text-white"
               onClick={handleQuickAction('/admin/orders')}
             >
               Review orders
@@ -644,6 +646,34 @@ const AdminDashboard = () => {
           </div>
         </div>
       </Card>
+
+      {/* System Status */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">System health</p>
+            <h2 className="text-2xl font-semibold">Supabase Integration Status</h2>
+          </div>
+          <Badge className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm text-primary">
+            Connected
+          </Badge>
+        </div>
+        <SystemStatus />
+      </section>
+
+      {/* Stripe Testing */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Payment testing</p>
+            <h2 className="text-2xl font-semibold">Stripe Sandbox Testing</h2>
+          </div>
+          <Badge className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm text-primary">
+            Sandbox Mode
+          </Badge>
+        </div>
+        <StripeTesting />
+      </section>
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">

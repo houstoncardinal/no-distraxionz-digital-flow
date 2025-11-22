@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Product } from '@/hooks/useProducts';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Eye, Star, Zap, Shield, Crown } from 'lucide-react';
 import ColorSwatch from '@/components/ColorSwatch';
@@ -13,6 +14,7 @@ import ColorSwatch from '@/components/ColorSwatch';
 interface ProductCardProps extends Product {}
 
 const ProductCard = (product: ProductCardProps) => {
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -132,12 +134,12 @@ const ProductCard = (product: ProductCardProps) => {
             </div>
 
             {/* Enhanced Quick Add Section */}
-            <motion.div 
+            <motion.div
               className="absolute bottom-4 left-4 right-4"
               initial={{ opacity: 0, y: 20 }}
-              animate={{ 
-                opacity: isHovered ? 1 : 0, 
-                y: isHovered ? 0 : 20 
+              animate={{
+                opacity: isMobile || isHovered ? 1 : 0,
+                y: isMobile || isHovered ? 0 : 20
               }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
@@ -250,4 +252,4 @@ const ProductCard = (product: ProductCardProps) => {
   );
 };
 
-export default ProductCard; 
+export default ProductCard;

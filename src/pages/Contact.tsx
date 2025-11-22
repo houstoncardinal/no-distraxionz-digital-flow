@@ -54,7 +54,8 @@ const Contact = () => {
               </div>
 
               <Card className="card-modern p-8 shadow-modern">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6" data-netlify="true" name="contact">
+                  <input type="hidden" name="form-name" value="contact" />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="firstName" className="text-sm font-medium text-foreground">

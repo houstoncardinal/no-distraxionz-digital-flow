@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -124,7 +124,8 @@ export default function Auth() {
                 </TabsList>
 
                 <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4">
+                  <form onSubmit={handleLogin} className="space-y-4" data-netlify="true" name="login">
+                    <input type="hidden" name="form-name" value="login" />
                     <div className="space-y-2">
                       <Label htmlFor="login-email">Email</Label>
                       <div className="relative">
@@ -163,7 +164,8 @@ export default function Auth() {
                 </TabsContent>
 
                 <TabsContent value="signup">
-                  <form onSubmit={handleSignup} className="space-y-4">
+                  <form onSubmit={handleSignup} className="space-y-4" data-netlify="true" name="signup">
+                    <input type="hidden" name="form-name" value="signup" />
                     <div className="space-y-2">
                       <Label htmlFor="signup-name">Full Name</Label>
                       <div className="relative">

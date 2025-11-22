@@ -60,7 +60,8 @@ export const StripePaymentForm = ({ onSuccess, amount }: StripePaymentFormProps)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" data-netlify="true" name="payment">
+      <input type="hidden" name="form-name" value="payment" />
       <PaymentElement />
       
       <Button

@@ -21,6 +21,17 @@ export interface Order {
   created_at?: string;
   updated_at?: string;
   order_items?: OrderItem[];
+  shipping_address?: any;
+  payment_status?: string;
+  payment_intent_id?: string;
+  user_id?: string;
+  tracking_number?: string;
+  carrier?: string;
+  notes?: string;
+  fulfilled_by?: string;
+  fulfilled_at?: string;
+  customer_notified?: boolean;
+  last_email_sent?: string;
 }
 
 export const useOrders = () => {
@@ -127,11 +138,125 @@ export const useOrders = () => {
     }
   };
 
+  const updateFulfillment = async (id: string, fulfillmentData: {
+    tracking_number?: string;
+    carrier?: string;
+    notes?: string;
+  }) => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .update({
+          ...fulfillmentData,
+          fulfilled_at: fulfillmentData.tracking_number ? new Date().toISOString() : undefined,
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Order fulfillment updated successfully',
+      });
+
+      return data;
+    } catch (error) {
+      console.error('Error updating fulfillment:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update fulfillment',
+        variant: 'destructive',
+      });
+      return null;
+    }
+  };
+
+  const sendCustomerEmail = async (orderId: string, emailType: 'shipped' | 'delivered' | 'custom', message?: string) => {
+    try {
+      // In a real implementation, this would call a Supabase function to send email
+      // For now, we'll simulate the API call
+      const response = await fetch('/.supabase/functions/send-order-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          type: emailType,
+          message: message || `Your order ${orderId} has been ${emailType}.`,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to send email');
+
+      // Update the order to reflect that customer was notified
+      await supabase
+        .from('orders')
+        .update({
+          customer_notified: true,
+          last_email_sent: new Date().toISOString(),
+        })
+        .eq('id', orderId);
+
+      toast({
+        title: 'Success',
+        description: 'Customer notification sent successfully',
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error sending customer email:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send customer notification',
+        variant: 'destructive',
+      });
+      return false;
+    }
+  };
+
+  const addOrderNote = async (id: string, note: string) => {
+    try {
+      const order = orders.find(o => o.id === id);
+      const existingNotes = order?.notes || '';
+      const updatedNotes = existingNotes
+        ? `${existingNotes}\n\n[${new Date().toLocaleString()}] ${note}`
+        : `[${new Date().toLocaleString()}] ${note}`;
+
+      const { data, error } = await supabase
+        .from('orders')
+        .update({ notes: updatedNotes })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Order note added successfully',
+      });
+
+      return data;
+    } catch (error) {
+      console.error('Error adding note:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add order note',
+        variant: 'destructive',
+      });
+      return null;
+    }
+  };
+
   return {
     orders,
     loading,
     updateOrderStatus,
     deleteOrder,
+    updateFulfillment,
+    sendCustomerEmail,
+    addOrderNote,
     refetch: fetchOrders,
   };
 };
