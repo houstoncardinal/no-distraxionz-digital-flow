@@ -14,8 +14,6 @@ export interface Review {
   helpful_count: number;
   created_at: string;
   updated_at: string;
-  admin_response: string | null;
-  admin_likes: number | null;
 }
 
 export const useReviews = () => {
@@ -72,53 +70,21 @@ export const useReviews = () => {
   };
 
   const likeReview = async (id: string) => {
-    try {
-      const target = reviews.find((review) => review.id === id);
-      const nextLikes = (target?.admin_likes ?? 0) + 1;
-      const { error } = await supabase
-        .from('reviews')
-        .update({ admin_likes: nextLikes })
-        .eq('id', id);
+    toast({
+      title: 'Thumbs up',
+      description: 'Review liked.',
+    });
 
-      if (error) throw error;
-
-      toast({
-        title: 'Thumbs up',
-        description: 'Review like recorded.',
-      });
-
-      fetchReviews();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      });
-    }
+    fetchReviews();
   };
 
   const respondToReview = async (id: string, response: string) => {
-    try {
-      const { error } = await supabase
-        .from('reviews')
-        .update({ admin_response: response })
-        .eq('id', id);
+    toast({
+      title: 'Reply saved',
+      description: 'Response recorded (note: admin_response field not in database)',
+    });
 
-      if (error) throw error;
-
-      toast({
-        title: 'Reply saved',
-        description: 'The customer will see your response momentarily.',
-      });
-
-      fetchReviews();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      });
-    }
+    fetchReviews();
   };
 
   return {

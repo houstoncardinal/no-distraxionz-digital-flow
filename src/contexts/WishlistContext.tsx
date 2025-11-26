@@ -118,57 +118,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(wishlistReducer, initialState);
   const { user } = useAuth();
 
-  // Load wishlist from database if user is logged in, otherwise from localStorage
+  // Load wishlist from localStorage only (database sync disabled until tables are created)
   useEffect(() => {
-    const loadWishlist = async () => {
-      if (user) {
-        // Load from database for logged-in users
-        try {
-          const { data, error } = await supabase
-            .from('wishlists')
-            .select(`
-              product_id,
-              products (
-                id,
-                name,
-                price,
-                image,
-                description,
-                category,
-                stock,
-                featured
-              )
-            `)
-            .eq('user_id', user.id);
-
-          if (error) throw error;
-
-          // Transform the data to match Product interface
-          const wishlistItems: Product[] = data
-            ?.filter(item => item.products)
-            .map(item => ({
-              id: item.products.id,
-              name: item.products.name,
-              price: item.products.price,
-              image: item.products.image,
-              description: item.products.description || '',
-              category: item.products.category,
-              stock: item.products.stock,
-              featured: item.products.featured,
-            })) || [];
-
-          dispatch({ type: 'LOAD_WISHLIST', payload: wishlistItems });
-        } catch (error) {
-          console.error('Failed to load wishlist from database:', error);
-          // Fallback to localStorage if database fails
-          loadFromLocalStorage();
-        }
-      } else {
-        // Load from localStorage for guests
-        loadFromLocalStorage();
-      }
-    };
-
     const loadFromLocalStorage = () => {
       const savedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
       if (savedWishlist) {
@@ -181,63 +132,13 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    loadWishlist();
-  }, [user]);
+    loadFromLocalStorage();
+  }, []);
 
-  // Save wishlist to both localStorage and database
+  // Save wishlist to localStorage only
   useEffect(() => {
-    // Always save to localStorage
     localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(state.items));
-
-    // Sync to database if user is logged in
-    if (user) {
-      syncWishlistToDatabase();
-    }
-  }, [state.items, user]);
-
-  const syncWishlistToDatabase = async () => {
-    if (!user) return;
-
-    try {
-      // Get current wishlist from database
-      const { data: currentWishlist } = await supabase
-        .from('wishlists')
-        .select('product_id')
-        .eq('user_id', user.id);
-
-      const currentProductIds = currentWishlist?.map(item => item.product_id) || [];
-      const stateProductIds = state.items.map(item => item.id);
-
-      // Find items to add (in state but not in database)
-      const toAdd = stateProductIds.filter(id => !currentProductIds.includes(id));
-
-      // Find items to remove (in database but not in state)
-      const toRemove = currentProductIds.filter(id => !stateProductIds.includes(id));
-
-      // Add new items
-      if (toAdd.length > 0) {
-        await supabase
-          .from('wishlists')
-          .insert(
-            toAdd.map(productId => ({
-              user_id: user.id,
-              product_id: productId,
-            }))
-          );
-      }
-
-      // Remove items
-      if (toRemove.length > 0) {
-        await supabase
-          .from('wishlists')
-          .delete()
-          .eq('user_id', user.id)
-          .in('product_id', toRemove);
-      }
-    } catch (error) {
-      console.error('Failed to sync wishlist to database:', error);
-    }
-  };
+  }, [state.items]);
 
   const addItem = (product: Product) => {
     dispatch({ type: 'ADD_ITEM', payload: product });

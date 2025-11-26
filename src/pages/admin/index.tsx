@@ -8,7 +8,6 @@ import ProductPopulator from '@/components/ProductPopulator';
 import { SystemStatus } from '@/components/admin/SystemStatus';
 import { StripeTesting } from '@/components/admin/StripeTesting';
 import { supabase } from '@/integrations/supabase/client';
-import { autoTuneFeaturedProducts } from '@/utils/selfHealing';
 import { generateProductListingFromFiles } from '@/utils/aiProductComposer';
 import {
   CloudUpload,
