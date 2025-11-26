@@ -19,8 +19,6 @@ interface ReviewFragment {
   title: string | null;
   comment: string | null;
   verified_purchase: boolean;
-  admin_response: string | null;
-  admin_likes: number | null;
   created_at: string | null;
 }
 
@@ -246,7 +244,7 @@ const ProductReviewSection = ({ productId }: { productId: string }) => {
                     <p className="text-sm font-semibold">{review.customer_name}</p>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1">{renderStars(review.rating)}</div>
-                      {review.verified_purchase && <Badge size="sm">Verified buyer</Badge>}
+                      {review.verified_purchase && <Badge variant="secondary" className="text-xs">Verified buyer</Badge>}
                     </div>
                   </div>
                   <span className="text-xs text-muted-foreground">

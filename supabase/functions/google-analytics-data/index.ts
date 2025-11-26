@@ -122,6 +122,7 @@ async function getGoogleAccessToken(credentials: any): Promise<string> {
 }
 
 async function createJWT(credentials: any): Promise<string> {
+  const header = { alg: "RS256" as const, typ: "JWT" };
   const payload = {
     iss: credentials.client_email,
     scope: 'https://www.googleapis.com/auth/analytics.readonly',
@@ -159,10 +160,6 @@ async function importPrivateKey(pemKey: string): Promise<CryptoKey> {
   );
 }
 
-const header = {
-  alg: 'RS256',
-  typ: 'JWT',
-};
 
 async function fetchGoogleAnalyticsData(accessToken: string, requestBody: any): Promise<any> {
   const response = await fetch('https://analyticsdata.googleapis.com/v1beta/properties:batchRunReports', {
