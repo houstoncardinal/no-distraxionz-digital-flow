@@ -45,8 +45,8 @@ export const useProducts = () => {
   useEffect(() => {
     fetchProducts();
 
-    // Subscribe to realtime changes
-    const channel = supabase
+    // Subscribe to realtime changes for products
+    const productsChannel = supabase
       .channel('products_changes')
       .on(
         'postgres_changes',
@@ -56,13 +56,32 @@ export const useProducts = () => {
           table: 'products',
         },
         () => {
+          console.log('Product changed - refetching...');
+          fetchProducts();
+        }
+      )
+      .subscribe();
+
+    // Subscribe to product_variations changes
+    const variationsChannel = supabase
+      .channel('variations_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'product_variations',
+        },
+        () => {
+          console.log('Product variation changed - refetching...');
           fetchProducts();
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(productsChannel);
+      supabase.removeChannel(variationsChannel);
     };
   }, []);
 
@@ -111,6 +130,9 @@ export const useProducts = () => {
         title: 'Success',
         description: 'Product created successfully',
       });
+
+      // Immediately refetch to ensure UI updates
+      await fetchProducts();
 
       return data;
     } catch (error) {
@@ -178,6 +200,9 @@ export const useProducts = () => {
         description: 'Product updated successfully',
       });
 
+      // Immediately refetch to ensure UI updates
+      await fetchProducts();
+
       return data;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -200,6 +225,9 @@ export const useProducts = () => {
         title: 'Success',
         description: 'Product deleted successfully',
       });
+
+      // Immediately refetch to ensure UI updates
+      await fetchProducts();
 
       return true;
     } catch (error) {
