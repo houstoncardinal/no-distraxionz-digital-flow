@@ -13,7 +13,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ArrowLeft, CheckCircle, Lock, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { stripePromise } from '@/lib/stripe';
+import { getStripePromise } from '@/lib/stripe';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 
 const CheckoutWithStripe = () => {
@@ -35,6 +35,7 @@ const CheckoutWithStripe = () => {
 
   const [clientSecret, setClientSecret] = useState<string>('');
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
+  const [stripePromise, setStripePromise] = useState<any>(null);
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
   const shipping = state.total > 75 ? 0 : 9.99;
@@ -46,31 +47,38 @@ const CheckoutWithStripe = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Load Stripe on mount
+  useEffect(() => {
+    const loadStripe = async () => {
+      const stripe = await getStripePromise();
+      setStripePromise(stripe);
+    };
+    loadStripe();
+  }, []);
+
   // Create payment intent when component mounts
   useEffect(() => {
-    if (state.items.length > 0 && !clientSecret) {
+    if (state.items.length > 0 && !clientSecret && stripePromise) {
       createPaymentIntent();
     }
-  }, [state.items]);
+  }, [state.items, stripePromise]);
 
   const createPaymentIntent = async () => {
     setIsLoadingPayment(true);
     try {
-      const response = await fetch('/.netlify/functions/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+        body: {
           amount: Math.round(finalTotal * 100), // Convert to cents
           metadata: {
             customer_email: formData.email,
             customer_name: `${formData.firstName} ${formData.lastName}`,
           }
-        }),
+        }
       });
 
-      const data = await response.json();
+      if (error) throw error;
       
-      if (data.clientSecret) {
+      if (data?.clientSecret) {
         setClientSecret(data.clientSecret);
       } else {
         throw new Error('Failed to create payment intent');
@@ -157,10 +165,8 @@ const CheckoutWithStripe = () => {
           }
         };
 
-        await fetch('/.netlify/functions/send-order-confirmation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(emailData),
+        await supabase.functions.invoke('send-order-confirmation', {
+          body: emailData
         });
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
