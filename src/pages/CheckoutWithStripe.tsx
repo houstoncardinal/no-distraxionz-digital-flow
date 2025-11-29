@@ -15,6 +15,19 @@ import { ArrowLeft, CheckCircle, Lock, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { stripePromise } from '@/lib/stripe';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
+import { z } from 'zod';
+
+const checkoutSchema = z.object({
+  email: z.string().email('Invalid email address').min(1, 'Email is required'),
+  firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
+  lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
+  address: z.string().min(5, 'Address is required').max(200, 'Address too long'),
+  city: z.string().min(2, 'City is required').max(100, 'City too long'),
+  state: z.string().min(2, 'State is required').max(50, 'State too long'),
+  zipCode: z.string().min(5, 'ZIP code is required').max(10, 'ZIP code too long'),
+  phone: z.string().optional(),
+  newsletter: z.boolean(),
+});
 
 const CheckoutWithStripe = () => {
   const { state, clearCart } = useCart();
@@ -33,6 +46,7 @@ const CheckoutWithStripe = () => {
     newsletter: false,
   });
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [clientSecret, setClientSecret] = useState<string>('');
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
 
@@ -44,6 +58,34 @@ const CheckoutWithStripe = () => {
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error for this field when user starts typing
+    if (formErrors[field]) {
+      setFormErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    try {
+      checkoutSchema.parse(formData);
+      setFormErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setFormErrors(errors);
+        toast({
+          title: "Please check your information",
+          description: "Some required fields are missing or invalid.",
+          variant: "destructive"
+        });
+      }
+      return false;
+    }
   };
 
   // Create payment intent when component mounts
@@ -86,6 +128,11 @@ const CheckoutWithStripe = () => {
   };
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
+    // Validate form before processing payment
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
@@ -246,7 +293,11 @@ const CheckoutWithStripe = () => {
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       required
                       placeholder="your@email.com"
+                      className={formErrors.email ? 'border-destructive' : ''}
                     />
+                    {formErrors.email && (
+                      <p className="text-sm text-destructive mt-1">{formErrors.email}</p>
+                    )}
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -278,7 +329,11 @@ const CheckoutWithStripe = () => {
                         value={formData.firstName}
                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                         required
+                        className={formErrors.firstName ? 'border-destructive' : ''}
                       />
+                      {formErrors.firstName && (
+                        <p className="text-sm text-destructive mt-1">{formErrors.firstName}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="lastName">Last Name</Label>
@@ -287,7 +342,11 @@ const CheckoutWithStripe = () => {
                         value={formData.lastName}
                         onChange={(e) => handleInputChange('lastName', e.target.value)}
                         required
+                        className={formErrors.lastName ? 'border-destructive' : ''}
                       />
+                      {formErrors.lastName && (
+                        <p className="text-sm text-destructive mt-1">{formErrors.lastName}</p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -298,7 +357,11 @@ const CheckoutWithStripe = () => {
                       onChange={(e) => handleInputChange('address', e.target.value)}
                       required
                       placeholder="123 Street Name"
+                      className={formErrors.address ? 'border-destructive' : ''}
                     />
+                    {formErrors.address && (
+                      <p className="text-sm text-destructive mt-1">{formErrors.address}</p>
+                    )}
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
@@ -308,7 +371,11 @@ const CheckoutWithStripe = () => {
                         value={formData.city}
                         onChange={(e) => handleInputChange('city', e.target.value)}
                         required
+                        className={formErrors.city ? 'border-destructive' : ''}
                       />
+                      {formErrors.city && (
+                        <p className="text-sm text-destructive mt-1">{formErrors.city}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="state">State</Label>
@@ -317,7 +384,11 @@ const CheckoutWithStripe = () => {
                         value={formData.state}
                         onChange={(e) => handleInputChange('state', e.target.value)}
                         required
+                        className={formErrors.state ? 'border-destructive' : ''}
                       />
+                      {formErrors.state && (
+                        <p className="text-sm text-destructive mt-1">{formErrors.state}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="zipCode">ZIP Code</Label>
@@ -326,7 +397,11 @@ const CheckoutWithStripe = () => {
                         value={formData.zipCode}
                         onChange={(e) => handleInputChange('zipCode', e.target.value)}
                         required
+                        className={formErrors.zipCode ? 'border-destructive' : ''}
                       />
+                      {formErrors.zipCode && (
+                        <p className="text-sm text-destructive mt-1">{formErrors.zipCode}</p>
+                      )}
                     </div>
                   </div>
                   <div>
