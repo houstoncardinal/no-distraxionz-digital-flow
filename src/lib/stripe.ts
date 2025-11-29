@@ -1,4 +1,12 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe - we'll load the publishable key from backend when needed
-export const stripePromise = null; // Will be initialized when Stripe is properly configured
+// Initialize Stripe with publishable key from environment
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+if (!stripePublishableKey) {
+  console.error('Stripe publishable key is not configured');
+}
+
+export const stripePromise = stripePublishableKey 
+  ? loadStripe(stripePublishableKey)
+  : null;
