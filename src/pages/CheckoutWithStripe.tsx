@@ -34,6 +34,8 @@ const CheckoutWithStripe = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
+  // Force rebuild to pick up VITE_STRIPE_PUBLISHABLE_KEY env variable
+  
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
