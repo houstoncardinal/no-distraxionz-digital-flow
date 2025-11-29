@@ -61,6 +61,7 @@ import './App.css';
 
 function App() {
   // Auto-populate products if none exist
+  // Environment variables should be loaded by Lovable Cloud
   useEffect(() => {
     checkAndPopulateProducts();
   }, []);
