@@ -34,7 +34,7 @@ const CheckoutWithStripe = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // Updated: Edge functions deployed with CORS fix
+  // v2: Forcing fresh deployment with updated Supabase env vars
   
   const [formData, setFormData] = useState({
     email: '',
