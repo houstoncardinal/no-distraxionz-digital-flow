@@ -1,11 +1,27 @@
 import { loadStripe } from '@stripe/stripe-js';
+import { supabase } from '@/integrations/supabase/client';
 
-// Initialize Stripe with publishable key
-// Note: This will be undefined until you add VITE_STRIPE_PUBLISHABLE_KEY to .env
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+// Get Stripe publishable key from Supabase edge function
+let stripePromiseCache: Promise<any> | null = null;
 
-if (!stripePublishableKey) {
-  console.warn('Stripe publishable key is not set. Please add VITE_STRIPE_PUBLISHABLE_KEY to your .env file.');
-}
+export const getStripePromise = async () => {
+  if (stripePromiseCache) return stripePromiseCache;
+  
+  try {
+    const { data, error } = await supabase.functions.invoke('get-stripe-config');
+    
+    if (error) throw error;
+    
+    if (data?.publishableKey) {
+      stripePromiseCache = loadStripe(data.publishableKey);
+      return stripePromiseCache;
+    }
+  } catch (error) {
+    console.error('Error loading Stripe config:', error);
+  }
+  
+  return null;
+};
 
-export const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+// For backward compatibility
+export const stripePromise = getStripePromise();
