@@ -16,26 +16,40 @@ interface PaymentIntentRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
-      {
-        status: 405,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+    return new Response(null, { 
+      status: 204,
+      headers: corsHeaders 
+    });
   }
 
   try {
+    console.log("Payment intent request received", { method: req.method });
+
+    if (req.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        {
+          status: 405,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     if (!STRIPE_SECRET_KEY) {
-      throw new Error("STRIPE_SECRET_KEY is not configured");
+      console.error("STRIPE_SECRET_KEY is not configured");
+      return new Response(
+        JSON.stringify({ error: "Server configuration error" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
     }
 
     const { amount, currency = "usd", metadata = {} }: PaymentIntentRequest = await req.json();
+    console.log("Creating payment intent for amount:", amount);
 
     if (!amount || amount < 50) {
       return new Response(
