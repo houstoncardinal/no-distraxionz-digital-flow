@@ -8,7 +8,7 @@ import ProductPopulator from '@/components/ProductPopulator';
 import { SystemStatus } from '@/components/admin/SystemStatus';
 import { StripeTesting } from '@/components/admin/StripeTesting';
 import { supabase } from '@/integrations/supabase/client';
-import { generateProductListingFromFiles } from '@/utils/aiProductComposer';
+import { generateProductListingFromFiles, AIProductListing } from '@/utils/aiProductComposer';
 import {
   CloudUpload,
   Loader2,
@@ -172,12 +172,6 @@ const AdminDashboard = () => {
           customers: customerCountRes.count ?? 0,
         });
         setOrderCounts(statusMap);
-        try {
-          const result = await autoTuneFeaturedProducts();
-          console.info('Self-healing run', result);
-        } catch (error) {
-          console.warn('Self-healing failed', error);
-        }
       } catch (error) {
         console.error('Unable to load dashboard metrics', error);
       } finally {
@@ -210,11 +204,11 @@ const AdminDashboard = () => {
         const aiResult = await generateProductListingFromFiles(selectedFiles, controller.signal);
         if (controller.signal.aborted) return;
 
-        const aiDrafts = aiResult.listings.map((listing, index) => ({
+        const aiDrafts = aiResult.listings.map((listing: AIProductListing, index: number) => ({
           id: listing.slug || `ai-${index}`,
           title: listing.title,
           category: listing.category || 'AI Collection',
-          price: typeof listing.price === 'number' ? listing.price.toFixed(2) : listing.price,
+          price: listing.price,
           description: listing.description,
           metaTitle: listing.metaTitle,
           metaDescription: listing.metaDescription,

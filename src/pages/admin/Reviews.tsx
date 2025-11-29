@@ -119,7 +119,7 @@ const Reviews = () => {
 
   const handleViewReview = (review: Review) => {
     setSelectedReview(review);
-    setReplyText(review.admin_response ?? '');
+    setReplyText('');
     setViewOpen(true);
   };
 
@@ -360,21 +360,6 @@ const Reviews = () => {
                         <div className="text-sm text-muted-foreground line-clamp-2">
                           {review.comment || 'No comment'}
                         </div>
-                        {review.admin_response && (
-                          <div className="mt-3 rounded-2xl border-l-4 border-primary/50 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <MessageSquare className="h-4 w-4 text-primary" />
-                              Brand response
-                            </div>
-                            <p className="text-sm text-foreground">{review.admin_response}</p>
-                          </div>
-                        )}
-                        {review.admin_likes ? (
-                          <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground">
-                            <ThumbsUp className="h-4 w-4 text-primary" />
-                            {review.admin_likes} likes from the team
-                          </div>
-                        ) : null}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -477,26 +462,16 @@ const Reviews = () => {
             </Card>
 
             <Card className="p-4 space-y-3">
-              <h3 className="font-semibold mb-3">Reply to Review</h3>
-              {selectedReview.admin_response && (
-                <div className="text-xs text-muted-foreground">
-                  Existing response: {selectedReview.admin_response}
-                </div>
-              )}
+              <h3 className="font-semibold mb-3">Review Actions</h3>
               <div className="space-y-2">
-                <Label htmlFor="reply">Your Reply</Label>
-                <Textarea
-                  id="reply"
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Write a response to this review..."
-                  rows={3}
-                />
-                <div className="flex justify-end">
-                  <Button size="sm" disabled={!replyText.trim()} onClick={handleSendResponse}>
-                    Send Reply
-                  </Button>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Manage review visibility and moderation options.
+                </p>
+              </div>
+              <div className="flex gap-2 pt-3">
+                <Button onClick={() => setViewOpen(false)} className="w-full">
+                  Close
+                </Button>
               </div>
             </Card>
           </div>
