@@ -270,8 +270,8 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden">
-        <DialogHeader className="pb-4">
+      <DialogContent className="max-w-7xl max-h-[90vh] flex flex-col p-0">
+        <DialogHeader className="px-6 pt-6 pb-4 shrink-0">
           <DialogTitle className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Tag className="h-6 w-6 text-primary" />
@@ -285,30 +285,31 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col h-full max-h-[calc(95vh-180px)]" data-netlify="true" name="product">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0" data-netlify="true" name="product">
           <input type="hidden" name="form-name" value="product" />
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="basic" className="gap-2">
-                <Settings className="h-4 w-4" />
-                Basic Info
-              </TabsTrigger>
-              <TabsTrigger value="images" className="gap-2">
-                <ImageIcon className="h-4 w-4" />
-                Images
-              </TabsTrigger>
-              <TabsTrigger value="variants" className="gap-2">
-                <Settings className="h-4 w-4" />
-                Variants
-              </TabsTrigger>
-              <TabsTrigger value="seo" className="gap-2">
-                <BarChart3 className="h-4 w-4" />
-                SEO & Marketing
-              </TabsTrigger>
-            </TabsList>
+          <div className="flex-1 overflow-y-auto px-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col">
+              <TabsList className="grid w-full grid-cols-4 mb-6 sticky top-0 z-10 bg-background">
+                <TabsTrigger value="basic" className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Basic Info
+                </TabsTrigger>
+                <TabsTrigger value="images" className="gap-2">
+                  <ImageIcon className="h-4 w-4" />
+                  Images
+                </TabsTrigger>
+                <TabsTrigger value="variants" className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Variants
+                </TabsTrigger>
+                <TabsTrigger value="seo" className="gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  SEO & Marketing
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Basic Information Tab */}
-            <TabsContent value="basic" className="flex-1 space-y-6">
+              {/* Basic Information Tab */}
+              <TabsContent value="basic" className="space-y-6 mt-0">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
@@ -399,7 +400,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
             </TabsContent>
 
             {/* Images Tab */}
-            <TabsContent value="images" className="flex-1 space-y-6">
+            <TabsContent value="images" className="space-y-6 mt-0">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -474,7 +475,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
             </TabsContent>
 
             {/* Variants Tab */}
-            <TabsContent value="variants" className="flex-1 space-y-6">
+            <TabsContent value="variants" className="space-y-6 mt-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Product Variants</CardTitle>
@@ -528,7 +529,7 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
             </TabsContent>
 
             {/* SEO & Marketing Tab */}
-            <TabsContent value="seo" className="flex-1 space-y-6">
+            <TabsContent value="seo" className="space-y-6 mt-0">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -686,9 +687,10 @@ export const ProductFormDialog = ({ open, onOpenChange, product, onSubmit, mode 
                 </CardContent>
               </Card>
             </TabsContent>
-          </Tabs>
+            </Tabs>
+          </div>
 
-          <DialogFooter className="pt-6 border-t">
+          <DialogFooter className="px-6 py-4 border-t shrink-0 bg-background">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
