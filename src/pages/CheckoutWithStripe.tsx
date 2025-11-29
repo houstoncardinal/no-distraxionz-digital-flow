@@ -13,7 +13,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ArrowLeft, CheckCircle, Lock, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { getStripePromise } from '@/lib/stripe';
+import { stripePromise } from '@/lib/stripe';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 
 const CheckoutWithStripe = () => {
@@ -35,7 +35,6 @@ const CheckoutWithStripe = () => {
 
   const [clientSecret, setClientSecret] = useState<string>('');
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
-  const [stripePromise, setStripePromise] = useState<any>(null);
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
   const shipping = state.total > 75 ? 0 : 9.99;
@@ -47,21 +46,12 @@ const CheckoutWithStripe = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Load Stripe on mount
-  useEffect(() => {
-    const loadStripe = async () => {
-      const stripe = await getStripePromise();
-      setStripePromise(stripe);
-    };
-    loadStripe();
-  }, []);
-
   // Create payment intent when component mounts
   useEffect(() => {
-    if (state.items.length > 0 && !clientSecret && stripePromise) {
+    if (state.items.length > 0 && !clientSecret) {
       createPaymentIntent();
     }
-  }, [state.items, stripePromise]);
+  }, [state.items]);
 
   const createPaymentIntent = async () => {
     setIsLoadingPayment(true);
