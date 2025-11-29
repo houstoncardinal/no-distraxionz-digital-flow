@@ -21,6 +21,8 @@ interface OrderItem {
     name: string;
     image: string;
     price: number;
+    description: string;
+    category: string;
   };
 }
 
@@ -65,7 +67,9 @@ export default function OrderDetails() {
               id,
               name,
               image,
-              price
+              price,
+              description,
+              category
             )
           )
         `)
@@ -103,12 +107,7 @@ export default function OrderDetails() {
     let addedCount = 0;
     order.order_items.forEach((item) => {
       if (item.product) {
-        const cartProduct = {
-          ...item.product,
-          description: item.product.description || '',
-          category: item.product.category || 'uncategorized'
-        };
-        addItem(cartProduct, item.quantity);
+        addItem(item.product, undefined, undefined, item.quantity);
         addedCount++;
       }
     });

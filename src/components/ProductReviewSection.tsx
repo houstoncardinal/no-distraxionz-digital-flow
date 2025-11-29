@@ -19,6 +19,7 @@ interface ReviewFragment {
   title: string | null;
   comment: string | null;
   verified_purchase: boolean;
+  helpful_count: number | null;
   created_at: string | null;
 }
 
@@ -138,8 +139,6 @@ const ProductReviewSection = ({ productId }: { productId: string }) => {
         customer_email: user.email ?? 'guest@nodistraxionz.com',
         verified_purchase: isVerifiedBuyer,
         helpful_count: 0,
-        admin_likes: 0,
-        admin_response: null,
       });
 
       if (error) throw error;
@@ -253,21 +252,6 @@ const ProductReviewSection = ({ productId }: { productId: string }) => {
                 </div>
                 {review.title && <h3 className="text-base font-semibold">{review.title}</h3>}
                 <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
-                {review.admin_response && (
-                  <div className="rounded-2xl border border-primary/20 bg-white p-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-[0.3em] text-primary">
-                      <MessageSquare className="h-4 w-4" />
-                      Brand Response
-                    </div>
-                    <p className="text-sm text-gray-700">{review.admin_response}</p>
-                  </div>
-                )}
-                {review.admin_likes ? (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <ThumbsUp className="h-4 w-4 text-primary" />
-                    {review.admin_likes} likes from the team
-                  </div>
-                ) : null}
               </article>
             ))}
           </div>
