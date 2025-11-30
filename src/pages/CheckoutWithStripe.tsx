@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { stripePromise } from '@/lib/stripe';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 import { z } from 'zod';
+import { useTaxCalculation } from '@/hooks/useTaxCalculation';
 
 const checkoutSchema = z.object({
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
@@ -52,9 +53,14 @@ const CheckoutWithStripe = () => {
   const [clientSecret, setClientSecret] = useState<string>('');
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
 
+  // Calculate dynamic tax based on destination state
+  const { tax, taxRate, isCalculating: isCalculatingTax } = useTaxCalculation(
+    formData.state,
+    state.total
+  );
+
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
   const shipping = state.total > 75 ? 0 : 9.99;
-  const tax = state.total * 0.08;
   const finalTotal = state.total + shipping + tax;
   const getImageSrc = (image: string | null) => image || '/placeholder.svg';
 
@@ -90,12 +96,12 @@ const CheckoutWithStripe = () => {
     }
   };
 
-  // Create payment intent when component mounts
+  // Create payment intent when finalTotal changes
   useEffect(() => {
-    if (state.items.length > 0 && !clientSecret) {
+    if (state.items.length > 0 && finalTotal > 0 && !isCalculatingTax) {
       createPaymentIntent();
     }
-  }, [state.items]);
+  }, [finalTotal, isCalculatingTax]);
 
   const createPaymentIntent = async () => {
     setIsLoadingPayment(true);
@@ -497,9 +503,18 @@ const CheckoutWithStripe = () => {
                         {shipping === 0 ? 'FREE' : formatPrice(shipping)}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tax</span>
-                      <span>{formatPrice(tax)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1">
+                        Tax
+                        {formData.state && taxRate > 0 && (
+                          <span className="text-xs text-muted-foreground">({taxRate}% {formData.state})</span>
+                        )}
+                      </span>
+                      {isCalculatingTax ? (
+                        <span className="text-xs text-muted-foreground">Calculating...</span>
+                      ) : (
+                        <span>{formatPrice(tax)}</span>
+                      )}
                     </div>
                     <Separator />
                     <div className="flex justify-between text-lg font-semibold">
