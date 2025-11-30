@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Package } from 'lucide-react';
+import { Loader2, User, Package, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Profile {
   id: string;
@@ -25,6 +26,16 @@ export default function Account() {
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast({
+      title: 'Signed out',
+      description: 'You have been successfully signed out.',
+    });
+    navigate('/');
+  };
 
   useEffect(() => {
     checkUser();
@@ -115,9 +126,15 @@ export default function Account() {
       <Header />
       <div className="container-padding-modern py-8 max-w-4xl mx-auto">
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-playfair font-medium mb-2">My Account</h1>
-            <p className="text-muted-foreground">Manage your profile and preferences</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-playfair font-medium mb-2">My Account</h1>
+              <p className="text-muted-foreground">Manage your profile and preferences</p>
+            </div>
+            <Button variant="outline" onClick={handleSignOut} className="gap-2">
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
           </div>
 
           <Tabs defaultValue="profile" className="w-full">

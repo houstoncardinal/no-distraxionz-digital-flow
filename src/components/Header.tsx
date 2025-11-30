@@ -146,11 +146,12 @@ const Header = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
-                    <User className="h-5 w-5 text-gray-600" />
+                  <Button variant="ghost" className="h-10 hover:bg-gray-100 transition-colors duration-200 px-3">
+                    <User className="h-4 w-4 mr-2 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-900">Account</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem onClick={() => navigate('/account')}>
                     <User className="h-4 w-4 mr-2" />
                     My Account
@@ -159,18 +160,25 @@ const Header = () => {
                     My Orders
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut}>
+                  <DropdownMenuItem onClick={signOut} className="text-red-600 focus:text-red-600">
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="ghost" size="icon" asChild className="h-10 w-10 hover:bg-gray-100 transition-colors duration-200">
-                <Link to="/auth">
-                  <User className="h-5 w-5 text-gray-600" />
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" asChild className="h-10 hover:bg-gray-100 transition-colors duration-200">
+                  <Link to="/auth" className="text-sm font-medium">
+                    Sign In
+                  </Link>
+                </Button>
+                <Button asChild className="h-10">
+                  <Link to="/auth" className="text-sm font-medium">
+                    Sign Up
+                  </Link>
+                </Button>
+              </div>
             )}
             <div className="h-6 w-px bg-gray-300 mx-2" />
             <CartTrigger />
@@ -236,37 +244,73 @@ const Header = () => {
                     )}
                   </motion.div>
                 ))}
-                <motion.div 
-                  className="flex items-center space-x-4 pt-6 border-t border-gray-200"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                >
-                  <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
-                    <Link to="/shop">
-                      <Search className="h-5 w-5 text-gray-600" />
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
-                    <Link to="/shop">
-                      <Heart className="h-5 w-5 text-gray-600" />
-                    </Link>
-                  </Button>
-                  {user ? (
-                    <Button variant="ghost" size="icon" className="h-12 w-12 hover:bg-gray-100" onClick={() => {
-                      setIsMenuOpen(false);
-                      navigate('/account');
-                    }}>
+                {user ? (
+                  <motion.div 
+                    className="space-y-3 pt-6 border-t border-gray-200"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 }}
+                  >
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        navigate('/account');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
                       <User className="h-5 w-5 text-gray-600" />
-                    </Button>
-                  ) : (
-                    <Button variant="ghost" size="icon" asChild className="h-12 w-12 hover:bg-gray-100">
+                      <span className="text-sm font-semibold text-gray-900">My Account</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        navigate('/my-orders');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <Search className="h-5 w-5 text-gray-600" />
+                      <span className="text-sm font-semibold text-gray-900">My Orders</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        signOut();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-red-600"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span className="text-sm font-semibold">Sign Out</span>
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    className="space-y-3 pt-6 border-t border-gray-200"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 }}
+                  >
+                    <Button 
+                      asChild 
+                      variant="outline" 
+                      className="w-full h-12 text-base font-semibold"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Link to="/auth">
-                        <User className="h-5 w-5 text-gray-600" />
+                        <User className="h-5 w-5 mr-2" />
+                        Sign In
                       </Link>
                     </Button>
-                  )}
-                </motion.div>
+                    <Button 
+                      asChild 
+                      className="w-full h-12 text-base font-semibold"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Link to="/auth">
+                        Sign Up
+                      </Link>
+                    </Button>
+                  </motion.div>
+                )}
               </div>
             </nav>
           </motion.div>
