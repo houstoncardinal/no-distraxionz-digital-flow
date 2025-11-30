@@ -1,0 +1,61 @@
+-- Insert comprehensive US state tax rates (2024 rates)
+-- Louisiana origin-based (4.45% state + average local)
+-- All other states use destination-based rates
+
+INSERT INTO tax_rates (name, country, state, rate, is_active) VALUES
+-- Louisiana (origin-based) - New Orleans has 9.45% combined rate
+('Louisiana Sales Tax', 'US', 'LA', 9.45, true),
+
+-- States with sales tax (destination-based)
+('Alabama Sales Tax', 'US', 'AL', 9.24, true),
+('Arizona Sales Tax', 'US', 'AZ', 8.37, true),
+('Arkansas Sales Tax', 'US', 'AR', 9.46, true),
+('California Sales Tax', 'US', 'CA', 8.68, true),
+('Colorado Sales Tax', 'US', 'CO', 7.77, true),
+('Connecticut Sales Tax', 'US', 'CT', 6.35, true),
+('Florida Sales Tax', 'US', 'FL', 7.02, true),
+('Georgia Sales Tax', 'US', 'GA', 7.33, true),
+('Hawaii Sales Tax', 'US', 'HI', 4.44, true),
+('Idaho Sales Tax', 'US', 'ID', 6.02, true),
+('Illinois Sales Tax', 'US', 'IL', 8.81, true),
+('Indiana Sales Tax', 'US', 'IN', 7.00, true),
+('Iowa Sales Tax', 'US', 'IA', 6.94, true),
+('Kansas Sales Tax', 'US', 'KS', 8.66, true),
+('Kentucky Sales Tax', 'US', 'KY', 6.00, true),
+('Maine Sales Tax', 'US', 'ME', 5.50, true),
+('Maryland Sales Tax', 'US', 'MD', 6.00, true),
+('Massachusetts Sales Tax', 'US', 'MA', 6.25, true),
+('Michigan Sales Tax', 'US', 'MI', 6.00, true),
+('Minnesota Sales Tax', 'US', 'MN', 7.46, true),
+('Mississippi Sales Tax', 'US', 'MS', 7.07, true),
+('Missouri Sales Tax', 'US', 'MO', 8.29, true),
+('Nebraska Sales Tax', 'US', 'NE', 6.94, true),
+('Nevada Sales Tax', 'US', 'NV', 8.23, true),
+('New Jersey Sales Tax', 'US', 'NJ', 6.60, true),
+('New Mexico Sales Tax', 'US', 'NM', 7.83, true),
+('New York Sales Tax', 'US', 'NY', 8.52, true),
+('North Carolina Sales Tax', 'US', 'NC', 6.98, true),
+('North Dakota Sales Tax', 'US', 'ND', 6.96, true),
+('Ohio Sales Tax', 'US', 'OH', 7.24, true),
+('Oklahoma Sales Tax', 'US', 'OK', 8.97, true),
+('Pennsylvania Sales Tax', 'US', 'PA', 6.34, true),
+('Rhode Island Sales Tax', 'US', 'RI', 7.00, true),
+('South Carolina Sales Tax', 'US', 'SC', 7.44, true),
+('South Dakota Sales Tax', 'US', 'SD', 6.40, true),
+('Tennessee Sales Tax', 'US', 'TN', 9.55, true),
+('Texas Sales Tax', 'US', 'TX', 8.20, true),
+('Utah Sales Tax', 'US', 'UT', 7.19, true),
+('Vermont Sales Tax', 'US', 'VT', 6.24, true),
+('Virginia Sales Tax', 'US', 'VA', 5.75, true),
+('Washington Sales Tax', 'US', 'WA', 9.23, true),
+('West Virginia Sales Tax', 'US', 'WV', 6.50, true),
+('Wisconsin Sales Tax', 'US', 'WI', 5.43, true),
+('Wyoming Sales Tax', 'US', 'WY', 5.34, true),
+('District of Columbia Sales Tax', 'US', 'DC', 6.00, true),
+
+-- States with NO sales tax
+('Alaska - No Sales Tax', 'US', 'AK', 0.00, true),
+('Delaware - No Sales Tax', 'US', 'DE', 0.00, true),
+('Montana - No Sales Tax', 'US', 'MT', 0.00, true),
+('New Hampshire - No Sales Tax', 'US', 'NH', 0.00, true),
+('Oregon - No Sales Tax', 'US', 'OR', 0.00, true);
