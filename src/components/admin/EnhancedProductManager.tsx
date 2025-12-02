@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
 import {
   Plus,
   Edit,
@@ -26,7 +25,6 @@ import {
   List,
   MoreVertical,
   Settings,
-  Download,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -51,7 +49,6 @@ import {
 
 const EnhancedProductManager = () => {
   const { products, loading, createProduct, updateProduct, deleteProduct } = useProducts();
-  const { toast } = useToast();
 
   // Core State
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,7 +140,7 @@ const EnhancedProductManager = () => {
   const handleCreateProduct = async (data: any) => {
     const result = await createProduct(data);
     if (result) {
-      toast({ title: 'Success', description: 'Product created successfully' });
+      setIsCreateDialogOpen(false);
     }
   };
 
@@ -151,15 +148,14 @@ const EnhancedProductManager = () => {
     if (!editingProduct) return;
     const result = await updateProduct(editingProduct.id, data);
     if (result) {
-      toast({ title: 'Success', description: 'Product updated successfully' });
       setEditingProduct(null);
+      setIsEditDialogOpen(false);
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
     const success = await deleteProduct(id);
     if (success) {
-      toast({ title: 'Success', description: 'Product deleted successfully' });
       setDeleteConfirm(null);
     }
   };

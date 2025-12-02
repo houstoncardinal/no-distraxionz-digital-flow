@@ -85,7 +85,7 @@ export const useProducts = () => {
     };
   }, []);
 
-  const createProduct = async (product: Partial<import('@/data/products').Product> & { variations?: any[] }) => {
+  const createProduct = async (product: Partial<import('@/data/products').Product> & { variations?: any[], schema_data?: any }) => {
     try {
       const productData = {
         name: product.name,
@@ -98,7 +98,10 @@ export const useProducts = () => {
         meta_title: product.meta_title,
         meta_description: product.meta_description,
         meta_keywords: product.meta_keywords,
+        schema_data: product.schema_data || null,
       };
+
+      console.log('Creating product:', productData);
 
       const { data, error } = await supabase
         .from('products')
@@ -106,16 +109,21 @@ export const useProducts = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase create error:', error);
+        throw error;
+      }
+
+      console.log('Product created successfully:', data);
 
       // Create variations if provided
       if (product.variations && product.variations.length > 0 && data) {
         const variationsData = product.variations.map(v => ({
           product_id: data.id,
-          name: v.name,
-          sku: v.sku,
-          price: parseFloat(v.price),
-          stock: v.stock,
+          name: v.name || 'Default',
+          sku: v.sku || null,
+          price: v.price ? parseFloat(String(v.price)) : null,
+          stock: v.stock || 0,
           attributes: v.attributes || {},
         }));
 
@@ -123,23 +131,20 @@ export const useProducts = () => {
           .from('product_variations')
           .insert(variationsData);
 
-        if (variationsError) throw variationsError;
+        if (variationsError) {
+          console.error('Error creating variations:', variationsError);
+        }
       }
-
-      toast({
-        title: 'Success',
-        description: 'Product created successfully',
-      });
 
       // Immediately refetch to ensure UI updates
       await fetchProducts();
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating product:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create product',
+        description: error?.message || 'Failed to create product',
         variant: 'destructive',
       });
       return null;
@@ -148,42 +153,57 @@ export const useProducts = () => {
 
   const updateProduct = async (id: string, updates: Partial<import('@/data/products').Product> & { variations?: any[] }) => {
     try {
+      // Build update object with only defined values to prevent overwriting with undefined
+      const updateData: Record<string, any> = {};
+      
+      if (updates.name !== undefined) updateData.name = updates.name;
+      if (updates.description !== undefined) updateData.description = updates.description;
+      if (updates.price !== undefined) updateData.price = updates.price;
+      if (updates.image !== undefined) updateData.image = updates.image;
+      if (updates.category !== undefined) updateData.category = updates.category;
+      if (updates.stock !== undefined) updateData.stock = updates.stock;
+      if (updates.featured !== undefined) updateData.featured = updates.featured;
+      if (updates.meta_title !== undefined) updateData.meta_title = updates.meta_title;
+      if (updates.meta_description !== undefined) updateData.meta_description = updates.meta_description;
+      if (updates.meta_keywords !== undefined) updateData.meta_keywords = updates.meta_keywords;
+      if ((updates as any).schema_data !== undefined) updateData.schema_data = (updates as any).schema_data;
+
+      console.log('Updating product:', id, updateData);
+
       const { data, error } = await supabase
         .from('products')
-        .update({
-          name: updates.name,
-          description: updates.description,
-          price: updates.price,
-          image: updates.image,
-          category: updates.category,
-          stock: updates.stock,
-          featured: updates.featured,
-          meta_title: updates.meta_title,
-          meta_description: updates.meta_description,
-          meta_keywords: updates.meta_keywords,
-        })
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
+
+      console.log('Product updated successfully:', data);
 
       // Update variations if provided
       if (updates.variations !== undefined) {
         // Delete existing variations
-        await supabase
+        const { error: deleteError } = await supabase
           .from('product_variations')
           .delete()
           .eq('product_id', id);
+
+        if (deleteError) {
+          console.error('Error deleting variations:', deleteError);
+        }
 
         // Insert new variations
         if (updates.variations.length > 0) {
           const variationsData = updates.variations.map(v => ({
             product_id: id,
-            name: v.name,
-            sku: v.sku,
-            price: parseFloat(v.price),
-            stock: v.stock,
+            name: v.name || 'Default',
+            sku: v.sku || null,
+            price: v.price ? parseFloat(String(v.price)) : null,
+            stock: v.stock || 0,
             attributes: v.attributes || {},
           }));
 
@@ -191,24 +211,21 @@ export const useProducts = () => {
             .from('product_variations')
             .insert(variationsData);
 
-          if (variationsError) throw variationsError;
+          if (variationsError) {
+            console.error('Error inserting variations:', variationsError);
+          }
         }
       }
-
-      toast({
-        title: 'Success',
-        description: 'Product updated successfully',
-      });
 
       // Immediately refetch to ensure UI updates
       await fetchProducts();
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating product:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update product',
+        description: error?.message || 'Failed to update product',
         variant: 'destructive',
       });
       return null;
