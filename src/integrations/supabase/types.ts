@@ -633,7 +633,53 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      reviews_public: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          customer_name: string | null
+          helpful_count: number | null
+          id: string | null
+          product_id: string | null
+          rating: number | null
+          title: string | null
+          updated_at: string | null
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          product_id?: string | null
+          rating?: number | null
+          title?: string | null
+          updated_at?: string | null
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          product_id?: string | null
+          rating?: number | null
+          title?: string | null
+          updated_at?: string | null
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       create_admin_user: {
