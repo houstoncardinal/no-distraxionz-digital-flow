@@ -6,7 +6,7 @@ export interface Review {
   id: string;
   product_id: string;
   customer_name: string;
-  customer_email: string;
+  customer_email?: string; // Only available to admins
   rating: number;
   title: string | null;
   comment: string | null;
@@ -21,15 +21,18 @@ export const useReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchReviews = async () => {
+  const fetchReviews = async (includeEmail: boolean = false) => {
     try {
-      const { data, error } = await supabase
+      // Base query - never select customer_email for public queries to protect PII
+      const query = supabase
         .from('reviews')
-        .select('*')
+        .select('id, product_id, customer_name, rating, title, comment, verified_purchase, helpful_count, created_at, updated_at')
         .order('created_at', { ascending: false });
+      
+      const { data, error } = await query;
 
       if (error) throw error;
-      setReviews(data || []);
+      setReviews((data as Review[]) || []);
     } catch (error: any) {
       toast({
         title: 'Error',
