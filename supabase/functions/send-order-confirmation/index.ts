@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const SELLER_EMAIL = "nodistraxionz@gmail.com";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,6 +15,8 @@ interface OrderItem {
   name: string;
   quantity: number;
   price: number;
+  size?: string;
+  color?: string;
 }
 
 interface OrderDetails {
@@ -31,10 +36,14 @@ interface OrderDetails {
   };
 }
 
-const generateOrderEmailHTML = (order: OrderDetails) => {
+const generateCustomerEmailHTML = (order: OrderDetails) => {
   const itemsHTML = order.items.map(item => `
     <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee;">
+        ${item.name}
+        ${item.size ? `<br><small style="color: #666;">Size: ${item.size}</small>` : ''}
+        ${item.color ? `<br><small style="color: #666;">Color: ${item.color}</small>` : ''}
+      </td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">$${item.price.toFixed(2)}</td>
     </tr>
@@ -123,46 +132,148 @@ const generateOrderEmailHTML = (order: OrderDetails) => {
   `;
 };
 
+const generateSellerEmailHTML = (order: OrderDetails) => {
+  const itemsHTML = order.items.map(item => `
+    <tr>
+      <td style="padding: 12px; border-bottom: 1px solid #eee;">
+        ${item.name}
+        ${item.size ? `<br><small style="color: #666;">Size: ${item.size}</small>` : ''}
+        ${item.color ? `<br><small style="color: #666;">Color: ${item.color}</small>` : ''}
+      </td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">$${item.price.toFixed(2)}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>New Order Received</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 0;">
+        <tr>
+          <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <tr>
+                <td style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 40px; text-align: center;">
+                  <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 300; letter-spacing: 2px;">💰 NEW SALE!</h1>
+                  <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">NO DISTRAXIONZ</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 40px; text-align: center; background-color: #f8f9fa;">
+                  <h2 style="margin: 0 0 10px 0; color: #1a1a1a; font-size: 28px;">Order #${order.orderNumber}</h2>
+                  <p style="margin: 0; color: #666; font-size: 16px;">You have received a new order!</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 0 40px 40px 40px;">
+                  <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #22c55e;">
+                    <p style="margin: 0 0 5px 0; color: #166534; font-size: 14px; font-weight: bold;">Order Total</p>
+                    <p style="margin: 0; color: #166534; font-size: 28px; font-weight: bold;">$${order.total.toFixed(2)}</p>
+                  </div>
+                  
+                  <h3 style="margin: 0 0 15px 0; color: #1a1a1a; font-size: 18px;">Customer Information</h3>
+                  <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="margin: 0 0 5px 0; color: #1a1a1a; font-weight: bold;">${order.customerName}</p>
+                    <p style="margin: 0 0 5px 0; color: #666;">${order.customerEmail}</p>
+                    <p style="margin: 0; color: #666; line-height: 1.4;">
+                      ${order.shippingAddress.address}<br>
+                      ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}
+                    </p>
+                  </div>
+                  
+                  <h3 style="margin: 0 0 20px 0; color: #1a1a1a; font-size: 18px;">Order Items</h3>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                    <thead>
+                      <tr style="background-color: #f8f9fa;">
+                        <th style="padding: 12px; text-align: left; color: #666; font-size: 14px;">Item</th>
+                        <th style="padding: 12px; text-align: center; color: #666; font-size: 14px;">Qty</th>
+                        <th style="padding: 12px; text-align: right; color: #666; font-size: 14px;">Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>${itemsHTML}</tbody>
+                  </table>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+                    <tr>
+                      <td style="padding: 8px 0; color: #666;">Subtotal:</td>
+                      <td style="padding: 8px 0; text-align: right; color: #1a1a1a;">$${order.subtotal.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px 0; color: #666;">Shipping:</td>
+                      <td style="padding: 8px 0; text-align: right; color: #1a1a1a;">$${order.shipping.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px 0; color: #666;">Tax:</td>
+                      <td style="padding: 8px 0; text-align: right; color: #1a1a1a;">$${order.tax.toFixed(2)}</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #22c55e;">
+                      <td style="padding: 12px 0; font-weight: bold; font-size: 18px; color: #166534;">Total:</td>
+                      <td style="padding: 12px 0; text-align: right; font-weight: bold; font-size: 18px; color: #166534;">$${order.total.toFixed(2)}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+                  <p style="margin: 0; color: #666; font-size: 14px;">Login to your admin dashboard to manage this order</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
-    }
-
     const orderDetails: OrderDetails = await req.json();
 
-    const emailHTML = generateOrderEmailHTML(orderDetails);
+    console.log("Sending order confirmation emails for order:", orderDetails.orderNumber);
 
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "NO DISTRAXIONZ <onboarding@resend.dev>",
-        to: [orderDetails.customerEmail],
-        subject: `Order Confirmation - #${orderDetails.orderNumber}`,
-        html: emailHTML,
-      }),
+    // Send customer confirmation email
+    const customerEmailResponse = await resend.emails.send({
+      from: "NO DISTRAXIONZ <onboarding@resend.dev>",
+      to: [orderDetails.customerEmail],
+      subject: `Order Confirmation - #${orderDetails.orderNumber}`,
+      html: generateCustomerEmailHTML(orderDetails),
     });
 
-    const data = await response.json();
+    console.log("Customer email sent:", customerEmailResponse);
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to send email");
-    }
-
-    return new Response(JSON.stringify({ success: true, data }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+    // Send seller notification email
+    const sellerEmailResponse = await resend.emails.send({
+      from: "NO DISTRAXIONZ <onboarding@resend.dev>",
+      to: [SELLER_EMAIL],
+      subject: `💰 New Order Received - #${orderDetails.orderNumber} - $${orderDetails.total.toFixed(2)}`,
+      html: generateSellerEmailHTML(orderDetails),
     });
+
+    console.log("Seller email sent:", sellerEmailResponse);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        customerEmail: customerEmailResponse,
+        sellerEmail: sellerEmailResponse 
+      }), 
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
   } catch (error: any) {
-    console.error("Error sending order confirmation:", error);
+    console.error("Error sending order confirmation emails:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
