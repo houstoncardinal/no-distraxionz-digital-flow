@@ -116,7 +116,7 @@ const Index = () => {
                   </motion.div>
                   <div>
                     <h4 className="font-playfair text-xl font-medium text-white mb-1 group-hover:text-blue-400 transition-colors duration-300">Fast Shipping</h4>
-                    <p className="text-sm text-white/70">Delivery in 3-5 business days</p>
+                    <p className="text-sm text-white/70">Delivery in 4-7 business days</p>
                   </div>
                 </motion.div>
                 <motion.div 

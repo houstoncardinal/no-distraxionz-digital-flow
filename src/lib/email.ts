@@ -243,7 +243,7 @@ export async function sendShippingUpdate(order: Order, trackingNumber: string, c
               <p><strong>Total: $${Number(order.total_amount).toFixed(2)}</strong></p>
 
               <h3>Delivery Info</h3>
-              <p>Your package should arrive within 3-5 business days. Keep an eye out for it!</p>
+              <p>Your package should arrive within 4-7 business days. Keep an eye out for it!</p>
 
               <p>Questions about your delivery? Just reply to this email.</p>
 

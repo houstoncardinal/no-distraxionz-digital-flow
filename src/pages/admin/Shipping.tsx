@@ -101,7 +101,7 @@ const Shipping = () => {
         </Card>
         <Card className="p-6">
           <p className="text-sm text-muted-foreground">Avg. Delivery Time</p>
-          <p className="text-2xl font-bold">3-5 days</p>
+          <p className="text-2xl font-bold">4-7 days</p>
         </Card>
         <Card className="p-6">
           <p className="text-sm text-muted-foreground">Fulfillment Rate</p>
