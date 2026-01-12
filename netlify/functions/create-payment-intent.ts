@@ -1,27 +1,36 @@
 import Stripe from 'stripe';
+import type { Context } from '@netlify/functions';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
-});
+// Initialize Stripe - will be validated on first request
+const getStripe = (): Stripe => {
+  const secretKey = Netlify.env.get('STRIPE_SECRET_KEY');
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+  }
+  return new Stripe(secretKey);
+};
 
-export const handler = async (event: any) => {
+export default async (req: Request, context: Context) => {
   // Only allow POST requests
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    };
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
-    const { amount, currency = 'usd', metadata = {} } = JSON.parse(event.body);
+    const body = await req.json();
+    const { amount, currency = 'usd', metadata = {} } = body;
 
     if (!amount || amount < 50) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid amount. Minimum is $0.50' }),
-      };
+      return new Response(
+        JSON.stringify({ error: 'Invalid amount. Minimum is $0.50' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    const stripe = getStripe();
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
@@ -33,26 +42,44 @@ export const handler = async (event: any) => {
       metadata,
     });
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-      body: JSON.stringify({
+    return new Response(
+      JSON.stringify({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
       }),
-    };
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
     console.error('Error creating payment intent:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ 
+
+    // Handle specific Stripe errors
+    if (error.type === 'StripeAuthenticationError') {
+      return new Response(
+        JSON.stringify({
+          error: 'Payment service configuration error',
+          message: 'The payment service is not properly configured. Please contact support.',
+        }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (error.message?.includes('STRIPE_SECRET_KEY')) {
+      return new Response(
+        JSON.stringify({
+          error: 'Payment service unavailable',
+          message: 'The payment service is not configured. Please contact support.',
+        }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
         error: 'Failed to create payment intent',
-        message: error.message 
+        message: error.message,
       }),
-    };
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 };
+
